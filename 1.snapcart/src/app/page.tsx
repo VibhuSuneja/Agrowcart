@@ -8,7 +8,7 @@ import GeoUpdater from '@/components/GeoUpdater'
 import Nav from '@/components/Nav'
 import UserDashboard from '@/components/UserDashboard'
 import connectDb from '@/lib/db'
-import Grocery, { IGrocery } from '@/models/grocery.model'
+import Product, { IProduct } from '@/models/product.model'
 
 import User from '@/models/user.model'
 
@@ -16,57 +16,67 @@ import { redirect } from 'next/navigation'
 
 
 
-async function Home(props:{
-  searchParams:Promise<{
-    q:string
+async function Home(props: {
+  searchParams: Promise<{
+    q: string
   }>
 }) {
 
-const searchParams=await props.searchParams
+  const searchParams = await props.searchParams
 
   await connectDb()
   const session = await auth()
   if (!session) redirect("/login")
   console.log(session?.user)
   const user = await User.findById(session?.user?.id)
- if (!user) redirect("/login")
+  if (!user) redirect("/login")
 
-  const inComplete = !user.mobile || !user.role || (!user.mobile && user.role == "user")
+  const inComplete = !user.role || (user.role === "user" && !user.mobile)
   if (inComplete) {
     return <EditRoleMobile />
   }
 
   const plainUser = JSON.parse(JSON.stringify(user))
 
-let groceryList:IGrocery[]=[]
+  let productList: IProduct[] = []
 
-if(user.role==="user"){
-  if(searchParams.q){
-    groceryList=await Grocery.find({
-     $or:[
-      { name: { $regex: searchParams?.q || "", $options: "i" } },
-    { category: { $regex: searchParams?.q || "", $options: "i" } },
-     ]
-    })
-  }else{
-    groceryList=await Grocery.find({})
-     
+  if (user.role === "user") {
+    if (searchParams.q) {
+      productList = await Product.find({
+        $or: [
+          { name: { $regex: searchParams?.q || "", $options: "i" } },
+          { category: { $regex: searchParams?.q || "", $options: "i" } },
+        ]
+      })
+    } else {
+      productList = await Product.find({})
 
+
+    }
   }
-}
 
 
+
+  console.log("User role from DB:", user.role)
 
   return (
     <>
       <Nav user={plainUser} />
-      <GeoUpdater userId={plainUser._id}/>
+      <GeoUpdater userId={plainUser._id} />
       {user.role == "user" ? (
-        <UserDashboard groceryList={groceryList}/>
+        <UserDashboard productList={productList} />
       ) : user.role == "admin" ? (
         <AdminDashboard />
-      ) : <DeliveryBoy />}
-      <Footer/>
+      ) : user.role == "deliveryBoy" ? (
+        <DeliveryBoy />
+      ) : user.role == "farmer" || user.role == "shg" ? (
+        redirect("/farmer-dashboard")
+      ) : user.role == "buyer" || user.role == "startup" || user.role == "processor" ? (
+        redirect("/buyer-marketplace")
+      ) : (
+        <UserDashboard productList={productList} /> // Default fallback
+      )}
+      <Footer />
     </>
   )
 }

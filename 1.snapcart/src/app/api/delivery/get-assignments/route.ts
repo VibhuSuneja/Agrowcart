@@ -5,18 +5,26 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-       await connectDb()
-       const session=await auth()
-        const assignments=await DeliveryAssignment.find({
-          brodcastedTo:session?.user?.id,
-          status:"brodcasted"
-        }).populate("order")
+        await connectDb()
+        const session = await auth()
+
+        // Show all broadcasted assignments OR those specifically for this delivery boy,
+        // but EXCLUDE those rejected by this delivery boy
+        const assignments = await DeliveryAssignment.find({
+            $or: [
+                { brodcastedTo: session?.user?.id },
+                { status: "brodcasted" }
+            ],
+            status: "brodcasted",
+            rejectedBy: { $ne: session?.user?.id }
+        }).populate("order").sort({ createdAt: -1 })
+
         return NextResponse.json(
-            assignments,{status:200}
+            assignments, { status: 200 }
         )
     } catch (error) {
         return NextResponse.json(
-           {message:`get assignments error ${error}`},{status:200}
+            { message: `get assignments error ${error}` }, { status: 200 }
         )
     }
 }

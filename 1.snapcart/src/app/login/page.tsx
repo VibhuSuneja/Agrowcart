@@ -1,114 +1,157 @@
 'use client'
-import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, User } from 'lucide-react'
+import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck } from 'lucide-react'
 import React, { FormEvent, useState } from 'react'
-import {motion} from "motion/react"
+import { motion } from "motion/react"
 import Image from 'next/image'
 import googleImage from "@/assets/google.png"
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
+import { toast } from 'react-hot-toast'
 
 function Login() {
-   
-    const [email,setEmail]=useState("")
-    const [password,setPassword]=useState("")
-    const [showPassword,setShowPassword]=useState(false)
-    const [loading,setLoading]=useState(false)
-    const router=useRouter()
-    const session=useSession()
-    console.log(session)
-    const handleLogin=async (e:FormEvent)=>{
-        e.preventDefault()
-        setLoading(true)
-try {
-   await signIn("credentials",{
-    email,password
-   }) 
-  
-   setLoading(false)
-} catch (error) {
-    console.log(error)
-    setLoading(false)
-}
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const result = await signIn("credentials", {
+        email, password,
+        redirect: false
+      })
+
+      if (result?.error) {
+        toast.error(result.error)
+        setLoading(false)
+        return
+      }
+
+      toast.success("Welcome back to the Platform!")
+      window.location.href = "/"
+    } catch (error: any) {
+      console.error(error)
+      toast.error("Login failed. Please verify your credentials.")
+      setLoading(false)
     }
+  }
+
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative'>
-      
-      <motion.h1
-      initial={{
-        y:-10,
-        opacity:0
-      }}
-      animate={{
-         y:0,
-        opacity:1
-      }}
-      transition={{
-        duration:0.6
-      }}
-       className='text-4xl font-extrabold text-green-700 mb-2'>Welcome Back</motion.h1>
-       <p className='text-gray-600 mb-8 flex items-center'>Login To Snapcart <Leaf className='w-5 h-5 text-green-600'/></p>
-       <motion.form
-      onSubmit={handleLogin}
-       initial={{
-        opacity:0
-      }}
-      animate={{
-        opacity:1
-      }}
-      transition={{
-        duration:0.6
-      }} className='flex flex-col gap-5 w-full max-w-sm'>
+    <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-zinc-50 relative overflow-hidden'>
+      {/* Decorative background elements */}
+      <div className='absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-100 rounded-full blur-[100px] opacity-50' />
+      <div className='absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-[100px] opacity-50' />
 
-        
-        <div className='relative'>
-        <Mail className='absolute left-3 top-3.5 w-5 h-5 text-gray-400'/>
-        <input type="text" placeholder='Your Email' className='w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none'
-        onChange={(e)=>setEmail(e.target.value)}
-        value={email}
-        />
-        </div> 
-        <div className='relative'>
-        <Lock className='absolute left-3 top-3.5 w-5 h-5 text-gray-400'/>
-        <input type={showPassword?"text":"password"} placeholder='Your Password' className='w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none'
-        onChange={(e)=>setPassword(e.target.value)}
-        value={password}
-        />
-        {
-            showPassword?<EyeOff className='absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer' onClick={()=>setShowPassword(false)}/>:<EyeIcon className='absolute right-3 top-3.5 w-5 h-5 text-gray-500 cursor-pointer'  onClick={()=>setShowPassword(true)}/>
-        }
-        </div> 
+      <div className='absolute top-8 left-8 flex items-center gap-2 text-zinc-500 hover:text-green-600 transition-all cursor-pointer group'
+        onClick={() => router.push("/")}
+      >
+        <div className='w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform'>
+          <ArrowLeft size={18} />
+        </div>
+        <span className='font-bold text-sm tracking-tight'>Back to Home</span>
+      </div>
 
-{
-   (()=>{
-    const formValidation= email!=="" && password!==""
-        return <button disabled={!formValidation || loading} className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 shadow-md inline-flex items-center justify-center gap-2 ${
-                    formValidation 
-                      ? "bg-green-600 hover:bg-green-700 text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}>
-{loading?<Loader2 className='w-5 h-5 animate-spin'/>:"Login"}
-            
-        </button>
-    })()
-}
+      <div className="w-full max-w-md bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10">
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="w-16 h-16 bg-linear-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-6">
+            <Lock className="text-white" size={32} />
+          </div>
+          <h1 className='text-3xl font-black text-zinc-900 tracking-tight mb-2'>Welcome Back</h1>
+          <p className='text-zinc-500 text-sm font-medium flex items-center gap-2'>
+            Continue your Millet Journey <Sparkles size={14} className='text-green-500' />
+          </p>
+        </div>
 
-<div className='flex items-center gap-2 text-gray-400 text-sm mt-2'>
-    <span className='flex-1 h-px bg-gray-200'></span>
-    OR
-    <span className='flex-1 h-px bg-gray-200'></span>
-</div>
+        <motion.form
+          onSubmit={handleLogin}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className='flex flex-col gap-4'
+        >
+          <div className='relative group'>
+            <Mail className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
+            <input
+              type="email"
+              placeholder='Email Address'
+              className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-sm'
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+            />
+          </div>
 
-<div className='w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200' onClick={()=>signIn("google",{callbackUrl:"/"})}>
-    <Image src={googleImage} width={20} height={20} alt='google'/>
-    Continue with Google
-</div>
- 
-       </motion.form>
+          <div className='relative group'>
+            <Lock className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder='Account Password'
+              className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-12 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-sm'
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+            />
+            <button
+              type="button"
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-green-500 transition-colors'
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <EyeIcon size={18} />}
+            </button>
+          </div>
 
-       <p className='cursor-pointer text-gray-600 mt-6 text-sm flex items-center gap-1' onClick={()=>router.push("/register")}>Want to create an account ? <LogIn className='w-4 h-4'/> <span className='text-green-600'> Sign Up</span></p>
+          <div className="flex justify-end px-1">
+            <button type="button" className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
+              Forgot Password?
+            </button>
+          </div>
+
+          <button
+            disabled={!email || !password || loading}
+            className={`w-full font-bold py-4 rounded-2xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-2 ${(!email || !password || loading)
+                ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
+              }`}
+          >
+            {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : (
+              <>
+                <span>Secure Sign In</span>
+                <LogIn size={18} />
+              </>
+            )}
+          </button>
+
+          <div className='flex items-center gap-4 py-2'>
+            <div className='flex-1 h-px bg-zinc-100' />
+            <span className='text-[10px] font-black tracking-widest text-zinc-400 uppercase'>OAuth Access</span>
+            <div className='flex-1 h-px bg-zinc-100' />
+          </div>
+
+          <button
+            type="button"
+            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-4 rounded-2xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95'
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+          >
+            <Image src={googleImage} width={20} height={20} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
+            <span>Continue with Google</span>
+          </button>
+        </motion.form>
+
+        <p className='text-zinc-500 mt-10 text-sm text-center font-medium'>
+          New to the platform?
+          <button
+            onClick={() => router.push("/register")}
+            className='text-green-600 font-black ml-1 hover:underline underline-offset-4'
+          >
+            Create Account
+          </button>
+        </p>
+      </div>
     </div>
   )
 }
 
 export default Login
+

@@ -5,13 +5,14 @@ import "./globals.css";
 import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
+import { Toaster } from 'react-hot-toast';
 
 
 
 
 export const metadata: Metadata = {
-  title: "Snapcart | 10 minutes grocery Delivery App",
-  description: "10 minutes grocery Delivery App",
+  title: "Millets Value Chain | Farm-to-Fork Platform",
+  description: "Empowering farmers and buyers with AI-driven millet insights.",
 };
 
 export default function RootLayout({
@@ -21,13 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="w-full min-h-screen bg-linear-to-b from-green-50 to-white">
+      <body className="w-full min-h-screen bg-linear-to-b from-green-50 to-white" suppressHydrationWarning>
         <Provider>
           <StoreProvider>
-          
-        <InitUser/>
-        
-        {children}
+
+            <InitUser />
+            <Toaster position="top-right" />
+
+            {children}
           </StoreProvider>
         </Provider>
       </body>

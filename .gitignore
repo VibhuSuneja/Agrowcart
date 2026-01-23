@@ -1,0 +1,41 @@
+# Root GitIgnore for Millets Platform
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js build output
+1.snapcart/.next/
+1.snapcart/out/
+1.snapcart/build/
+**/tsconfig.tsbuildinfo
+1.snapcart/next-env.d.ts
+
+# OS files
+.DS_Store
+Thumbs.db
+*.local
+
+# Environment files (Sensitive)
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Misc
+.vercel
+*.pem

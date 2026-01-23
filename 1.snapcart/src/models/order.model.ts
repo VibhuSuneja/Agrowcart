@@ -7,7 +7,7 @@ export interface IOrder {
     user: mongoose.Types.ObjectId
     items: [
         {
-            grocery: mongoose.Types.ObjectId,
+            product: mongoose.Types.ObjectId,
             name: string,
             price: string,
             unit: string,
@@ -34,9 +34,9 @@ export interface IOrder {
     status: "pending" | "out of delivery" | "delivered",
     createdAt?: Date
     updatedAt?: Date
-    deliveryOtp:string | null
-    deliveryOtpVerification:Boolean
-    deliveredAt:Date
+    deliveryOtp: string | null
+    deliveryOtpVerification: Boolean
+    deliveredAt: Date
 }
 
 const orderSchema = new mongoose.Schema<IOrder>({
@@ -47,9 +47,9 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     items: [
         {
-            grocery: {
+            product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Grocery",
+                ref: "Product",
                 required: true
             },
             name: String,
@@ -82,7 +82,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
     assignment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "DeliveryAssignment",
-        default:null
+        default: null
     },
 
     assignedDeliveryBoy: {
@@ -94,16 +94,16 @@ const orderSchema = new mongoose.Schema<IOrder>({
         enum: ["pending", "out of delivery", "delivered"],
         default: "pending"
     },
-    deliveryOtp:{
-        type:String,
-        default:null
+    deliveryOtp: {
+        type: String,
+        default: null
     },
-    deliveryOtpVerification:{
-        type:Boolean,
-        default:false
+    deliveryOtpVerification: {
+        type: Boolean,
+        default: false
     },
-    deliveredAt:{
-        type:Date
+    deliveredAt: {
+        type: Date
     }
 }, { timestamps: true })
 
