@@ -188,9 +188,9 @@ function FarmerDashboard() {
                                                 {prediction.advice}
                                             </p>
                                         </div>
-                                        <div className="h-64 h-full min-h-[250px] relative">
+                                        <div className="h-[250px] min-h-[250px] w-full relative">
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <AreaChart data={MOCK_TRENDS}>
+                                                <AreaChart data={MOCK_TRENDS || []}>
                                                     <defs>
                                                         <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
                                                             <stop offset="5%" stopColor="#4ade80" stopOpacity={0.3} />
@@ -292,7 +292,7 @@ function FarmerDashboard() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {crops.map((crop, index) => (
+                            {Array.isArray(crops) && crops.map((crop, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 30 }}

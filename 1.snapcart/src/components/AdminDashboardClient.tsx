@@ -38,10 +38,10 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
     "bg-emerald-500/10 text-emerald-500"
   ]
 
-  const dashboardStats = stats.map((s, i) => ({
+  const dashboardStats = (Array.isArray(stats) ? stats : []).map((s, i) => ({
     ...s,
-    icon: [Package, Users, Truck, IndianRupee][i],
-    color: iconColors[i],
+    icon: [Package, Users, Truck, IndianRupee][i] || Package,
+    color: iconColors[i] || iconColors[0],
     trend: i % 2 === 0 ? "+12.5%" : "+5.2%",
     isUp: true
   }))
@@ -67,8 +67,8 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${filter === f
-                    ? "bg-zinc-900 text-white shadow-lg"
-                    : "text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50"
+                  ? "bg-zinc-900 text-white shadow-lg"
+                  : "text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50"
                   }`}
               >
                 {f === 'sevenDays' ? '7 Days' : f}
@@ -125,9 +125,9 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
 
             <div className="h-[180px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
+                <BarChart data={chartData || []}>
                   <Bar dataKey="orders">
-                    {chartData.map((entry, index) => (
+                    {Array.isArray(chartData) && chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? "#16A34A" : "#E4E4E7"} />
                     ))}
                   </Bar>

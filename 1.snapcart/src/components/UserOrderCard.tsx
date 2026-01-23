@@ -184,7 +184,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                     </div>
 
                     <div className="space-y-4">
-                        {order.items.slice(0, expanded ? order.items.length : 2).map((item, index) => (
+                        {Array.isArray(order?.items) && order.items.slice(0, expanded ? order.items.length : 2).map((item, index) => (
                             <div key={index} className="flex items-center justify-between p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:border-green-200 transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className="w-16 h-16 bg-zinc-50 rounded-xl relative overflow-hidden border border-zinc-100">

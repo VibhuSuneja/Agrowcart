@@ -151,9 +151,9 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                 <Bell size={14} />
                 <span>Shift Performance</span>
               </div>
-              <div className='h-[150px] w-full'>
+              <div className='h-[150px] min-h-[150px] w-full'>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics}>
+                  <BarChart data={analytics || []}>
                     <Bar dataKey="earnings" fill="#16A34A" radius={[10, 10, 0, 0]} />
                     <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '1rem', border: 'none' }} />
                   </BarChart>
@@ -316,7 +316,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {assignments.map((a, index) => (
+          {Array.isArray(assignments) && assignments.map((a, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
