@@ -13,9 +13,51 @@ import GoogleAds from "@/components/GoogleAds";
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
-  title: "AgrowCart | Farm-to-Fork Platform",
-  description: "Empowering farmers and buyers with AI-driven millet insights.",
+  metadataBase: new URL('https://agrowcart.vercel.app'), // Replace with actual domain
+  title: {
+    default: "AgrowCart | AI-Driven Millets Value Chain Platform",
+    template: "%s | AgrowCart"
+  },
+  description: "Empowering farmers and buyers with AI-driven millet insights, market price predictions, and direct farm-to-fork connectivity.",
+  keywords: ["millets", "agriculture", "farmer", "marketplace", "AI", "crop analysis", "price prediction", "smart farming", "sih", "traceability"],
+  authors: [{ name: "AgrowCart Team" }],
+  creator: "AgrowCart Team",
+  publisher: "AgrowCart",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "AgrowCart | AI-Driven Millets Value Chain Platform",
+    description: "Connect directly with millet farmers, access AI-powered crop insights, and explore value-added millet products.",
+    url: 'https://agrowcart.vercel.app',
+    siteName: 'AgrowCart',
+    images: [
+      {
+        url: '/og-image.png', // Ensure this image exists in public folder
+        width: 1200,
+        height: 630,
+        alt: 'AgrowCart Platform Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "AgrowCart | AI-Driven Millets Value Chain Platform",
+    description: "Empowering farmers and buyers with AI-driven millet insights and direct connectivity.",
+    creator: "@agrowcart",
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({

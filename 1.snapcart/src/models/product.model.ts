@@ -16,7 +16,13 @@ export interface IProduct {
     scientificBenefits?: string,
     createdAt?: Date,
     updatedAt?: Date,
-    owner?: mongoose.Types.ObjectId
+    owner?: mongoose.Types.ObjectId,
+    // Legal & Compliance Fields
+    fssaiLicense?: string,
+    batchNumber?: string,
+    isCompliant?: boolean,
+    disclaimer?: string,
+    originState?: string,
 }
 
 const productSchema = new mongoose.Schema<IProduct>({
@@ -86,6 +92,27 @@ const productSchema = new mongoose.Schema<IProduct>({
     scientificBenefits: {
         type: String,
         default: "Cultivated for millennia, this millet is power-packed with essential minerals and fiber, promoting digestive health and sustained energy release."
+    },
+    // Legal & Compliance Schema Addition
+    fssaiLicense: {
+        type: String,
+        required: false // Optional for raw farmers, mandatory for processors
+    },
+    batchNumber: {
+        type: String,
+        required: false
+    },
+    isCompliant: {
+        type: Boolean,
+        default: false // Requires admin/system approval
+    },
+    disclaimer: {
+        type: String,
+        default: "Product information is provided by the seller. AgrowCart is a marketplace and not responsible for seller claims."
+    },
+    originState: {
+        type: String,
+        default: "Haryana"
     }
 }, {
     timestamps: true

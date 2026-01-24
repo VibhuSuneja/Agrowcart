@@ -24,7 +24,9 @@ interface IProduct {
   reviewCount?: number,
   scientificBenefits?: string,
   createdAt?: Date,
-  updatedAt?: Date
+  updatedAt?: Date,
+  isCompliant?: boolean,
+  fssaiLicense?: string
 }
 
 function ProductItemCard({ item }: { item: IProduct }) {
@@ -149,6 +151,13 @@ function ProductItemCard({ item }: { item: IProduct }) {
           {item.farmId && (
             <div className='absolute bottom-4 left-4 bg-zinc-900/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20'>
               <span className='text-[8px] font-black text-zinc-900 uppercase tracking-widest'>Traceable</span>
+            </div>
+          )}
+
+          {item.isCompliant && (
+            <div className='absolute bottom-4 right-4 bg-green-500 backdrop-blur-md px-3 py-1 rounded-full border border-green-400 flex items-center gap-1.5 shadow-lg shadow-green-500/20'>
+              <ShieldCheck size={12} className="text-white" />
+              <span className='text-[8px] font-black text-white uppercase tracking-widest'>Verified Seller</span>
             </div>
           )}
         </div>

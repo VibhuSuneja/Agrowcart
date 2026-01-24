@@ -78,6 +78,10 @@ function Footer() {
 
       <div className="border-t border-zinc-800 py-8 text-center text-sm text-zinc-500 px-4">
         <div className="flex flex-col md:flex-row justify-between items-center max-w-[80%] mx-auto gap-4">
+          <div className="flex gap-6">
+            <Link href="/privacy" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-green-400 transition-colors">Terms of Service</Link>
+          </div>
           <p>© {new Date().getFullYear()} Millet Platform. </p>
           <p className="font-medium">
             Made with ❤️ by <Link
