@@ -1,6 +1,6 @@
 # AgrowCart | The Millet Value Chain Intelligence Platform 🌾🚜
 
-[![SIH 2024](https://img.shields.io/badge/SIH-2024-blue.svg)](https://www.sih.gov.in/)
+
 [![Next.js](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org/)
 [![AI Integration](https://img.shields.io/badge/AI-Gemini%202.0-orange.svg)](https://deepmind.google/technologies/gemini/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
