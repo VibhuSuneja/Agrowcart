@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat } from 'lucide-react'
 
 import Link from 'next/link'
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
@@ -125,6 +125,10 @@ function Nav({ user }: { user: IUser }) {
                         <div className='bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition lg:hidden cursor-pointer' onClick={() => setSearchBarOpen((prev) => !prev)}>
                             <Search className='text-zinc-600 w-5 h-5' />
                         </div>
+
+                        <Link href={"/user/recipes"} className='relative bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Community Recipes">
+                            <ChefHat className='text-zinc-600 w-5 h-5 group-hover:text-green-600 transition-colors' />
+                        </Link>
 
                         <Link href={"/user/cart"} className='relative bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group'>
                             <ShoppingCartIcon className='text-zinc-600 w-5 h-5 group-hover:text-green-600 transition-colors' />

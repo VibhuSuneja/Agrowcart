@@ -180,21 +180,26 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
 
         </div>
         <div className='px-4 mt-6 space-y-4'>
-          <div className='rounded-3xl overflow-hidden border shadow'>
-            <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation} />
+          <div className='rounded-3xl overflow-hidden border shadow bg-white p-1'>
+            <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation}>
+              {order?.status === "out of delivery" && order?.deliveryOtp && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className='bg-green-50 rounded-2xl p-3 border border-green-100 flex items-center gap-4 shadow-sm'
+                >
+                  <div className="bg-white px-3 py-2 rounded-xl shadow-xs border border-green-100 text-center">
+                    <span className='text-[9px] font-bold uppercase text-zinc-400 block leading-none mb-1'>PIN</span>
+                    <span className='text-lg font-black text-green-600 tracking-[0.2em] leading-none'>{order.deliveryOtp}</span>
+                  </div>
+                  <div className='hidden sm:block'>
+                    <p className='text-xs text-green-800 font-bold'>D-OTP Active</p>
+                    <p className='text-[10px] text-green-600 leading-tight'>Share with partner only during handover.</p>
+                  </div>
+                </motion.div>
+              )}
+            </LiveMap>
           </div>
-
-          {order?.status === "out of delivery" && order?.deliveryOtp && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className='bg-linear-to-r from-green-600 to-green-700 rounded-3xl p-6 text-white shadow-lg text-center'
-            >
-              <p className='text-green-100 text-sm font-medium mb-1'>Delivery Verification Code</p>
-              <h3 className='text-4xl font-extrabold tracking-widest'>{order.deliveryOtp}</h3>
-              <p className='text-xs text-green-200 mt-2 italic'>Share this code with the delivery boy only when you receive your order.</p>
-            </motion.div>
-          )}
 
           <div className='bg-white rounded-3xl shadow-lg border p-4 h-[430px] flex flex-col'>
 

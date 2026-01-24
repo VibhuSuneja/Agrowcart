@@ -6,6 +6,7 @@ interface ILocation {
 interface Iprops {
     userLocation: ILocation
     deliveryBoyLocation: ILocation
+    children?: React.ReactNode
 }
 import L, { LatLngExpression } from "leaflet"
 import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from 'react-leaflet'
@@ -32,7 +33,7 @@ function MapEvents({ setMap }: { setMap: (map: L.Map) => void }) {
     return null
 }
 
-function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
+function LiveMap({ userLocation, deliveryBoyLocation, children }: Iprops) {
     const [map, setMap] = useState<L.Map | null>(null)
 
     const deliveryBoyIcon = L.divIcon({
@@ -68,41 +69,46 @@ function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
 
 
     return (
-        <div className='w-full h-[500px] rounded-xl overflow-hidden shadow relative z-2 group'>
-            {/* Button Outside MapContainer but absolute over it */}
-            <button
-                className="absolute top-4 right-4 z-[9999] bg-white p-3 rounded-full shadow-xl border-2 border-zinc-100 text-green-600 hover:bg-green-50 transition-all active:scale-95 flex items-center justify-center opacity-90 hover:opacity-100"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    map?.flyTo(center as any, 15)
-                }}
-                title="Recenter Map"
-            >
-                <LocateFixed size={24} />
-            </button>
+        <div className="space-y-4">
+            <div className='w-full h-[500px] rounded-xl overflow-hidden shadow-lg border border-zinc-100 z-0'>
+                <MapContainer center={center as any} zoom={13} scrollWheelZoom={true} className="w-full h-full">
+                    <MapEvents setMap={setMap} />
+                    <Recenter positions={center as any} />
+                    <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
 
-            <MapContainer center={center as any} zoom={13} scrollWheelZoom={true} className="w-full h-full z-0">
-                <MapEvents setMap={setMap} />
-                <Recenter positions={center as any} />
-                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                    {userLocation.latitude !== 0 && (
+                        <Marker position={[userLocation.latitude, userLocation.longitude]} icon={userIcon}>
+                            <Popup>Delivery Address</Popup>
+                        </Marker>
+                    )}
 
-                {userLocation.latitude !== 0 && (
-                    <Marker position={[userLocation.latitude, userLocation.longitude]} icon={userIcon}>
-                        <Popup>Delivery Address</Popup>
-                    </Marker>
-                )}
+                    {deliveryBoyLocation && deliveryBoyLocation.latitude !== 0 && (
+                        <Marker position={[deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]} icon={deliveryBoyIcon}>
+                            <Popup>Delivery Partner</Popup>
+                        </Marker>
+                    )}
 
-                {deliveryBoyLocation && deliveryBoyLocation.latitude !== 0 && (
-                    <Marker position={[deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]} icon={deliveryBoyIcon}>
-                        <Popup>Delivery Partner</Popup>
-                    </Marker>
-                )}
+                    <Polyline positions={linePositions as any} color='green' weight={4} dashArray="10, 10" />
+                </MapContainer>
+            </div>
 
-                <Polyline positions={linePositions as any} color='green' weight={4} dashArray="10, 10" />
-            </MapContainer>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-2">
+                <div className="w-full md:w-auto order-2 md:order-1">
+                    {children}
+                </div>
+                <button
+                    className="bg-white text-green-700 px-6 py-3 rounded-xl flex items-center gap-2 font-bold text-sm shadow-md border border-zinc-100 hover:bg-green-50 transition-all active:scale-95 whitespace-nowrap order-1 md:order-2 self-end"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        map?.flyTo(center as any, 15)
+                    }}
+                >
+                    <LocateFixed size={18} />
+                    <span>Recenter View</span>
+                </button>
+            </div>
         </div>
     )
 }

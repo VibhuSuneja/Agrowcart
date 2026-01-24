@@ -11,9 +11,9 @@ const categories = [
     "Millet Rice",
     "Millet Flour",
     "Millet Snacks",
-    "Value-Added Products",
+    "Value-Added",
     "Seeds",
-    "Other"
+    "Organic Mix"
 ]
 const units = [
     "kg", "g", "liter", "ml", "piece", "pack", "quintal"
