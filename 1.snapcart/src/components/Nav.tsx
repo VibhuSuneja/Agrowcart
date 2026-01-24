@@ -179,6 +179,12 @@ function Nav({ user }: { user: IUser }) {
                                 </div>
 
                                 <div className="space-y-1">
+                                    {user.role !== "user" && (
+                                        <Link href={"/marketplace"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
+                                            <Package className='w-5 h-5 text-zinc-400' />
+                                            Visit Marketplace
+                                        </Link>
+                                    )}
                                     {user.role == "user" && (
                                         <Link href={"/user/my-orders"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
                                             <Package className='w-5 h-5 text-zinc-400' />

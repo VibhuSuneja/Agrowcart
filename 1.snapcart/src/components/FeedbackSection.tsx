@@ -70,6 +70,7 @@ function FeedbackSection() {
                                         <button
                                             key={star}
                                             type="button"
+                                            suppressHydrationWarning
                                             onClick={() => setRating(star)}
                                             className="transition-all duration-300 transform hover:scale-125"
                                         >
@@ -108,6 +109,7 @@ function FeedbackSection() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 disabled={loading}
+                                suppressHydrationWarning
                                 className="w-full bg-green-600 hover:bg-green-500 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-green-900/20 transition-all active:shadow-none"
                             >
                                 {loading ? (

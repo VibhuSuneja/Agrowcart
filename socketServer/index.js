@@ -19,17 +19,24 @@ const io=new Server(server,{
 io.on("connection",(socket)=>{
 
    socket.on("identity",async (userId)=>{
-    
-    await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/connect`,{userId,socketId:socket.id})
+    try {
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/connect`,{userId,socketId:socket.id})
+    } catch (error) {
+        console.error("Error in identity:", error.message)
+    }
    }) 
 
    socket.on("update-location",async ({userId,latitude,longitude})=>{
-    const location={
-        type:"Point",
-        coordinates:[longitude,latitude]
+    try {
+        const location={
+            type:"Point",
+            coordinates:[longitude,latitude]
+        }
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/update-location`,{userId,location})
+        io.emit("update-deliveryBoy-location",{userId,location})
+    } catch (error) {
+        console.error("Error updating location:", error.message)
     }
-    await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/update-location`,{userId,location})
-     io.emit("update-deliveryBoy-location",{userId,location})
    })
 
    socket.on("join-room",(roomId)=>{
@@ -38,9 +45,13 @@ io.on("connection",(socket)=>{
    })
 
   socket.on("send-message",async (message)=>{
-    console.log(message)
-    await axios.post(`${process.env.NEXT_BASE_URL}/api/chat/save`,message)
-    io.to(message.roomId).emit("send-message",message)
+    try {
+        console.log(message)
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/chat/save`,message)
+        io.to(message.roomId).emit("send-message",message)
+    } catch (error) {
+        console.error("Error sending message:", error.message)
+    }
   })
   
     socket.on("disconnect",()=>{

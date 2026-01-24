@@ -109,13 +109,14 @@ function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, backgroundColor: '#22c55e' }}
               whileTap={{ scale: 0.95 }}
+              suppressHydrationWarning
               className='bg-green-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-xl shadow-green-900/40 transition-colors'
             >
               {slides[current].btnText}
               <ArrowRight size={20} />
             </motion.button>
 
-            <button className='bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-2xl font-bold transition-all'>
+            <button suppressHydrationWarning className='bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-2xl font-bold transition-all'>
               Our Story
             </button>
           </motion.div>
@@ -127,6 +128,7 @@ function HeroSection() {
           <button
             key={index}
             onClick={() => setCurrent(index)}
+            suppressHydrationWarning
             className={`h-1.5 transition-all duration-500 rounded-full ${index === current ? "w-12 bg-green-500" : "w-6 bg-white/30 hover:bg-white/50"
               }`}
           />

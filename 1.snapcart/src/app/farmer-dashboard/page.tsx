@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
     Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
-    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package
+    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2
 } from 'lucide-react'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -30,10 +30,35 @@ function FarmerDashboard() {
     const [prediction, setPrediction] = useState<any>(null)
     const [loading, setLoading] = useState(false)
     const [showAddCrop, setShowAddCrop] = useState(false)
-    const [newCrop, setNewCrop] = useState({
-        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0]
+    const [newCrop, setNewCrop] = useState<{
+        name: string, quantity: string, price: string, category: string, unit: string, farmId: string, harvestDate: string, image: File | null, imagePreview: string | null
+    }>({
+        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null
     })
     const [crops, setCrops] = useState<Array<any>>([])
+
+    useEffect(() => {
+        const fetchCrops = async () => {
+            try {
+                const res = await axios.get('/api/admin/get-products')
+                setCrops(res.data)
+            } catch (error) {
+                console.error("Failed to fetch products", error)
+            }
+        }
+        fetchCrops()
+    }, [])
+
+    const deleteCrop = async (id: string) => {
+        if (!confirm("Are you sure you want to remove this harvest listing?")) return
+        try {
+            await axios.post("/api/admin/delete-product", { productId: id })
+            setCrops(crops.filter(c => c._id !== id))
+            toast.success("Harvest removed from ledger")
+        } catch (error) {
+            toast.error("Failed to delete Listing")
+        }
+    }
 
     const handlePredict = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -302,8 +327,12 @@ function FarmerDashboard() {
                                     className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl shadow-green-900/5 group relative flex flex-col"
                                 >
                                     <div className="flex justify-between items-start mb-8">
-                                        <div className="w-16 h-16 bg-green-50 rounded-[1.5rem] flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                                            <Sprout size={32} />
+                                        <div className="w-16 h-16 bg-green-50 rounded-[1.5rem] flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all duration-500 shadow-sm overflow-hidden">
+                                            {crop.image ? (
+                                                <img src={crop.image} alt={crop.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <Sprout size={32} />
+                                            )}
                                         </div>
                                         <div className="text-right">
                                             <div className="text-[10px] font-black uppercase text-zinc-300 tracking-widest leading-none">ID</div>
@@ -330,9 +359,16 @@ function FarmerDashboard() {
                                         </div>
                                     </div>
 
-                                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <ShieldCheck className="text-green-500" size={24} />
-                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            deleteCrop(crop._id)
+                                        }}
+                                        className="absolute top-4 right-4 bg-white p-2 rounded-full text-zinc-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"
+                                        title="Remove Listing"
+                                    >
+                                        <Trash2 size={20} />
+                                    </button>
                                 </motion.div>
                             ))}
                         </div>
@@ -378,6 +414,37 @@ function FarmerDashboard() {
 
                             <div className="space-y-6">
                                 <div className="grid grid-cols-1 gap-6">
+                                    {/* Image Upload */}
+                                    <div className="mb-4 flex flex-col items-center justify-center">
+                                        <label htmlFor="cropImage" className="cursor-pointer w-full h-40 bg-zinc-50 border-2 border-dashed border-zinc-300 rounded-[1.5rem] flex flex-col items-center justify-center hover:bg-zinc-100 transition-all overflow-hidden group relative">
+                                            {newCrop.imagePreview ? (
+                                                <img src={newCrop.imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <>
+                                                    <Upload className="text-zinc-400 group-hover:text-green-500 mb-2" size={32} />
+                                                    <span className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Upload Photo</span>
+                                                </>
+                                            )}
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white font-bold text-xs uppercase tracking-widest">Change Image</div>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="cropImage"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0]
+                                                if (file) {
+                                                    setNewCrop({
+                                                        ...newCrop,
+                                                        image: file,
+                                                        imagePreview: URL.createObjectURL(file)
+                                                    })
+                                                }
+                                            }}
+                                        />
+                                    </div>
+
                                     <div className="relative group">
                                         <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
                                         <input
@@ -442,11 +509,24 @@ function FarmerDashboard() {
                                         if (newCrop.name && newCrop.quantity && newCrop.price) {
                                             try {
                                                 setLoading(true)
-                                                await axios.post('/api/farmer/add-product', newCrop)
-                                                setCrops([...crops, newCrop])
+
+                                                const formData = new FormData();
+                                                formData.append("name", newCrop.name);
+                                                formData.append("quantity", newCrop.quantity);
+                                                formData.append("price", newCrop.price);
+                                                formData.append("category", newCrop.category);
+                                                formData.append("unit", newCrop.unit);
+                                                formData.append("farmId", newCrop.farmId);
+                                                formData.append("harvestDate", newCrop.harvestDate);
+                                                if (newCrop.image) {
+                                                    formData.append("image", newCrop.image);
+                                                }
+
+                                                const res = await axios.post('/api/farmer/add-product', formData)
+                                                setCrops([...crops, res.data.product])
                                                 setShowAddCrop(false)
                                                 setNewCrop({
-                                                    ...newCrop, name: '', quantity: '', price: '',
+                                                    ...newCrop, name: '', quantity: '', price: '', image: null, imagePreview: null,
                                                     farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000)
                                                 })
                                                 toast.success('Blockchain Logged & Marketplace Updated!')

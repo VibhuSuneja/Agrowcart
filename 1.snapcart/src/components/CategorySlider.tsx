@@ -56,6 +56,7 @@ function CategorySlider() {
         <div className="flex gap-2">
           <button
             disabled={!showLeft}
+            suppressHydrationWarning
             className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${showLeft ? 'bg-white shadow-xl hover:bg-green-600 hover:text-white border border-zinc-100' : 'bg-zinc-50 text-zinc-300'}`}
             onClick={() => scroll("left")}
           >
@@ -63,6 +64,7 @@ function CategorySlider() {
           </button>
           <button
             disabled={!showRight}
+            suppressHydrationWarning
             className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${showRight ? 'bg-white shadow-xl hover:bg-green-600 hover:text-white border border-zinc-100' : 'bg-zinc-50 text-zinc-300'}`}
             onClick={() => scroll("right")}
           >

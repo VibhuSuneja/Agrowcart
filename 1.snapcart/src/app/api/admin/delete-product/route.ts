@@ -8,10 +8,10 @@ export async function POST(req: NextRequest) {
     try {
         await connectDb()
         const session = await auth()
-        if (session?.user?.role !== "admin") {
+        if (session?.user?.role !== "admin" && session?.user?.role !== "farmer") {
             return NextResponse.json(
-                { message: "you are not admin" },
-                { status: 400 }
+                { message: "Unauthorized: Admin or Farmer role required" },
+                { status: 403 }
             )
         }
         const { productId } = await req.json()

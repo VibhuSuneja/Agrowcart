@@ -2,6 +2,7 @@ import connectDb from "@/lib/db";
 import Product from "@/models/product.model";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import uploadOnCloudinary from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {
     try {
@@ -16,24 +17,41 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { name, quantity, price, category, unit } = await req.json();
+        const formData = await req.formData();
+        const name = formData.get("name") as string;
+        const quantity = formData.get("quantity") as string;
+        const price = formData.get("price") as string;
+        const category = formData.get("category") as string;
+        const unit = formData.get("unit") as string;
+        const farmId = formData.get("farmId") as string;
+        const harvestDate = formData.get("harvestDate") as string;
+        const imageFile = formData.get("image") as File | null;
 
         // Validate required fields
         if (!name || !quantity || !price) {
             return NextResponse.json(
-                { message: "Name, quantity, and price are required" },
+                { message: "Name, volume, and price are required" },
                 { status: 400 }
             );
+        }
+
+        let imageUrl = "https://placehold.co/300?text=Millet";
+        if (imageFile) {
+            const uploadedUrl = await uploadOnCloudinary(imageFile);
+            if (uploadedUrl) {
+                imageUrl = uploadedUrl;
+            }
         }
 
         // Create product
         const product = await Product.create({
             name,
-            category: category || "Millets",
+            category: category || "Raw Millets",
             price,
             unit: unit || "kg",
-            image: "https://via.placeholder.com/300?text=Millet", // Default placeholder
-            farmId: session.user.id,
+            image: imageUrl,
+            farmId: farmId || session.user.id,
+            harvestDate,
             priceAI: price // Store farmer's price as AI price for now
         });
 

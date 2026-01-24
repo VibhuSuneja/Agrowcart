@@ -86,6 +86,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
             <motion.button
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
+              suppressHydrationWarning
               onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
               className='w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-zinc-900/20 group-hover:bg-green-600 group-hover:shadow-green-500/30 transition-all'
             >

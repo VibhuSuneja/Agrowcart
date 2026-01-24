@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
       { hostname: "plus.unsplash.com" },
       { hostname: "images.unsplash.com" },
       { hostname: "res.cloudinary.com" },
-      { hostname: "via.placeholder.com" }
+      { hostname: "via.placeholder.com" },
+      { hostname: "placehold.co" }
     ]
   }
 };
