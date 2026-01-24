@@ -41,6 +41,7 @@ interface IOrder {
     status: "pending" | "out of delivery" | "delivered",
     createdAt?: Date
     updatedAt?: Date
+    deliveryOtp?: string | null
 }
 
 function UserOrderCard({ order }: { order: IOrder }) {
@@ -138,7 +139,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                         </div>
                     </div>
 
-                    {order.assignedDeliveryBoy && status !== 'delivered' && (
+                    {status !== 'delivered' && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -146,31 +147,52 @@ function UserOrderCard({ order }: { order: IOrder }) {
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -mr-16 -mt-16" />
                             <div className="relative">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-green-400">
-                                        <Navigation2 size={24} />
+                                {order.assignedDeliveryBoy ? (
+                                    <>
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-green-400">
+                                                <Navigation2 size={24} />
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] font-black uppercase text-zinc-500 tracking-widest leading-none">On Route with</div>
+                                                <div className="text-xl font-black tracking-tight mt-1">{order.assignedDeliveryBoy.name}</div>
+                                            </div>
+                                        </div>
+
+                                        {order.deliveryOtp && (
+                                            <div className="p-4 bg-white/10 rounded-xl mb-6 border border-white/10 text-center">
+                                                <div className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">Your Delivery OTP</div>
+                                                <div className="text-4xl font-black text-green-400 tracking-[0.2em]">{order.deliveryOtp}</div>
+                                                <div className="text-[10px] text-zinc-500 mt-1">Share this code with the partner upon arrival.</div>
+                                            </div>
+                                        )}
+
+                                        <div className="flex items-center gap-4">
+                                            <a
+                                                href={`tel:${order.assignedDeliveryBoy.mobile}`}
+                                                className="flex-1 bg-white text-zinc-900 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-green-600 hover:text-white transition-all"
+                                            >
+                                                <Phone size={14} />
+                                                Call Partner
+                                            </a>
+                                            <button
+                                                onClick={() => router.push(`/user/track-order/${order._id}`)}
+                                                className="flex-1 bg-green-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-green-500 shadow-xl shadow-green-600/20 transition-all"
+                                            >
+                                                <Truck size={14} />
+                                                Live Track
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                                        <div className="w-16 h-16 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+                                        <div>
+                                            <h4 className="font-bold text-lg mb-1">Assigning Partner</h4>
+                                            <p className="text-zinc-500 text-xs max-w-[200px] mx-auto">We're finding the best delivery partner for your batch...</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="text-[10px] font-black uppercase text-zinc-500 tracking-widest leading-none">On Route with</div>
-                                        <div className="text-xl font-black tracking-tight mt-1">{order.assignedDeliveryBoy.name}</div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <a
-                                        href={`tel:${order.assignedDeliveryBoy.mobile}`}
-                                        className="flex-1 bg-white text-zinc-900 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-green-600 hover:text-white transition-all"
-                                    >
-                                        <Phone size={14} />
-                                        Call Partner
-                                    </a>
-                                    <button
-                                        onClick={() => router.push(`/user/track-order/${order._id}`)}
-                                        className="flex-1 bg-green-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-green-500 shadow-xl shadow-green-600/20 transition-all"
-                                    >
-                                        <Truck size={14} />
-                                        Live Track
-                                    </button>
-                                </div>
+                                )}
                             </div>
                         </motion.div>
                     )}

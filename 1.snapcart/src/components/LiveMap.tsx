@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 interface ILocation {
     latitude: number,
     longitude: number
@@ -10,59 +10,98 @@ interface Iprops {
 import L, { LatLngExpression } from "leaflet"
 import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from 'react-leaflet'
 import "leaflet/dist/leaflet.css"
+import { LocateFixed } from "lucide-react"
 
-function Recenter({positions}:{positions:[number,number]}){
-   const map=useMap()
-useEffect(()=>{
-if(positions[0]!==0 && positions[1]!==0){
-    map.setView(positions,map.getZoom(),{
-        animate:true
-    })
-}
-},[positions,map])
+function Recenter({ positions }: { positions: [number, number] }) {
+    const map = useMap()
+    useEffect(() => {
+        if (positions[0] !== 0 && positions[1] !== 0) {
+            map.setView(positions, map.getZoom(), {
+                animate: true
+            })
+        }
+    }, [positions, map])
     return null
 }
 
-
+function MapEvents({ setMap }: { setMap: (map: L.Map) => void }) {
+    const map = useMap()
+    useEffect(() => {
+        setMap(map)
+    }, [map, setMap])
+    return null
+}
 
 function LiveMap({ userLocation, deliveryBoyLocation }: Iprops) {
+    const [map, setMap] = useState<L.Map | null>(null)
 
-    const deliveryBoyIcon = L.icon({
-        iconUrl: "https://cdn-icons-png.flaticon.com/128/9561/9561688.png",
-        iconSize: [45, 45]
+    const deliveryBoyIcon = L.divIcon({
+        className: 'bg-transparent',
+        html: `<div style="background-color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #16a34a; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5"/><path d="M14 17h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        </div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20]
     })
-    const userIcon = L.icon({
-        iconUrl: "https://cdn-icons-png.flaticon.com/128/4821/4821951.png",
-        iconSize: [45, 45]
+
+    const userIcon = L.divIcon({
+        className: 'bg-transparent',
+        html: `<div style="background-color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20]
     })
 
-    const linePositions=
-        deliveryBoyLocation && userLocation
-        ?[
-            [userLocation.latitude,userLocation.longitude],
-            [deliveryBoyLocation.latitude,deliveryBoyLocation.longitude]
+    const linePositions =
+        deliveryBoyLocation && userLocation && deliveryBoyLocation.latitude !== 0 && userLocation.latitude !== 0
+            ? [
+                [userLocation.latitude, userLocation.longitude],
+                [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]
 
-        ]:[]
-    const center = deliveryBoyLocation
-    ? [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]
-    : [userLocation.latitude, userLocation.longitude];
+            ] : []
+    const center = deliveryBoyLocation && deliveryBoyLocation.latitude !== 0
+        ? [deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]
+        : (userLocation.latitude !== 0 ? [userLocation.latitude, userLocation.longitude] : [20.5937, 78.9629]); // Default to India center if both 0
 
 
     return (
-        <div className='w-full h-[500px] rounded-xl overflow-hidden shadow relative z-2'>
-            <MapContainer center={center as any} zoom={13} scrollWheelZoom={true} className="w-full h-full">
-                <Recenter positions={center as any}/>
+        <div className='w-full h-[500px] rounded-xl overflow-hidden shadow relative z-2 group'>
+            {/* Button Outside MapContainer but absolute over it */}
+            <button
+                className="absolute top-4 right-4 z-[9999] bg-white p-3 rounded-full shadow-xl border-2 border-zinc-100 text-green-600 hover:bg-green-50 transition-all active:scale-95 flex items-center justify-center opacity-90 hover:opacity-100"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    map?.flyTo(center as any, 15)
+                }}
+                title="Recenter Map"
+            >
+                <LocateFixed size={24} />
+            </button>
+
+            <MapContainer center={center as any} zoom={13} scrollWheelZoom={true} className="w-full h-full z-0">
+                <MapEvents setMap={setMap} />
+                <Recenter positions={center as any} />
                 <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <Marker position={[userLocation.latitude,userLocation.longitude]} icon={userIcon}>
-                    <Popup>delivery Address</Popup>
-                </Marker>
 
-                {deliveryBoyLocation && <Marker position={[deliveryBoyLocation.latitude,deliveryBoyLocation.longitude]} icon={deliveryBoyIcon}>
-                <Popup>delivery Boy</Popup>
-                    </Marker>}
-                  <Polyline positions={linePositions as any} color='green'/>  
+                {userLocation.latitude !== 0 && (
+                    <Marker position={[userLocation.latitude, userLocation.longitude]} icon={userIcon}>
+                        <Popup>Delivery Address</Popup>
+                    </Marker>
+                )}
+
+                {deliveryBoyLocation && deliveryBoyLocation.latitude !== 0 && (
+                    <Marker position={[deliveryBoyLocation.latitude, deliveryBoyLocation.longitude]} icon={deliveryBoyIcon}>
+                        <Popup>Delivery Partner</Popup>
+                    </Marker>
+                )}
+
+                <Polyline positions={linePositions as any} color='green' weight={4} dashArray="10, 10" />
             </MapContainer>
         </div>
     )

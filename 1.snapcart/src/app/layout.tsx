@@ -6,6 +6,7 @@ import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 import { Toaster } from 'react-hot-toast';
+import GlobalChatBot from "@/components/GlobalChatBot";
 
 
 
@@ -28,6 +29,7 @@ export default function RootLayout({
 
             <InitUser />
             <Toaster position="top-right" />
+            <GlobalChatBot />
 
             {children}
           </StoreProvider>

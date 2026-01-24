@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { motion } from 'motion/react'
 import { MessageSquare, Send, Star, User } from 'lucide-react'
+import axios from 'axios'
 import toast from 'react-hot-toast'
 
 function FeedbackSection() {
@@ -10,21 +11,28 @@ function FeedbackSection() {
     const [email, setEmail] = useState("")
     const [loading, setLoading] = useState(false)
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (rating === 0) {
             toast.error("Please provide a rating!")
             return
         }
         setLoading(true)
-        // Simulating API call
-        setTimeout(() => {
+        try {
+            await axios.post("/api/reviews/add", {
+                rating,
+                feedback,
+                email
+            })
             toast.success("Thank you for your valuable feedback!")
             setRating(0)
             setFeedback("")
             setEmail("")
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Something went wrong")
+        } finally {
             setLoading(false)
-        }, 1500)
+        }
     }
 
     return (

@@ -23,6 +23,16 @@ const MOCK_TRENDS = [
     { name: 'Week 7', price: 55 },
 ]
 
+const CATEGORIES = [
+    "Raw Millets",
+    "Millet Rice",
+    "Millet Flour",
+    "Millet Snacks",
+    "Value-Added",
+    "Seeds",
+    "Organic Mix"
+]
+
 function FarmerDashboard() {
     const [region, setRegion] = useState('')
     const [quantity, setQuantity] = useState('')
@@ -445,15 +455,30 @@ function FarmerDashboard() {
                                         />
                                     </div>
 
-                                    <div className="relative group">
-                                        <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
-                                        <input
-                                            type="text"
-                                            placeholder="Crop e.g. Foxtail Millet"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
-                                            value={newCrop.name}
-                                            onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
-                                        />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="relative group">
+                                            <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
+                                            <input
+                                                type="text"
+                                                placeholder="Crop e.g. Foxtail Millet"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                                value={newCrop.name}
+                                                onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="relative group">
+                                            <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                                            <select
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-10 text-zinc-800 outline-none font-bold text-sm appearance-none focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all cursor-pointer"
+                                                value={newCrop.category}
+                                                onChange={(e) => setNewCrop({ ...newCrop, category: e.target.value })}
+                                            >
+                                                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                            </select>
+                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -52,7 +52,8 @@ export async function POST(req: NextRequest) {
             image: imageUrl,
             farmId: farmId || session.user.id,
             harvestDate,
-            priceAI: price // Store farmer's price as AI price for now
+            priceAI: price, // Store farmer's price as AI price for now
+            owner: session.user.id
         });
 
         return NextResponse.json(

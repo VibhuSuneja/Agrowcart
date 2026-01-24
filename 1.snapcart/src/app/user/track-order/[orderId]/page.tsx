@@ -95,18 +95,17 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   useEffect((): any => {
     const socket = getSocket()
     socket.on("update-deliveryBoy-location", (data) => {
-      console.log(location)
+      console.log("Delivery Boy Location Update:", data)
       setDeliveryBoyLocation({
         latitude: data.location.coordinates?.[1] ?? data.location.latitude,
         longitude: data.location.coordinates?.[0] ?? data.location.longitude,
-
       })
-    }
-    )
+    })
     return () => socket.off("update-deliveryBoy-location")
   }, [order])
 
   useEffect(() => {
+    if (!orderId) return
     const socket = getSocket()
     socket.emit("join-room", orderId)
     socket.on("send-message", (message) => {
@@ -118,9 +117,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
     return () => {
       socket.off("send-message")
     }
-
-
-  }, [])
+  }, [orderId])
 
   const sendMsg = () => {
     const socket = getSocket()

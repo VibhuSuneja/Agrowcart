@@ -9,6 +9,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import FeedbackSection from './FeedbackSection'
 import MissionStory from './MissionStory'
+import ReviewMarquee from './ReviewMarquee'
 
 async function UserDashboard({ productList }: { productList: IProduct[] }) {
   await connectDb()
@@ -60,6 +61,7 @@ async function UserDashboard({ productList }: { productList: IProduct[] }) {
       </div>
 
       <MissionStory />
+      <ReviewMarquee />
       <FeedbackSection />
     </div>
   )

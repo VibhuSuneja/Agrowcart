@@ -15,9 +15,26 @@ export async function POST(req: NextRequest) {
             )
         }
         const { productId } = await req.json()
-        const product = await Product.findByIdAndDelete(productId)
+        const product = await Product.findById(productId)
+
+        if (!product) {
+            return NextResponse.json({ message: "Product not found" }, { status: 404 })
+        }
+
+        if (session.user.role === "farmer") {
+            // Farmers can only delete products they own
+            if (!product.owner || product.owner.toString() !== session.user.id) {
+                return NextResponse.json(
+                    { message: "Unauthorized: You can only delete your own products" },
+                    { status: 403 }
+                )
+            }
+        }
+
+        await Product.findByIdAndDelete(productId)
+
         return NextResponse.json(
-            product,
+            { message: "Product deleted successfully" },
             { status: 200 }
         )
     } catch (error) {

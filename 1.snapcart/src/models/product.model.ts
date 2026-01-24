@@ -12,7 +12,8 @@ export interface IProduct {
     harvestDate?: Date,
     qualityCertification?: string,
     createdAt?: Date,
-    updatedAt?: Date
+    updatedAt?: Date,
+    owner?: mongoose.Types.ObjectId
 }
 
 const productSchema = new mongoose.Schema<IProduct>({
@@ -23,13 +24,13 @@ const productSchema = new mongoose.Schema<IProduct>({
     category: {
         type: String,
         enum: [
-            "Millets", "Pulses", "Value-Added", "Seeds", "Fertilizers",
             "Raw Millets",
             "Millet Rice",
             "Millet Flour",
             "Millet Snacks",
-            "Value-Added Products",
-            "Other"
+            "Value-Added",
+            "Seeds",
+            "Organic Mix"
         ],
         required: true
     },
@@ -64,6 +65,10 @@ const productSchema = new mongoose.Schema<IProduct>({
     },
     qualityCertification: {
         type: String
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }
 }, {
     timestamps: true

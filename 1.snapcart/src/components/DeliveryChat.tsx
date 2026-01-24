@@ -18,20 +18,19 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
   useEffect(() => {
+    if (!orderId) return
     const socket = getSocket()
     socket.emit("join-room", orderId)
     socket.on("send-message", (message) => {
       if (message.roomId === orderId) {
         setMessages((prev) => [...prev!, message])
       }
-
     })
 
     return () => {
       socket.off("send-message")
     }
-
-  }, [])
+  }, [orderId])
 
   const sendMsg = () => {
     const socket = getSocket()
@@ -59,6 +58,7 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
 
   useEffect(() => {
     const getAllMessages = async () => {
+      if (!orderId) return
       try {
         const result = await axios.post("/api/chat/messages", { roomId: orderId })
         setMessages(result.data)
@@ -67,7 +67,7 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
       }
     }
     getAllMessages()
-  }, [])
+  }, [orderId])
 
   const getSuggestion = async () => {
     setLoading(true)

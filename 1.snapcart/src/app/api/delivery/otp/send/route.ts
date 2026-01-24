@@ -1,5 +1,6 @@
 import connectDb from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
+import { sendSMS } from "@/lib/sms";
 import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,6 +25,13 @@ export async function POST(req: NextRequest) {
             "Your Delivery OTP",
             `<h2>Your Delivery OTP is <strong>${otp}</strong></h2>`
         )
+
+        if (order.address?.mobile) {
+            await sendSMS(
+                order.address.mobile,
+                `Your Delivery OTP is ${otp}. Please share this with the delivery partner only upon receiving your order.`
+            )
+        }
         return NextResponse.json(
             { message: "otp sent successfully" },
             { status: 200 }
