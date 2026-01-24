@@ -10,6 +10,7 @@ import GlobalChatBot from "@/components/GlobalChatBot";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import GoogleAds from "@/components/GoogleAds";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "AgrowCart | Farm-to-Fork Platform",
@@ -42,6 +43,7 @@ export default function RootLayout({
               <GlobalChatBot />
 
               {children}
+              <Analytics />
             </LanguageProvider>
           </StoreProvider>
         </Provider>
@@ -49,3 +51,4 @@ export default function RootLayout({
     </html>
   );
 }
+
