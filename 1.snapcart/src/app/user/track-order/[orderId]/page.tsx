@@ -1,5 +1,6 @@
 'use client'
-import LiveMap from '@/components/LiveMap'
+import dynamic from 'next/dynamic'
+const LiveMap = dynamic(() => import('@/components/LiveMap'), { ssr: false })
 import { getSocket } from '@/lib/socket'
 import { IUser } from '@/models/user.model'
 import { RootState } from '@/redux/store'
