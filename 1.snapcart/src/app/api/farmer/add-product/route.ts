@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
         // Check authentication
         const session = await auth();
-        if (!session?.user || !["farmer", "shg", "processor", "admin"].includes(session.user.role)) {
+        if (!session?.user || !["farmer", "shg", "processor", "admin", "startup"].includes(session.user.role)) {
             return NextResponse.json(
                 { message: "Unauthorized. Producers only." },
                 { status: 401 }

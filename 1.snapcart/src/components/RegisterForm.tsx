@@ -41,8 +41,8 @@ function RegisterForm({ previousStep }: propType) {
   return (
     <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-zinc-50 relative overflow-hidden'>
       {/* Decorative background elements */}
-      <div className='absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-green-100 rounded-full blur-[100px] opacity-50' />
-      <div className='absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-[100px] opacity-50' />
+      <div className='absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-gradient-to-br from-green-300/40 to-emerald-300/40 rounded-full blur-[120px] animate-pulse duration-[4000ms]' />
+      <div className='absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-gradient-to-tl from-lime-300/40 to-green-300/40 rounded-full blur-[120px] animate-pulse duration-[5000ms]' />
 
       <div className='absolute top-8 left-8 flex items-center gap-2 text-zinc-500 hover:text-green-600 transition-all cursor-pointer group'
         onClick={() => previousStep(1)}
@@ -55,12 +55,15 @@ function RegisterForm({ previousStep }: propType) {
 
       <div className="w-full max-w-md bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10">
         <div className="flex flex-col items-center mb-10 text-center">
-          <div className="w-16 h-16 bg-linear-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-6">
-            <UserCheck className="text-white" size={32} />
+          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-700 rounded-3xl shadow-xl shadow-green-500/30 flex items-center justify-center mb-6 transform rotate-3 hover:rotate-6 transition-all duration-300">
+            <Leaf className="text-white drop-shadow-md" size={40} />
           </div>
-          <h1 className='text-3xl font-black text-zinc-900 tracking-tight mb-2'>Join the Community</h1>
-          <p className='text-zinc-500 text-sm font-medium flex items-center gap-2'>
-            Empowering the Millet Value Chain <Sparkles size={14} className='text-green-500' />
+          <h1 className='text-4xl font-black text-zinc-900 tracking-tight mb-2'>
+            Join <span className='text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600'>AgrowCart</span>
+          </h1>
+          <p className='text-zinc-500 text-sm font-medium flex items-center gap-2 bg-green-50 px-4 py-1.5 rounded-full border border-green-100'>
+            <Sparkles size={14} className='text-green-500' />
+            India's Premier Millet Network
           </p>
         </div>
 
@@ -117,7 +120,8 @@ function RegisterForm({ previousStep }: propType) {
               onChange={(e) => setRole(e.target.value)}
               value={role}
             >
-              <option value="user">Consumer / Buyer</option>
+              <option value="user">Household Consumer</option>
+              <option value="buyer">Corporate / Bulk Buyer</option>
               <option value="farmer">Millet Farmer</option>
               <option value="shg">Self Help Group (SHG)</option>
               <option value="startup">Agi-Startup / Entrepreneur</option>

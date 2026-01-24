@@ -4,13 +4,13 @@ export async function POST(req: NextRequest) {
     try {
         const { message } = await req.json();
 
-        const prompt = `You are SnapCart AI, a helpful assistant for an organic millet delivery platform.
+        const prompt = `You are AgrowCart AI, a helpful assistant for an organic millet delivery platform.
         
 User Message: "${message}"
 
 Your Goal: Provide a helpful, concise response (max 2-3 sentences).
 Context:
-- SnapCart connects farmers directly to consumers.
+- AgrowCart connects farmers directly to consumers.
 - We sell Millets (Foxtail, Ragi, etc.), Pulses, and Value-added products.
 - We track product journey via blockchain for transparency.
 - We support farmers with fair prices.

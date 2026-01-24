@@ -32,6 +32,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
         const startMedia = async () => {
             try {
+                console.log("VoiceCall: Requesting media access...")
                 const currentStream = await navigator.mediaDevices.getUserMedia({
                     audio: {
                         echoCancellation: true,
@@ -45,6 +46,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                     return;
                 }
 
+                console.log("VoiceCall: Media access granted")
                 setStream(currentStream)
                 if (myAudioRef.current) {
                     myAudioRef.current.srcObject = currentStream
@@ -57,13 +59,13 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                     config: {
                         iceServers: [
                             { urls: 'stun:stun.l.google.com:19302' },
-                            { urls: 'stun:stun1.l.google.com:19302' },
-                            { urls: 'stun:stun2.l.google.com:19302' }
+                            { urls: 'stun:stun1.l.google.com:19302' }
                         ]
                     }
                 })
 
                 peer.on('signal', (data: any) => {
+                    console.log("VoiceCall: Generated signal data", isInitiator ? "Initiator" : "Receiver")
                     if (isInitiator) {
                         socket.emit('call-user', { userToCall: otherUserId, signalData: data, from: userId, roomId })
                     } else {
@@ -72,7 +74,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                 })
 
                 peer.on('stream', (remoteStream: MediaStream) => {
-                    console.log("Remote stream active");
+                    console.log("VoiceCall: Remote stream received");
                     setIsRemoteStreaming(true)
                     if (remoteAudioRef.current) {
                         remoteAudioRef.current.srcObject = remoteStream;
@@ -84,12 +86,13 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                 })
 
                 peer.on('connect', () => {
+                    console.log("VoiceCall: Peer Connected");
                     setStatus("Connected")
                     setCallAccepted(true)
                 })
 
                 peer.on('error', (err: any) => {
-                    console.error("Peer connection breakdown:", err);
+                    console.error("VoiceCall: Peer Error:", err);
                     setStatus("Connection Failed")
                 })
 
@@ -97,20 +100,23 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 if (isInitiator) {
                     socket.on('call-accepted', (signal: any) => {
+                        console.log("VoiceCall: Call Accepted signal received")
+                        setCallAccepted(true)
                         if (peer && !peer.destroyed) peer.signal(signal)
                     })
                 } else if (incomingSignal) {
+                    console.log("VoiceCall: Processing incoming signal")
                     peer.signal(incomingSignal)
                 }
 
                 socket.on('end-call', () => {
-                    console.log("Call ended by remote user");
-                    onEnd(); // Parent will unmount us
+                    console.log("VoiceCall: Call ended by remote");
+                    onEnd();
                 });
 
             } catch (err) {
                 console.error("Media Error:", err)
-                setStatus("Access Denied")
+                setStatus("Check Microphone Permissions")
             }
         };
 
@@ -118,7 +124,9 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
         return () => {
             isCancelled = true;
-            if (connectionRef.current) connectionRef.current.destroy();
+            if (connectionRef.current) {
+                connectionRef.current.destroy();
+            }
             socket.off('call-accepted');
             socket.off('end-call');
             stream?.getTracks().forEach(track => track.stop());

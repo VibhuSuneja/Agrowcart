@@ -173,7 +173,7 @@ function TraceabilityPage() {
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Network Authority</div>
-                                    <div className="text-[10px] font-black uppercase text-white">SNAPCART-GOV-NODES</div>
+                                    <div className="text-[10px] font-black uppercase text-white">AGROWCART-GOV-NODES</div>
                                 </div>
                             </div>
 

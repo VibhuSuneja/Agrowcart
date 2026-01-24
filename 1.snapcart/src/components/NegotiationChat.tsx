@@ -23,7 +23,8 @@ export default function NegotiationChat({
     farmerName,
     buyerName = "Buyer",
     currentUserRole = "buyer",
-    onClose
+    onClose,
+    initialIncomingCall
 }: {
     productId: string,
     buyerId: string,
@@ -31,7 +32,8 @@ export default function NegotiationChat({
     farmerName: string,
     buyerName?: string,
     currentUserRole?: "buyer" | "farmer",
-    onClose: () => void
+    onClose: () => void,
+    initialIncomingCall?: any
 }) {
     const currentUserId = (currentUserRole === "buyer" ? buyerId : farmerId)?.toString();
     const chatTitle = currentUserRole === "buyer" ? farmerName : buyerName;
@@ -40,8 +42,13 @@ export default function NegotiationChat({
     const [newMessage, setNewMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const [suggestions, setSuggestions] = useState<string[]>([])
+    const [isConnected, setIsConnected] = useState(false)
     const chatBoxRef = useRef<HTMLDivElement>(null)
-    const roomId = `negotiation:${farmerId}:${buyerId}`
+
+    // Ensure IDs are strings to prevent [object Object] mismatches
+    const fId = typeof farmerId === 'object' ? (farmerId as any).toString() : String(farmerId);
+    const bId = typeof buyerId === 'object' ? (buyerId as any).toString() : String(buyerId);
+    const roomId = `negotiation:${fId}:${bId}`
 
     // Call State
     const [isCalling, setIsCalling] = useState(false)
@@ -50,15 +57,49 @@ export default function NegotiationChat({
 
     useEffect(() => {
         const socket = getSocket()
-        socket.emit("join-room", roomId)
+        if (!socket) return
 
+        function onConnect() {
+            console.log("Socket connected, joining room:", roomId)
+            setIsConnected(true)
+            socket.emit("join-room", roomId)
+        }
+
+        function onDisconnect() {
+            console.log("Socket disconnected")
+            setIsConnected(false)
+        }
+
+        // Handle initial connection state
+        if (socket.connected) {
+            onConnect()
+        } else {
+            setIsConnected(false)
+        }
+
+        socket.on("connect", onConnect)
+        socket.on("disconnect", onDisconnect)
+
+        // Handler for incoming messages
         const handleNewMessage = (msg: IMessage) => {
+            console.log("NegotiationChat: Message received via socket", msg)
             if (msg.roomId === roomId) {
-                setMessages((prev) => [...prev, msg])
+                setMessages((prev) => {
+                    // Prevent duplicates based on unique ID or content+time collision (Optimistic update vs Socket broadcast)
+                    const isDuplicate = prev.some(p =>
+                        (p._id && msg._id && p._id === msg._id) ||
+                        (p.time === msg.time && p.text === msg.text && p.senderId === msg.senderId)
+                    );
+
+                    if (isDuplicate) return prev;
+                    return [...prev, msg]
+                })
             }
         }
 
+        // Handler for incoming calls
         const handleCallReceived = (data: any) => {
+            console.log("NegotiationChat: Call received", data)
             if (!isCalling) {
                 setReceivingCall(true)
                 setIncomingSignal(data.signal)
@@ -68,6 +109,7 @@ export default function NegotiationChat({
         socket.on("send-message", handleNewMessage)
         socket.on("call-received", handleCallReceived)
 
+        // Initial Fetch from DB
         const fetchMessages = async () => {
             try {
                 const res = await axios.post('/api/chat/messages', { roomId })
@@ -76,14 +118,14 @@ export default function NegotiationChat({
                 console.error("Error fetching messages", error)
             }
         }
-
         fetchMessages()
 
         return () => {
+            console.log("NegotiationChat: Cleaning up room listener", roomId)
             socket.off("send-message", handleNewMessage)
             socket.off("call-received", handleCallReceived)
         }
-    }, [roomId, isCalling])
+    }, [roomId]) // Stable dependency, removed isCalling to prevent re-join loop
 
     useEffect(() => {
         chatBoxRef.current?.scrollTo({
@@ -92,19 +134,35 @@ export default function NegotiationChat({
         })
     }, [messages])
 
-    const sendMsg = () => {
+    const sendMsg = async () => {
         if (!newMessage.trim()) return
 
         const socket = getSocket()
-        const message = {
+        const messagePayload = {
             roomId,
             text: newMessage,
             senderId: currentUserId,
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
         }
 
-        socket.emit("send-message", message)
+        // 1. Optimistic UI Update
+        const tempId = Math.random().toString(36).substr(2, 9);
+        const optimisticMsg = { ...messagePayload, _id: tempId };
+
+        setMessages((prev) => [...prev, optimisticMsg])
         setNewMessage("")
+
+        try {
+            // 2. Emit via Socket (Real-time to others)
+            socket?.emit("send-message", messagePayload)
+
+            // 3. Save to Database (Persistence)
+            await axios.post('/api/chat/send', messagePayload)
+
+        } catch (error) {
+            console.error("Failed to save message", error)
+            // Optional: Show error or rollback
+        }
     }
 
     const getAiSuggestions = async () => {
@@ -212,8 +270,10 @@ export default function NegotiationChat({
                         <div>
                             <h3 className="text-base md:text-lg font-black tracking-tight">{chatTitle}</h3>
                             <div className="flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full animate-pulse" />
-                                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-400">Negotiation Channel</span>
+                                <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                    {isConnected ? 'Negotiation Channel' : 'Reconnecting...'}
+                                </span>
                             </div>
                         </div>
                     </div>

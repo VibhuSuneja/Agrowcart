@@ -323,7 +323,7 @@ function FarmerDashboard() {
                 </div>
 
                 {/* News & Schemes Resource Hub */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[500px]">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[500px] h-auto">
                     <NewsCard />
                     <SchemesCard />
                 </div>

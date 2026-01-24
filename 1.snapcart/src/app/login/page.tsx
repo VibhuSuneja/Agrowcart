@@ -161,6 +161,23 @@ function Login() {
           </button>
         </p>
       </div>
+      <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl w-full px-4 text-center relative z-10">
+        {[
+          { role: "Farmer", email: "farmer@test.com" },
+          { role: "Consumer", email: "consumer@test.com" },
+          { role: "Corporate", email: "corporate@test.com" },
+          { role: "SHG", email: "shg@test.com" },
+          { role: "Processor", email: "processor@test.com" },
+          { role: "Startup", email: "startup@test.com" },
+          { role: "Delivery", email: "delivery@test.com" },
+        ].map(creds => (
+          <div key={creds.role} className="bg-white/50 hover:bg-white/90 backdrop-blur-sm p-3 rounded-2xl border border-zinc-200 text-[10px] transition-colors cursor-pointer" onClick={() => { setEmail(creds.email); setPassword('123123') }}>
+            <div className="font-black uppercase tracking-widest text-green-600 mb-1">{creds.role}</div>
+            <div className="font-bold text-zinc-800">{creds.email}</div>
+            <div className="text-zinc-500 font-mono mt-1">Pass: 123123</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

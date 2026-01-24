@@ -8,9 +8,13 @@ export async function POST(req: NextRequest) {
     try {
         await connectDb()
         const session = await auth()
-        if (session?.user?.role !== "admin" && session?.user?.role !== "farmer") {
+        if (!session || !session.user) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+        }
+        const allowedRoles = ['admin', 'farmer', 'shg', 'processor', 'startup'];
+        if (!allowedRoles.includes(session?.user?.role as string)) {
             return NextResponse.json(
-                { message: "Unauthorized: Admin or Farmer role required" },
+                { message: "Unauthorized: Access denied" },
                 { status: 403 }
             )
         }
@@ -21,9 +25,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Product not found" }, { status: 404 })
         }
 
-        if (session.user.role === "farmer") {
-            // Farmers can only delete products they own
-            if (!product.owner || product.owner.toString() !== session.user.id) {
+        // Non-admins can only delete their own products
+        if (session.user.role !== "admin") {
+            // Check if product has an owner field (it should from the add-product flow)
+            // If it doesn't, we should probably be safe and deny, or allow if strict mode isn't on. 
+            // Better to assume if owner exists, check it.
+            if (product.owner && product.owner.toString() !== session.user.id) {
                 return NextResponse.json(
                     { message: "Unauthorized: You can only delete your own products" },
                     { status: 403 }

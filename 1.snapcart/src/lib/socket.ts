@@ -1,10 +1,11 @@
 import { io, Socket } from "socket.io-client"
 
-let socket:Socket|null=null
+let socket: Socket | null = null
 
-export const getSocket=()=>{
-if(!socket){
-    socket=io(process.env.NEXT_PUBLIC_SOCKET_SERVER)
-}
-return socket
+export const getSocket = () => {
+    if (!socket) {
+        // Force port 3001 where our dedicated server is running
+        socket = io("http://localhost:3001")
+    }
+    return socket
 }
