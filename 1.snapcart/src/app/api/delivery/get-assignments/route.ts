@@ -19,8 +19,10 @@ export async function GET() {
             rejectedBy: { $ne: session?.user?.id }
         }).populate("order").sort({ createdAt: -1 })
 
+        const validAssignments = assignments.filter((a: any) => a.order !== null);
+
         return NextResponse.json(
-            assignments, { status: 200 }
+            validAssignments, { status: 200 }
         )
     } catch (error) {
         return NextResponse.json(

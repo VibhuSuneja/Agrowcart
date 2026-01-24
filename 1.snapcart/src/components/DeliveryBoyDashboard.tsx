@@ -103,13 +103,22 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   }, [userData])
 
   const sendOtp = async () => {
+    const orderId = activeOrder?.order?._id
+    console.log("Debugging Send OTP:", { activeOrder, orderId }) // Debug log
+
+    if (!orderId) {
+      toast.error("Error: Order ID missing. Please refresh.")
+      return
+    }
+
     setSendOtpLoading(true)
     try {
-      await axios.post("/api/delivery/otp/send", { orderId: activeOrder?.order?._id })
+      await axios.post("/api/delivery/otp/send", { orderId })
       setShowOtpBox(true)
       toast.success("OTP sent to Customer")
-    } catch (error) {
-      toast.error("Failed to send OTP")
+    } catch (error: any) {
+      console.error("Send OTP Error:", error)
+      toast.error(error.response?.data?.message || "Failed to send OTP")
     } finally {
       setSendOtpLoading(false)
     }
