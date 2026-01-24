@@ -123,7 +123,6 @@ function RegisterForm({ previousStep }: propType) {
               <option value="startup">Agi-Startup / Entrepreneur</option>
               <option value="processor">Food Processor</option>
               <option value="deliveryBoy">Delivery Partner</option>
-              <option value="admin">Platform Admin</option>
             </select>
             <div className='absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-green-500 transition-colors'>
               <ArrowLeft size={16} className='rotate-[270deg]' />
@@ -133,8 +132,8 @@ function RegisterForm({ previousStep }: propType) {
           <button
             disabled={!name || !email || !password || loading}
             className={`w-full font-bold py-4 rounded-2xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-2 ${(!name || !email || !password || loading)
-                ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
+              ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}
           >
             {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : (

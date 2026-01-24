@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare } from 'lucide-react'
 
 import Link from 'next/link'
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
@@ -10,6 +10,9 @@ import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { useRouter } from 'next/navigation'
+import LanguageSwitcher from './LanguageSwitcher'
+import { useTranslations } from '@/i18n/LanguageProvider'
+import { orbitron } from '@/lib/fonts'
 
 interface IUser {
     _id?: string
@@ -20,7 +23,8 @@ interface IUser {
     role: "user" | "deliveryBoy" | "admin" | "farmer" | "shg" | "buyer" | "startup" | "processor"
     image?: string
 }
-function Nav({ user }: { user: IUser }) {
+function Nav({ user: propUser }: { user: any }) {
+    const user = propUser || { name: 'Guest', email: '', role: 'user', image: null };
     const [open, setOpen] = useState(false)
     const profileDropDown = useRef<HTMLDivElement>(null)
     const [searchBarOpen, setSearchBarOpen] = useState(false)
@@ -28,6 +32,7 @@ function Nav({ user }: { user: IUser }) {
     const { cartData } = useSelector((state: RootState) => state.cart)
     const [search, setSearch] = useState("")
     const router = useRouter()
+    const t = useTranslations('common')
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (profileDropDown.current && !profileDropDown.current.contains(e.target as Node)) {
@@ -97,13 +102,19 @@ function Nav({ user }: { user: IUser }) {
     return (
         <nav className='w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-green-900/5 flex justify-between items-center h-20 px-6 md:px-10 z-50 border border-white/20 transition-all duration-300'>
 
-            <Link href={"/"} className='flex items-center gap-2 group'>
-                <div className="w-10 h-10 bg-linear-to-br from-green-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20 group-hover:rotate-12 transition-transform duration-300">
-                    <Leaf className="text-white w-6 h-6" />
+            <Link href={"/"} className='flex items-center gap-3 group hover:-translate-y-0.5 transition-transform duration-300'>
+                <div className="w-11 h-11 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:shadow-2xl group-hover:shadow-green-500/50 group-hover:from-green-400 group-hover:to-emerald-500 transition-all duration-500">
+                    <Leaf className="text-white w-6 h-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
                 </div>
-                <span className='text-zinc-900 font-black text-xl sm:text-2xl tracking-tighter group-hover:text-green-600 transition-colors'>
-                    MILLET<span className="text-green-600">.</span>
-                </span>
+                <div className="flex flex-col">
+                    <span className={`${orbitron.className} text-zinc-800 font-black text-xl sm:text-2xl tracking-tight group-hover:tracking-normal transition-all duration-300`}>
+                        Agro<span className="relative inline-block">
+                            w
+                            <TrendingUp className="absolute -top-3.5 left-0 w-4 h-4 text-green-500 group-hover:text-emerald-400 group-hover:-translate-y-0.5 group-hover:scale-110 transition-all duration-300" />
+                        </span><span className="text-green-600 group-hover:text-emerald-500 transition-colors duration-300">Cart</span>
+                    </span>
+                    <span className="text-[10px] text-zinc-400 font-medium tracking-widest uppercase group-hover:text-green-600 transition-colors duration-300">Farm to Fork</span>
+                </div>
             </Link>
 
             {user.role == "user" && (
@@ -119,16 +130,22 @@ function Nav({ user }: { user: IUser }) {
                 </form>
             )}
 
-            <div className='flex items-center gap-4 md:gap-6 relative'>
+            <div className='flex items-center gap-2 md:gap-4 relative'>
+                {/* Community Recipes - visible to everyone */}
+                <Link href={"/recipes"} className='relative bg-zinc-100 rounded-xl w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Community Recipes">
+                    <ChefHat className='text-zinc-600 w-4 h-4 md:w-5 md:h-5 group-hover:text-green-600 transition-colors' />
+                </Link>
+
+                {/* Forum - visible to everyone */}
+                <Link href={"/community/forum"} className='relative bg-zinc-100 rounded-xl w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Discussion Forum">
+                    <MessageSquare className='text-zinc-600 w-4 h-4 md:w-5 md:h-5 group-hover:text-green-600 transition-colors' />
+                </Link>
+
                 {user.role == "user" && (
                     <>
                         <div className='bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition lg:hidden cursor-pointer' onClick={() => setSearchBarOpen((prev) => !prev)}>
                             <Search className='text-zinc-600 w-5 h-5' />
                         </div>
-
-                        <Link href={"/user/recipes"} className='relative bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Community Recipes">
-                            <ChefHat className='text-zinc-600 w-5 h-5 group-hover:text-green-600 transition-colors' />
-                        </Link>
 
                         <Link href={"/user/cart"} className='relative bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group'>
                             <ShoppingCartIcon className='text-zinc-600 w-5 h-5 group-hover:text-green-600 transition-colors' />
@@ -148,6 +165,9 @@ function Nav({ user }: { user: IUser }) {
                         </Link>
                     </div>
                 )}
+
+                {/* Language Switcher */}
+                <LanguageSwitcher />
 
                 <div className='relative' ref={profileDropDown}>
                     <motion.div
@@ -186,13 +206,13 @@ function Nav({ user }: { user: IUser }) {
                                     {user.role !== "user" && (
                                         <Link href={"/marketplace"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
                                             <Package className='w-5 h-5 text-zinc-400' />
-                                            Visit Marketplace
+                                            {t('visitMarketplace')}
                                         </Link>
                                     )}
                                     {user.role == "user" && (
                                         <Link href={"/user/my-orders"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
                                             <Package className='w-5 h-5 text-zinc-400' />
-                                            Order History
+                                            {t('myOrders')}
                                         </Link>
                                     )}
 
@@ -201,7 +221,7 @@ function Nav({ user }: { user: IUser }) {
                                         signOut({ callbackUrl: "/login" })
                                     }}>
                                         <LogOut className='w-5 h-5 text-red-400' />
-                                        Sign Out
+                                        {t('logout')}
                                     </button>
                                 </div>
                             </motion.div>

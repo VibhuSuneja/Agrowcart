@@ -2,6 +2,7 @@
 import { Box, ChevronLeft, ChevronRight, Cookie, Leaf, Package, Wheat } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from "motion/react"
+import Link from 'next/link'
 
 function CategorySlider() {
   const categories = [
@@ -80,18 +81,22 @@ function CategorySlider() {
         {categories.map((cat) => {
           const Icon = cat.icon
           return (
-            <motion.div
+            <Link
               key={cat.id}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className={`min-w-[160px] md:min-w-[200px] aspect-square flex flex-col items-center justify-center rounded-[2.5rem] ${cat.color} p-6 cursor-pointer shadow-lg shadow-zinc-200/50 hover:shadow-2xl transition-all group`}
+              href={`/category/${encodeURIComponent(cat.name)}`}
             >
-              <div className={`p-4 rounded-3xl bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform`}>
-                <Icon size={32} className={cat.textColor} />
-              </div>
-              <p className={`text-center text-sm md:text-base font-black tracking-tight ${cat.textColor}`}>
-                {cat.name}
-              </p>
-            </motion.div>
+              <motion.div
+                whileHover={{ y: -5, scale: 1.02 }}
+                className={`min-w-[160px] md:min-w-[200px] aspect-square flex flex-col items-center justify-center rounded-[2.5rem] ${cat.color} p-6 cursor-pointer shadow-lg shadow-zinc-200/50 hover:shadow-2xl transition-all group`}
+              >
+                <div className={`p-4 rounded-3xl bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform`}>
+                  <Icon size={32} className={cat.textColor} />
+                </div>
+                <p className={`text-center text-sm md:text-base font-black tracking-tight ${cat.textColor}`}>
+                  {cat.name}
+                </p>
+              </motion.div>
+            </Link>
           )
         })}
       </div>

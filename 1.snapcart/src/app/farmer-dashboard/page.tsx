@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'motion/react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
     Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
@@ -12,6 +14,13 @@ import {
     ResponsiveContainer, AreaChart, Area
 } from 'recharts'
 import VoiceAssistant from '@/components/VoiceAssistant'
+import DemandHeatmap from '@/components/DemandHeatmap'
+import FarmerNegotiations from '@/components/FarmerNegotiations'
+import WeatherCard from '@/components/WeatherCard'
+import EventCalendar from '@/components/EventCalendar'
+import NewsCard from '@/components/NewsCard'
+import SchemesCard from '@/components/SchemesCard'
+import Nav from '@/components/Nav'
 
 import toast from 'react-hot-toast'
 
@@ -36,6 +45,7 @@ const CATEGORIES = [
 ]
 
 function FarmerDashboard() {
+    const { userData } = useSelector((state: RootState) => state.user)
     const [region, setRegion] = useState('')
     const [quantity, setQuantity] = useState('')
     const [crop, setCrop] = useState('')
@@ -66,7 +76,7 @@ function FarmerDashboard() {
     useEffect(() => {
         const fetchCrops = async () => {
             try {
-                const res = await axios.get('/api/admin/get-products')
+                const res = await axios.get('/api/farmer/get-products')
                 setCrops(res.data)
             } catch (error) {
                 console.error("Failed to fetch products", error)
@@ -101,14 +111,23 @@ function FarmerDashboard() {
         }
     }
 
+    if (!userData) {
+        return (
+            <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+                <Loader className="animate-spin text-green-600" size={40} />
+            </div>
+        )
+    }
+
     return (
-        <div className="min-h-screen bg-zinc-50 pb-20 pt-[120px] selection:bg-green-100 selection:text-green-900">
+        <div className="min-h-screen bg-zinc-50 pb-20 pt-[110px] md:pt-[120px] selection:bg-green-100 selection:text-green-900">
+            <Nav user={userData as any} />
             <VoiceAssistant onCommand={handleVoiceCommand} />
-            <div className="w-[95%] md:w-[90%] lg:w-[85%] mx-auto space-y-12">
+            <div className="w-[95%] md:w-[90%] xl:w-[85%] 2xl:max-w-[1400px] mx-auto space-y-8 md:space-y-12">
 
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                    <div className="space-y-4">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
+                    <div className="space-y-3 md:space-y-4">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -120,15 +139,18 @@ function FarmerDashboard() {
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className='text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-none'
+                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-[0.9] sm:leading-none'
                         >
                             Grow. <span className="text-zinc-400">Predict.</span> <br />Scale.
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-lg">Manage your produce with AI-driven market intelligence and SIH-standard traceability.</p>
+                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your produce with AI-driven market intelligence and SIH-standard traceability.</p>
                     </div>
 
-                    <div className="flex gap-4">
-                        <div className="bg-white p-4 rounded-3xl shadow-xl shadow-green-900/5 border border-zinc-100 flex items-center gap-4">
+                    <div className="flex gap-4 items-end">
+                        <div className="w-[300px] hidden lg:block">
+                            <WeatherCard />
+                        </div>
+                        <div className="bg-white p-4 rounded-3xl shadow-xl shadow-green-900/5 border border-zinc-100 flex items-center gap-4 h-fit">
                             <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">
                                 <Activity size={24} />
                             </div>
@@ -138,6 +160,10 @@ function FarmerDashboard() {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="block lg:hidden mb-8">
+                    <WeatherCard />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -241,7 +267,7 @@ function FarmerDashboard() {
                                             </p>
                                         </div>
                                         <div className="h-[250px] min-h-[250px] w-full relative">
-                                            <ResponsiveContainer width="100%" height="100%">
+                                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                                                 <AreaChart data={MOCK_TRENDS || []}>
                                                     <defs>
                                                         <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
@@ -270,51 +296,39 @@ function FarmerDashboard() {
                         </div>
                     </motion.div>
 
-                    {/* Quick Stats / Schemes Card */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl shadow-green-900/40 flex flex-col justify-between relative overflow-hidden"
-                    >
-                        <div className="absolute bottom-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
-
-                        <div className="relative">
-                            <div className="flex items-center gap-3 text-white/70 font-black uppercase tracking-[0.3em] text-[10px] mb-6">
-                                <Briefcase size={16} />
-                                <span>Policy Watch</span>
-                            </div>
-                            <h3 className="text-4xl font-black mb-10 leading-[0.9] tracking-tighter">Support <br />Programs</h3>
-
-                            <div className="space-y-4">
-                                <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[2rem] transition-all cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('PM_POSHAN')}>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <h4 className="font-black tracking-tight text-lg">PM POSHAN</h4>
-                                        <ArrowRight size={18} className="transition-all group-hover:translate-x-2" />
-                                    </div>
-                                    <p className="text-xs text-white/70 font-medium leading-relaxed">Direct supply chain for mid-day meal programs with 15% price premium.</p>
-                                </div>
-                                <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[2rem] transition-all cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('PLI_MILLET')}>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <h4 className="font-black tracking-tight text-lg">PLI Millet Hub</h4>
-                                        <ArrowRight size={18} className="transition-all group-hover:translate-x-2" />
-                                    </div>
-                                    <p className="text-xs text-white/70 font-medium leading-relaxed">Processing units for value-added products with 40% subsidy.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-12 pt-8 border-t border-white/10 flex items-center justify-between relative">
-                            <div>
-                                <div className="text-[10px] font-black uppercase text-white/60 tracking-widest">Network</div>
-                                <div className="text-2xl font-black text-white">12.4k+</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-[10px] font-black uppercase text-white/60 tracking-widest">Market Cap</div>
-                                <div className="text-2xl font-black text-white">₹4.2 Cr</div>
-                            </div>
-                        </div>
-                    </motion.div>
+                    {/* Event Calendar */}
+                    <div className="h-full">
+                        <EventCalendar />
+                    </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <DemandHeatmap />
+                    <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
+                        <h3 className="text-3xl font-black mb-4 relative z-10 leading-tight">Support <br />Programs</h3>
+                        <div className="space-y-4 relative z-10 w-full mb-6">
+                            <div className="p-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('PM_POSHAN')}>
+                                <div className="flex items-center justify-between mb-1">
+                                    <h4 className="font-bold">PM POSHAN</h4>
+                                    <ArrowRight size={16} />
+                                </div>
+                                <p className="text-[10px] text-white/70">15% premium for mid-day meals.</p>
+                            </div>
+                        </div>
+                        <button className="bg-white text-green-700 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs w-fit hover:bg-green-50 transition-colors relative z-10">
+                            View All Schemes
+                        </button>
+                    </div>
+                </div>
+
+                {/* News & Schemes Resource Hub */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[500px]">
+                    <NewsCard />
+                    <SchemesCard />
+                </div>
+
+                <FarmerNegotiations farmerId={userData?._id!} />
 
                 {/* Listings Section */}
                 <div className="space-y-10">

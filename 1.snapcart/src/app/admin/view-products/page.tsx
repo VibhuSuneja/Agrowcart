@@ -66,6 +66,7 @@ function ViewProducts() {
             formData.append("category", editing.category)
             formData.append("price", editing.price)
             formData.append("unit", editing.unit)
+            formData.append("scientificBenefits", editing.scientificBenefits || "")
             if (backendImage) {
                 formData.append("image", backendImage)
             }
@@ -213,11 +214,14 @@ function ViewProducts() {
                                     ))}
                                 </select>
                                 <input
-                                    type="text"
+                                    type="number"
                                     placeholder='Price'
                                     value={editing.price}
                                     onChange={(e) => setEditing({ ...editing, price: e.target.value })}
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none' />
+                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
+                                    min="0"
+                                    step="1"
+                                />
                                 <select
                                     className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white'
                                     value={editing.unit}
@@ -228,6 +232,13 @@ function ViewProducts() {
                                         <option key={i} value={u}>{u}</option>
                                     ))}
                                 </select>
+                                <textarea
+                                    placeholder='Scientific Knowledge (3-4 lines)'
+                                    value={editing.scientificBenefits}
+                                    onChange={(e) => setEditing({ ...editing, scientificBenefits: e.target.value })}
+                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none resize-none'
+                                    rows={4}
+                                />
                             </div>
                             <div className='flex justify-end gap-3 mt-6'>
                                 <button className="px-4 py-2 rounded-lg bg-green-600 text-white flex items-center gap-2 hover:bg-green-700 transition-all"

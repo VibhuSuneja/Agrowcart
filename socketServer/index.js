@@ -20,7 +20,9 @@ io.on("connection",(socket)=>{
 
    socket.on("identity",async (userId)=>{
     try {
-        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/connect`,{userId,socketId:socket.id})
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/connect`,{userId,socketId:socket.id}, {
+            headers: { 'x-internal-secret': 'my-secure-interal-secret' }
+        })
     } catch (error) {
         console.error("Error in identity:", error.message)
     }
@@ -32,7 +34,9 @@ io.on("connection",(socket)=>{
             type:"Point",
             coordinates:[longitude,latitude]
         }
-        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/update-location`,{userId,location})
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/socket/update-location`,{userId,location}, {
+            headers: { 'x-internal-secret': 'my-secure-interal-secret' }
+        })
         io.emit("update-deliveryBoy-location",{userId,location})
     } catch (error) {
         console.error("Error updating location:", error.message)
@@ -47,11 +51,27 @@ io.on("connection",(socket)=>{
   socket.on("send-message",async (message)=>{
     try {
         console.log(message)
-        await axios.post(`${process.env.NEXT_BASE_URL}/api/chat/save`,message)
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/chat/save`,message, {
+            headers: { 'x-internal-secret': 'my-secure-interal-secret' }
+        })
         io.to(message.roomId).emit("send-message",message)
     } catch (error) {
         console.error("Error sending message:", error.message)
     }
+  })
+
+  // WebRTC Signaling
+  socket.on("call-user", ({ userToCall, signalData, from, roomId }) => {
+      // Broadcast to everyone else in the room (which should just be the other person)
+      socket.to(roomId).emit("call-received", { signal: signalData, from })
+  })
+
+  socket.on("answer-call", ({ signal, to, roomId }) => {
+      socket.to(roomId).emit("call-accepted", signal)
+  })
+
+  socket.on("end-call", ({ roomId }) => {
+      socket.to(roomId).emit("end-call")
   })
   
     socket.on("disconnect",()=>{

@@ -7,6 +7,12 @@ export async function POST(req: NextRequest) {
     try {
         await connectDb()
         const session = await auth()
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { message: "Unauthorized: Please login to leave a review" },
+                { status: 401 }
+            )
+        }
 
         const { rating, feedback, email } = await req.json()
 

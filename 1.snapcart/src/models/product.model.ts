@@ -11,6 +11,9 @@ export interface IProduct {
     farmId?: string,
     harvestDate?: Date,
     qualityCertification?: string,
+    rating?: number,
+    reviewCount?: number,
+    scientificBenefits?: string,
     createdAt?: Date,
     updatedAt?: Date,
     owner?: mongoose.Types.ObjectId
@@ -69,6 +72,20 @@ const productSchema = new mongoose.Schema<IProduct>({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+    rating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+    },
+    reviewCount: {
+        type: Number,
+        default: 0
+    },
+    scientificBenefits: {
+        type: String,
+        default: "Cultivated for millennia, this millet is power-packed with essential minerals and fiber, promoting digestive health and sustained energy release."
     }
 }, {
     timestamps: true

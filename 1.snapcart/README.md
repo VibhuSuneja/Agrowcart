@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AgrowCart | Farm-to-Fork Intelligence Platform 🌾🚜
 
-## Getting Started
+AgrowCart is a state-of-the-art agricultural ecosystem designed to empower farmers and streamline bulk procurement for buyers. Built with a focus on **Millet sustainability**, AI-driven insights, and direct negotiation.
 
-First, run the development server:
+## 🚀 Key Features
 
+### 👨‍🌾 Farmer Empowerment Hub
+- **AI Price Predictor**: Neural simulations to estimate crop rates based on region and volume.
+- **Agricultural Advisory**: Real-time weather-integrated AI advice for crop management.
+- **Digital Harvest Log**: Secure ledger for tracking and broadcasting produce to the network.
+- **Global News Feed**: Curated agricultural news and policy updates.
+
+### 🏢 Buyer Marketplace
+- **Direct Procurement**: Corporate buyers and processors can discover verified harvest listings.
+- **Bulk Inquiries**: One-click handshake to start price negotiations with farmers.
+- **Verified Supply Chain**: Traceability-focused product listings.
+
+### 💬 Intelligent Negotiation Suite
+- **Side-Aligned Chat**: Context-aware chat system with dynamic role identification.
+- **AI Negotiation Expert**: Integrated AI suggestions to help finalize deals.
+- **Real-time Synchronization**: Socket-powered messaging with instant updates.
+
+### 📞 WebRTC Voice Linking
+- **Direct Voice Negotiation**: High-fidelity audio calls bridging buyers and farmers.
+- **Signal Bridging**: STUN-enabled connection for robust worldwide calls.
+- **Smart Hangup**: Synchronized call termination across all devices.
+
+### 📱 Universal Responsiveness
+- Optimized for **Mobile**, **iPad**, **Desktop**, and **TV screens**.
+- High-performance UI using **Tailwind CSS** and **Framer Motion**.
+
+---
+
+## 🛠 Tech Stack
+- **Frontend**: Next.js 16 (App Router), React, Redux Toolkit
+- **Backend**: Next.js API Routes, Node.js (Socket.io Signaling Server)
+- **Database**: MongoDB with Mongoose
+- **AI Integration**: Google Gemini 1.5 Flash / 2.0
+- **Real-time**: Socket.io, Simple-Peer (WebRTC)
+- **Animations**: Framer Motion (Motion/React)
+- **Styling**: Tailwind CSS, Lucide Icons
+
+---
+
+## 🚦 Getting Started
+
+### 1. Start the Signaling Server
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd socketServer
+node index.js
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start the Web Application
+```bash
+cd 1.snapcart
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🤖 AI Prompts
 
-## Learn More
+### 🎨 Gamma AI (For Presentation)
+> "Create a 10-slide high-end professional presentation for 'AgrowCart'. The design should be 'Modern Agri-Tech' with a deep emerald and slate-grey palette. Focus on: 1. The problem of middlemen in Indian agriculture. 2. Our solution: AI-driven price prediction and direct negotiation. 3. Key features like WebRTC voice calls and AI Advisory. 4. Focus on Millets and Sustainable Development Goals. Use high-quality imagery of smart farms and digital marketplaces."
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 🎬 Veo AI (For Video Generation)
+> "Cinematic 4K drone shot transitioning from a traditional Indian millet farm to a modern digital marketplace interface. A farmer is seen using a smartphone with a glowing green UI that displays 'AI Price: ₹120/kg'. Show a seamless transition to a corporate buyer answering a Voice Call on a laptop. Atmosphere: Hopeful, technological, and vibrant. Style: High-contrast, cinematic lighting, hyper-realistic textures."

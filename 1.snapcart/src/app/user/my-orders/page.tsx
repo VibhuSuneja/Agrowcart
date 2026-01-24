@@ -8,6 +8,8 @@ import UserOrderCard from '@/components/UserOrderCard'
 import { getSocket } from '@/lib/socket'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 interface IOrder {
   _id?: string
@@ -44,6 +46,7 @@ interface IOrder {
 
 function MyOrder() {
   const router = useRouter()
+  const { userData } = useSelector((state: RootState) => state.user)
   const [orders, setOrders] = useState<IOrder[]>()
   const [loading, setLoading] = useState(true)
 
@@ -81,6 +84,7 @@ function MyOrder() {
 
   return (
     <div className='min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900'>
+      <Nav user={userData as any} />
       <div className='max-w-4xl mx-auto px-6 py-32'>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">

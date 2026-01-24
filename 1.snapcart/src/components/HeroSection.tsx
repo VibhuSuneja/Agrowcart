@@ -4,16 +4,30 @@ import { AnimatePresence } from 'motion/react'
 import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
+import { useTranslations } from '@/i18n/LanguageProvider'
+
+import { useRouter } from 'next/navigation'
 
 function HeroSection() {
+  const t = useTranslations('homepage')
+  const router = useRouter()
+
+  const scrollById = (id: string) => {
+    const section = document.getElementById(id)
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   const slides = [
     {
       id: 1,
       icon: <Leaf className="w-12 h-12 text-green-400" />,
       tagline: "AGRICULTURE 4.0",
-      title: "Premium Quality Millet Marketplace",
-      subtitle: "Connecting farmers directly to your kitchen. Pure, organic, and locally sourced foxtail, ragi, and bajra millets.",
-      btnText: "Explore Collection",
+      title: t('hero.title'),
+      subtitle: t('hero.subtitle'),
+      btnText: t('hero.shopNow'),
+      action: () => scrollById('product-grid'), // Requires adding id="product-grid" to product listing
       bg: "https://plus.unsplash.com/premium_photo-1663012860167-220d9d9c8aca?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     {
@@ -23,6 +37,7 @@ function HeroSection() {
       title: "Efficient Farm-to-Fork Value Chain",
       subtitle: "Revolutionizing how nutritional millets reach the masses with fair pricing and real-time traceability.",
       btnText: "Track Freshness",
+      action: () => router.push('/user/my-orders'),
       bg: "https://images.unsplash.com/photo-1683553170878-049f180627b0?q=80&w=1450&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     {
@@ -32,6 +47,7 @@ function HeroSection() {
       title: "Empowering Rural Farmers with AI",
       subtitle: "Leveraging technology for better crop analysis and market intelligence to double farmer incomes.",
       btnText: "Join Movement",
+      action: () => router.push('/register'),
       bg: "https://plus.unsplash.com/premium_photo-1663091378026-7bee6e1c7247?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     }
   ]
@@ -109,14 +125,19 @@ function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, backgroundColor: '#22c55e' }}
               whileTap={{ scale: 0.95 }}
+              onClick={slides[current].action}
               suppressHydrationWarning
-              className='bg-green-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-xl shadow-green-900/40 transition-colors'
+              className='bg-green-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-xl shadow-green-900/40 transition-colors cursor-pointer'
             >
               {slides[current].btnText}
               <ArrowRight size={20} />
             </motion.button>
 
-            <button suppressHydrationWarning className='bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-2xl font-bold transition-all'>
+            <button
+              onClick={() => scrollById('mission-story')}
+              suppressHydrationWarning
+              className='bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-2xl font-bold transition-all cursor-pointer'
+            >
               Our Story
             </button>
           </motion.div>

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import axios from 'axios'
 import RecipeCard from '@/components/RecipeCard'
+import CreateRecipeModal from '@/components/CreateRecipeModal'
+import RecipeDetailModal from '@/components/RecipeDetailModal'
 import { Plus, ChefHat, Search, Loader } from 'lucide-react'
 import Nav from "@/components/Nav"
 import Footer from "@/components/Footer"
@@ -13,20 +15,30 @@ function MilletKitchen() {
     const { userData } = useSelector((state: RootState) => state.user)
     const [recipes, setRecipes] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null)
+
+    const [editingRecipe, setEditingRecipe] = useState<any | null>(null)
+
+    const fetchRecipes = async () => {
+        try {
+            const res = await axios.get('/api/recipes')
+            setRecipes(res.data)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        const fetchRecipes = async () => {
-            try {
-                const res = await axios.get('/api/recipes')
-                setRecipes(res.data)
-            } catch (error) {
-                console.error(error)
-            } finally {
-                setLoading(false)
-            }
-        }
         fetchRecipes()
     }, [])
+
+    const handleEdit = (recipe: any) => {
+        setEditingRecipe(recipe)
+        setIsModalOpen(true)
+    }
 
     return (
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
@@ -57,7 +69,11 @@ function MilletKitchen() {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-zinc-900 text-white px-8 py-4 rounded-[1.5rem] font-black uppercase tracking-widest text-xs flex items-center gap-3 shadow-2xl shadow-zinc-900/20"
+                        onClick={() => {
+                            setEditingRecipe(null)
+                            setIsModalOpen(true)
+                        }}
+                        className="bg-zinc-900 text-white px-8 py-4 rounded-[1.5rem] font-black uppercase tracking-widest text-xs flex items-center gap-3 shadow-2xl shadow-zinc-900/20 hover:bg-zinc-800 transition-colors"
                     >
                         <Plus size={18} />
                         <span>Share Recipe</span>
@@ -91,13 +107,38 @@ function MilletKitchen() {
                                 transition={{ delay: i * 0.1 }}
                             >
                                 <RecipeCard
+                                    id={recipe._id}
                                     title={recipe.title}
-                                    image={recipe.image}
+                                    description={recipe.description}
+                                    image={recipe.image || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800'}
+                                    video={recipe.video}
+                                    audioNote={recipe.audioNote}
                                     chef={recipe.chef}
+                                    chefId={recipe.chefId}
                                     time={recipe.timeToCook}
                                     difficulty={recipe.difficulty}
-                                    likes={recipe.likes}
-                                    tags={recipe.tags}
+                                    likes={recipe.likes || 0}
+                                    likedBy={recipe.likedBy || []}
+                                    currentUserId={userData?._id}
+                                    userRole={userData?.role}
+                                    tags={recipe.tags || []}
+                                    ingredients={recipe.ingredients || []}
+                                    instructions={recipe.instructions || []}
+                                    onClick={() => setSelectedRecipe(recipe)}
+                                    onDelete={(id) => {
+                                        setRecipes(prev => prev.filter(r => r._id !== id))
+                                        setSelectedRecipe(null)
+                                    }}
+                                    onEdit={handleEdit}
+                                    onLikeUpdate={(id, liked, likes) => {
+                                        setRecipes(prev => prev.map(r =>
+                                            r._id === id ? {
+                                                ...r, likes, likedBy: liked
+                                                    ? [...(r.likedBy || []), userData?._id]
+                                                    : (r.likedBy || []).filter((uid: string) => uid !== userData?._id)
+                                            } : r
+                                        ))
+                                    }}
                                 />
                             </motion.div>
                         )) : (
@@ -115,7 +156,7 @@ function MilletKitchen() {
                             <>
                                 <RecipeCard
                                     title="Crispy Ragi Dosa with Coconut Chutney"
-                                    image="https://www.indianhealthyrecipes.com/wp-content/uploads/2021/06/ragi-dosa-recipe.jpg"
+                                    image="https://images.unsplash.com/photo-1630383249896-424e482df921?w=800"
                                     chef="Sanjive Kapoor"
                                     time="20 mins"
                                     difficulty="Easy"
@@ -124,7 +165,7 @@ function MilletKitchen() {
                                 />
                                 <RecipeCard
                                     title="Foxtail Millet Salad Bowl"
-                                    image="https://www.archanaskitchen.com/images/archanaskitchen/1-Author/sibyl_sunitha/Foxtail_Millet_Salad_Recipe_with_Roasted_Carrots_and_Chickpeas.jpg"
+                                    image="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800"
                                     chef="Anjali D."
                                     time="15 mins"
                                     difficulty="Easy"
@@ -133,7 +174,7 @@ function MilletKitchen() {
                                 />
                                 <RecipeCard
                                     title="Little Millet Upma"
-                                    image="https://rakskitchen.net/wp-content/uploads/2014/05/Saamai-upma.jpg"
+                                    image="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800"
                                     chef="Grandma's Kitchen"
                                     time="25 mins"
                                     difficulty="Medium"
@@ -146,6 +187,38 @@ function MilletKitchen() {
                 )}
             </div>
             <Footer />
+
+            {/* Create Recipe Modal */}
+            <CreateRecipeModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={fetchRecipes}
+                userName={userData?.name || 'Anonymous Chef'}
+            />
+
+            {/* Recipe Detail Modal */}
+            {selectedRecipe && (
+                <RecipeDetailModal
+                    isOpen={!!selectedRecipe}
+                    onClose={() => setSelectedRecipe(null)}
+                    recipe={{
+                        _id: selectedRecipe._id,
+                        title: selectedRecipe.title,
+                        description: selectedRecipe.description,
+                        image: selectedRecipe.image || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800',
+                        video: selectedRecipe.video,
+                        audioNote: selectedRecipe.audioNote,
+                        chef: selectedRecipe.chef,
+                        timeToCook: selectedRecipe.timeToCook,
+                        difficulty: selectedRecipe.difficulty,
+                        likes: selectedRecipe.likes || 0,
+                        ingredients: selectedRecipe.ingredients || [],
+                        instructions: selectedRecipe.instructions || [],
+                        tags: selectedRecipe.tags || []
+                    }}
+                    isLiked={userData?._id ? (selectedRecipe.likedBy || []).includes(userData._id) : false}
+                />
+            )}
         </div>
     )
 }

@@ -2,11 +2,14 @@
 import React from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
-import { Minus, Plus, ShoppingCart, Star, ShieldCheck } from 'lucide-react'
+import { Minus, Plus, ShoppingCart, Star, ShieldCheck, Heart, Share2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/redux/store'
 import { addToCart, decreaseQuantity, increaseQuantity } from '@/redux/cartSlice'
 import Link from 'next/link'
+import StarRating from './StarRating'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 interface IProduct {
   _id: string,
@@ -17,6 +20,9 @@ interface IProduct {
   image: string,
   farmId?: string,
   harvestDate?: string,
+  rating?: number,
+  reviewCount?: number,
+  scientificBenefits?: string,
   createdAt?: Date,
   updatedAt?: Date
 }
@@ -25,6 +31,66 @@ function ProductItemCard({ item }: { item: IProduct }) {
   const dispatch = useDispatch<AppDispatch>()
   const { cartData } = useSelector((state: RootState) => state.cart)
   const cartItem = cartData.find(i => i._id.toString() == item._id)
+  const [isWishlisted, setIsWishlisted] = React.useState(false)
+
+  React.useEffect(() => {
+    // Fetch initial wishlist state if needed, or get from centralized state
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get('/api/user/wishlist')
+        if (res.data.success) {
+          const inWishlist = res.data.wishlist.some((id: string) => id === item._id)
+          setIsWishlisted(inWishlist)
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist", error)
+      }
+    }
+    fetchWishlist()
+  }, [item._id])
+
+  const toggleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Optimistic UI update
+    setIsWishlisted(!isWishlisted)
+
+    try {
+      const res = await axios.post('/api/user/wishlist', { productId: item._id })
+      if (!res.data.success) {
+        setIsWishlisted(isWishlisted) // Fallback
+        toast.error("Failed to update wishlist")
+      } else {
+        toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist")
+      }
+    } catch (error: any) {
+      setIsWishlisted(isWishlisted) // Fallback
+      toast.error(error.response?.data?.error || "Login to use wishlist")
+    }
+  }
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const url = `${window.location.origin}/product/${item._id}`
+    const title = `Check out this ${item.name}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Highly nutritious ${item.name} from Snapcart.`,
+          url: url
+        })
+      } catch (err) {
+        console.error("Share failed:", err)
+      }
+    } else {
+      navigator.clipboard.writeText(url)
+      toast.success("Link copied to clipboard!")
+    }
+  }
 
   return (
     <motion.div
@@ -44,11 +110,41 @@ function ProductItemCard({ item }: { item: IProduct }) {
             sizes='(max-width: 768px) 100vw, 25vw'
             className='object-contain p-8 transition-transform duration-700 group-hover:scale-110'
           />
+
+          {/* Top Actions */}
+          <div className='absolute top-4 right-4 flex flex-col gap-2 z-10'>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleWishlist}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-md shadow-sm border transition-all ${isWishlisted
+                ? 'bg-red-500 border-red-500 text-white'
+                : 'bg-white/80 border-white/50 text-zinc-400 hover:text-red-500'
+                }`}
+            >
+              <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleShare}
+              className='w-10 h-10 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-zinc-400 hover:text-green-600 shadow-sm border border-white/50 transition-all'
+            >
+              <Share2 size={20} />
+            </motion.button>
+          </div>
+
           <div className='absolute top-4 left-4 flex flex-col gap-2'>
-            <div className='bg-white/80 backdrop-blur-md px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm border border-white/50'>
-              <Star size={10} className='text-yellow-500 fill-yellow-500' />
-              <span className='text-[10px] font-black text-zinc-700'>4.9</span>
-            </div>
+            {item.rating && item.rating > 0 ? (
+              <div className='bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-xl shadow-sm border border-white/50'>
+                <StarRating
+                  rating={Number(item.rating) || 0}
+                  reviewCount={Number(item.reviewCount) || 0}
+                  size={12}
+                  showNumber={true}
+                />
+              </div>
+            ) : null}
           </div>
           {item.farmId && (
             <div className='absolute bottom-4 left-4 bg-zinc-900/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20'>

@@ -6,6 +6,7 @@ import { IUser } from '@/models/user.model'
 import { RootState } from '@/redux/store'
 import axios from 'axios'
 import { ArrowLeft, Loader, Send, Sparkle } from 'lucide-react'
+import Nav from "@/components/Nav"
 
 import { useParams, useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from "motion/react"
@@ -170,7 +171,8 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
 
   return (
     <div className='w-full min-h-screen bg-linear-to-b from-green-50 to-white'>
-      <div className='max-w-2xl mx-auto pb-24'>
+      <Nav user={userData as any} />
+      <div className='max-w-2xl mx-auto pb-24 pt-24'>
         <div className='sticky top-0 bg-white/80 backdrop-blur-xl p-4 border-b shadow flex gap-3 items-center z-999'>
           <button className='p-2 bg-green-100 rounded-full' onClick={() => router.back()}><ArrowLeft className="text-green-700" size={20} /></button>
           <div>

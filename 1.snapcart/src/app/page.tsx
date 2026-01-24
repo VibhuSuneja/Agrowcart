@@ -42,16 +42,16 @@ async function Home(props: {
 
   if (user.role === "user") {
     if (searchParams.q) {
-      productList = await Product.find({
+      const products = await Product.find({
         $or: [
           { name: { $regex: searchParams?.q || "", $options: "i" } },
           { category: { $regex: searchParams?.q || "", $options: "i" } },
         ]
       })
+      productList = JSON.parse(JSON.stringify(products))
     } else {
-      productList = await Product.find({})
-
-
+      const products = await Product.find({})
+      productList = JSON.parse(JSON.stringify(products))
     }
   }
 

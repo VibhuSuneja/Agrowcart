@@ -21,7 +21,7 @@ export interface IUser {
     },
     socketId: string | null
     isOnline: Boolean
-
+    wishlist?: mongoose.Types.ObjectId[]
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -69,8 +69,11 @@ const userSchema = new mongoose.Schema<IUser>({
     isOnline: {
         type: Boolean,
         default: false
-    }
-
+    },
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product"
+    }]
 }, { timestamps: true })
 
 userSchema.index({ location: "2dsphere" })

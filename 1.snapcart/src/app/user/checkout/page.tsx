@@ -10,6 +10,7 @@ import axios from 'axios'
 import dynamic from 'next/dynamic'
 
 const CheckOutMap = dynamic(() => import("@/components/CheckoutMap"), { ssr: false })
+import Nav from "@/components/Nav"
 
 function Checkout() {
     const router = useRouter()
@@ -151,7 +152,8 @@ function Checkout() {
 
     return (
         <div className='min-h-screen bg-zinc-50 pb-24 pt-12'>
-            <div className='w-[95%] sm:w-[90%] md:w-[85%] mx-auto relative'>
+            <Nav user={userData as any} />
+            <div className='w-[95%] sm:w-[90%] md:w-[85%] mx-auto relative pt-24'>
 
                 <motion.button
                     whileTap={{ scale: 0.95 }}

@@ -10,16 +10,43 @@ import { useRouter, useParams } from 'next/navigation'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 
+import axios from 'axios'
+
 function TraceabilityPage() {
     const router = useRouter()
     const { orderId } = useParams()
+    const [order, setOrder] = React.useState<any>(null)
+    const [loading, setLoading] = React.useState(true)
+
+    React.useEffect(() => {
+        const fetchOrder = async () => {
+            try {
+                const res = await axios.get(`/api/traceability/${orderId}`)
+                setOrder(res.data)
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (orderId) fetchOrder()
+    }, [orderId])
+
+    if (loading) return (
+        <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+    )
+
+    const firstItem = order?.items?.[0]?.product || {}
+    const harvestDate = firstItem.harvestDate ? new Date(firstItem.harvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 12, 2024"
 
     const timeline = [
         {
             status: "Harvested",
-            location: "Vedic Organic Farm, Kolar",
-            date: "Oct 12, 2024",
-            desc: "Batch secured at peak maturity under organic protocol #4290.",
+            location: firstItem.farmId ? `Farm ID: ${firstItem.farmId}` : "Vedic Organic Farm, Kolar",
+            date: harvestDate,
+            desc: `Batch secured at peak maturity under organic protocol ${firstItem.farmId || '#4290'}.`,
             icon: Sprout,
             color: "text-green-500",
             bg: "bg-green-50"
@@ -27,26 +54,26 @@ function TraceabilityPage() {
         {
             status: "Quality Certified",
             location: "State Millet Lab, Bangalore",
-            date: "Oct 14, 2024",
+            date: order?.createdAt ? new Date(new Date(order.createdAt).getTime() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString() : "Oct 14, 2024",
             desc: "AI-driven quality analysis confirmed Grade A nutritional profile.",
             icon: ShieldCheck,
             color: "text-blue-500",
             bg: "bg-blue-50"
         },
         {
-            status: "Processing & Packaging",
-            location: "Millet Magic Unit, Hubli",
-            date: "Oct 15, 2024",
-            desc: "Cleaned, de-stoned and vacuum sealed for maximum freshness.",
+            status: "Ordered & Paid",
+            location: order?.address?.city || "Customer Location",
+            date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Oct 15, 2024",
+            desc: "Secure transaction completed via SIH-260 Payment Gateway.",
             icon: Warehouse,
             color: "text-amber-500",
             bg: "bg-amber-50"
         },
         {
-            status: "Dispatched",
-            location: "Regional Logistics Hub",
-            date: "Oct 18, 2024",
-            desc: "Batch assigned to regional delivery partner for local fulfillment.",
+            status: order?.status === 'delivered' ? "Delivered" : "Out for Delivery",
+            location: order?.address?.city || "Last Mile Hub",
+            date: order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : "Live Tracking",
+            desc: order?.status === 'delivered' ? "Successfully handed over to verified customer." : "Batch assigned to regional delivery partner for local fulfillment.",
             icon: Truck,
             color: "text-purple-500",
             bg: "bg-purple-50"

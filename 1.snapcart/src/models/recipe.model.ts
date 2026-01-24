@@ -5,6 +5,8 @@ export interface IRecipe {
     title: string; // e.g., "Ragi Dosa"
     description: string;
     image: string;
+    video?: string; // Short video URL (Cloudinary/YouTube)
+    audioNote?: string; // Audio note URL
     chef: string; // Name of user/chef
     chefId?: mongoose.Types.ObjectId;
     timeToCook: string; // e.g., "30 mins"
@@ -12,6 +14,7 @@ export interface IRecipe {
     ingredients: string[];
     instructions: string[];
     likes: number;
+    likedBy: mongoose.Types.ObjectId[]; // Track who liked for Instagram-style toggle
     tags: string[]; // e.g., ["Breakfast", "Gluten-Free"]
     createdAt?: Date;
 }
@@ -20,6 +23,8 @@ const recipeSchema = new mongoose.Schema<IRecipe>({
     title: { type: String, required: true },
     description: { type: String, required: true },
     image: { type: String, required: true },
+    video: { type: String }, // Optional short video
+    audioNote: { type: String }, // Optional audio note
     chef: { type: String, required: true },
     chefId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     timeToCook: { type: String, required: true },
@@ -27,8 +32,10 @@ const recipeSchema = new mongoose.Schema<IRecipe>({
     ingredients: [{ type: String }],
     instructions: [{ type: String }],
     likes: { type: Number, default: 0 },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     tags: [{ type: String }]
 }, { timestamps: true });
 
 const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
 export default Recipe;
+

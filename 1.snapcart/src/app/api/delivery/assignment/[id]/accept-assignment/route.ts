@@ -5,15 +5,15 @@ import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: Promise<{ id: string; }>; }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string; }>; }) {
     try {
         await connectDb()
         const { id } = await context.params
         const session = await auth()
-        const deliveryBoyId = session?.user?.id
-        if (!deliveryBoyId) {
-            return NextResponse.json({ message: "unauthorize" }, { status: 400 })
+        if (!session?.user?.id || (session.user.role !== 'deliveryBoy' && session.user.role !== 'admin')) {
+            return NextResponse.json({ message: "unauthorize" }, { status: 401 })
         }
+        const deliveryBoyId = session.user.id
 
         const assignment = await DeliveryAssignment.findById(id)
         if (!assignment) {

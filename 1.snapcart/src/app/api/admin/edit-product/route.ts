@@ -20,16 +20,39 @@ export async function POST(req: NextRequest) {
         const category = formData.get("category") as string
         const unit = formData.get("unit") as string
         const price = formData.get("price") as string
+        const scientificBenefits = formData.get("scientificBenefits") as string
         const file = formData.get("image") as Blob | null
-        let imageUrl
-        if (file) {
-            imageUrl = await uploadOnCloudinary(file)
+
+        // Prepare update object
+        const updateData: any = {
+            name,
+            price,
+            category,
+            unit,
+            scientificBenefits
         }
-        const product = await Product.findByIdAndUpdate(productId, {
-            name, price, category, unit, image: imageUrl
-        })
+
+        // Only update image if a new one is provided
+        if (file && file.size > 0) {
+            const imageUrl = await uploadOnCloudinary(file)
+            updateData.image = imageUrl
+        }
+
+        const product = await Product.findByIdAndUpdate(
+            productId,
+            updateData,
+            { new: true } // Return updated document
+        )
+
+        if (!product) {
+            return NextResponse.json(
+                { message: "Product not found" },
+                { status: 404 }
+            )
+        }
+
         return NextResponse.json(
-            product,
+            { success: true, product },
             { status: 200 }
         )
     } catch (error) {

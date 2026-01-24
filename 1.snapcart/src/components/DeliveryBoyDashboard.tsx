@@ -62,7 +62,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
 
   const handleAccept = async (id: string) => {
     try {
-      await axios.get(`/api/delivery/assignment/${id}/accept-assignment`)
+      await axios.post(`/api/delivery/assignment/${id}/accept-assignment`)
       toast.success("Assignment Accepted!")
       fetchCurrentOrder()
     } catch (error) {
@@ -72,7 +72,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
 
   const handleReject = async (id: string) => {
     try {
-      await axios.get(`/api/delivery/assignment/${id}/reject-assignment`)
+      await axios.post(`/api/delivery/assignment/${id}/reject-assignment`)
       toast.error("Assignment Rejected")
       fetchAssignments()
     } catch (error) {

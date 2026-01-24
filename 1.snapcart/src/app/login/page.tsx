@@ -25,7 +25,19 @@ function Login() {
       })
 
       if (result?.error) {
-        toast.error(result.error)
+        // NextAuth v5 returns specific error codes
+        const errorCode = result.error.toLowerCase()
+
+        // Handle NextAuth specific error codes
+        if (errorCode === "credentialssignin" || errorCode === "configuration") {
+          toast.error("Wrong email or password. Please try again.")
+        } else if (errorCode.includes("incorrect password") || errorCode.includes("wrong password")) {
+          toast.error("Wrong password! Please try again.")
+        } else if (errorCode.includes("user does not exist") || errorCode.includes("not found")) {
+          toast.error("User not found. Please check your email or register.")
+        } else {
+          toast.error("Login failed. Please check your credentials.")
+        }
         setLoading(false)
         return
       }
@@ -34,7 +46,7 @@ function Login() {
       window.location.href = "/"
     } catch (error: any) {
       console.error(error)
-      toast.error("Login failed. Please verify your credentials.")
+      toast.error("Login failed. Please try again.")
       setLoading(false)
     }
   }
@@ -111,8 +123,8 @@ function Login() {
           <button
             disabled={!email || !password || loading}
             className={`w-full font-bold py-4 rounded-2xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-2 ${(!email || !password || loading)
-                ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
+              ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}
           >
             {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : (

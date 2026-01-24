@@ -1,8 +1,9 @@
 'use client'
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from "motion/react"
-import { IndianRupee, Package, Truck, Users, LayoutDashboard, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react'
+import { IndianRupee, Package, Truck, Users, LayoutDashboard, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight, Activity, Plus, ClipboardCheck, ArrowRight } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
+import Link from 'next/link'
 
 type propType = {
   earning: {
@@ -59,6 +60,27 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
             </div>
             <h1 className="text-4xl font-black text-zinc-900 tracking-tight">Control Center</h1>
             <p className="text-zinc-500 text-sm font-medium">Monitoring millet ecosystem metrics and chain performance.</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/admin/view-products">
+              <button className="bg-zinc-900 text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-zinc-900/20 hover:bg-zinc-800 transition-all">
+                <Package size={14} />
+                Manage Products
+              </button>
+            </Link>
+            <Link href="/admin/manage-orders">
+              <button className="bg-white border border-zinc-200 text-zinc-600 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-sm hover:border-zinc-900 hover:text-zinc-900 transition-all">
+                <ClipboardCheck size={14} />
+                Orders
+              </button>
+            </Link>
+            <Link href="/admin/add-product">
+              <button className="bg-green-600 text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-green-600/20 hover:bg-green-700 transition-all">
+                <Plus size={14} />
+                New
+              </button>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-zinc-100">

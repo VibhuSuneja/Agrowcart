@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import {
     ArrowLeft, ShoppingCart, Star, ShieldCheck, Sprout,
     Info, Leaf, MapPin, Calendar, Fingerprint, Zap,
-    Minus, Plus, Sparkles, Share2, Heart
+    Minus, Plus, Sparkles, Share2, Heart, MessageSquare, Microscope
 } from 'lucide-react'
 import Image from 'next/image'
 import Nav from '@/components/Nav'
@@ -15,30 +15,97 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/redux/store'
 import { addToCart, decreaseQuantity, increaseQuantity } from '@/redux/cartSlice'
 import toast from 'react-hot-toast'
+import StarRating from '@/components/StarRating'
+import ReviewForm from '@/components/ReviewForm'
+import ReviewList from '@/components/ReviewList'
+import AIRecipeButton from '@/components/AIRecipeButton'
+import SustainabilityScore from '@/components/SustainabilityScore'
+import ShareModal from '@/components/ShareModal'
+import NegotiationChat from '@/components/NegotiationChat'
 
 function ProductDetailPage() {
     const { id } = useParams()
     const router = useRouter()
     const [product, setProduct] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [isWishlisted, setIsWishlisted] = useState(false)
+    const [showReviewForm, setShowReviewForm] = useState(false)
+    const [showNegotiation, setShowNegotiation] = useState(false)
+    const [showShareModal, setShowShareModal] = useState(false)
     const dispatch = useDispatch<AppDispatch>()
     const { cartData } = useSelector((state: RootState) => state.cart)
+    const { userData } = useSelector((state: RootState) => state.user) // Get current user
     const cartItem = cartData.find(i => i._id.toString() === id)
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const res = await axios.get(`/api/product/${id}`)
-                setProduct(res.data)
-            } catch (error) {
-                console.error(error)
-                toast.error("Product not found")
-            } finally {
-                setLoading(false)
-            }
+    const fetchProduct = async () => {
+        try {
+            const res = await axios.get(`/api/product/${id}`)
+            setProduct(res.data)
+        } catch (error) {
+            console.error(error)
+            toast.error("Product not found")
+        } finally {
+            setLoading(false)
         }
-        if (id) fetchProduct()
+    }
+
+    const fetchWishlist = async () => {
+        try {
+            const res = await axios.get('/api/user/wishlist')
+            if (res.data.success) {
+                const inWishlist = res.data.wishlist.some((wishId: string) => wishId === id)
+                setIsWishlisted(inWishlist)
+            }
+        } catch (error) {
+            console.error("Error fetching wishlist", error)
+        }
+    }
+
+    useEffect(() => {
+        if (id) {
+            fetchProduct()
+            fetchWishlist()
+        }
     }, [id])
+
+    const toggleWishlist = async () => {
+        setIsWishlisted(!isWishlisted)
+        try {
+            const res = await axios.post('/api/user/wishlist', { productId: id })
+            if (!res.data.success) {
+                setIsWishlisted(!isWishlisted)
+                toast.error("Failed to update wishlist")
+            } else {
+                toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist")
+            }
+        } catch (error) {
+            setIsWishlisted(!isWishlisted)
+            toast.error("Login to use wishlist")
+        }
+    }
+
+    const handleShare = async () => {
+        const url = `${window.location.origin}/product/${id}`
+        const title = `Check out this highly nutritious ${product.name}!`
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: title,
+                    text: `Pure, traceable ${product.name} from millet farmers.`,
+                    url: url
+                })
+            } catch (err) {
+                // If user cancels, we don't show the modal to avoid double-sharing
+                // But if it's an error, we show our modal
+                if ((err as Error).name !== 'AbortError') {
+                    setShowShareModal(true)
+                }
+            }
+        } else {
+            setShowShareModal(true)
+        }
+    }
 
     if (loading) {
         return (
@@ -66,6 +133,7 @@ function ProductDetailPage() {
 
     return (
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
+            <Nav user={userData as any} />
             <div className="pt-32 pb-20 w-[95%] md:w-[90%] lg:w-[85%] mx-auto">
                 <motion.button
                     initial={{ opacity: 0, x: -20 }}
@@ -81,13 +149,13 @@ function ProductDetailPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
                     {/* Image Section */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="relative"
-                    >
+                    <div className="relative">
                         <div className="sticky top-32">
-                            <div className="relative aspect-square bg-white rounded-[4rem] overflow-hidden shadow-2xl shadow-green-900/5 border border-zinc-100 p-12 lg:p-20 group">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="relative aspect-square bg-white rounded-[4rem] overflow-hidden shadow-2xl shadow-green-900/5 border border-zinc-100 p-12 lg:p-20 group"
+                            >
                                 <Image
                                     src={product.image}
                                     fill
@@ -95,26 +163,37 @@ function ProductDetailPage() {
                                     className="object-contain p-12 transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute top-10 left-10 flex flex-col gap-3">
-                                    <div className="bg-white/80 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm border border-zinc-100">
-                                        <Star size={16} className="text-yellow-500 fill-yellow-500" />
-                                        <span className="text-sm font-black text-zinc-900">4.9</span>
-                                    </div>
-                                    <div className="bg-green-600 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg shadow-green-600/20">
+                                    {product.rating > 0 && (
+                                        <div className="bg-white/80 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border border-zinc-100">
+                                            <StarRating rating={product.rating} reviewCount={product.reviewCount} size={16} />
+                                        </div>
+                                    )}
+                                    <div className="bg-green-600 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-lg shadow-green-600/20 w-fit">
                                         <ShieldCheck size={16} className="text-white" />
                                         <span className="text-xs font-black text-white uppercase tracking-widest">Certified</span>
                                     </div>
                                 </div>
                                 <div className="absolute top-10 right-10 flex flex-col gap-3">
-                                    <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-400 hover:text-red-500 transition-colors shadow-sm">
-                                        <Heart size={20} />
-                                    </button>
-                                    <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-400 hover:text-blue-500 transition-colors shadow-sm">
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={toggleWishlist}
+                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors shadow-sm border ${isWishlisted ? 'bg-red-500 border-red-500 text-white' : 'bg-white text-zinc-400 border-zinc-100 hover:text-red-500'}`}
+                                    >
+                                        <Heart size={20} fill={isWishlisted ? 'currentColor' : 'none'} />
+                                    </motion.button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={handleShare}
+                                        className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-zinc-400 hover:text-green-600 transition-colors shadow-sm border border-zinc-100"
+                                    >
                                         <Share2 size={20} />
-                                    </button>
+                                    </motion.button>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Content Section */}
                     <div className="space-y-12">
@@ -135,12 +214,7 @@ function ProductDetailPage() {
                             >
                                 {product.name}
                             </motion.h1>
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="flex items-baseline gap-4 pt-4"
-                            >
+                            <div className="flex items-baseline gap-4 pt-4">
                                 <span className="text-5xl font-black text-zinc-900">₹{product.price}</span>
                                 <span className="text-xl font-bold text-zinc-400">per {product.unit}</span>
                                 {product.priceAI && (
@@ -149,7 +223,7 @@ function ProductDetailPage() {
                                         <span>AI Advised Value</span>
                                     </div>
                                 )}
-                            </motion.div>
+                            </div>
                         </div>
 
                         {/* Order Controls */}
@@ -182,7 +256,28 @@ function ProductDetailPage() {
                                 <ShoppingCart size={20} />
                                 <span>{cartItem ? 'In Your Bag' : 'Add to Basket'}</span>
                             </button>
+                            <button
+                                onClick={() => {
+                                    if (!userData) {
+                                        toast.error("Please login to negotiate")
+                                        router.push('/login')
+                                        return
+                                    }
+                                    if (!product.owner) {
+                                        toast.error("Contact info unavailable for this product")
+                                        return
+                                    }
+                                    setShowNegotiation(true)
+                                }}
+                                className="w-full bg-white border-2 border-zinc-900 text-zinc-900 py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-zinc-50 transition-all"
+                            >
+                                <MessageSquare size={20} />
+                                <span>Bulk Inquiry</span>
+                            </button>
                         </motion.div>
+
+                        <SustainabilityScore quantity={cartItem?.quantity || 1} unit={product.unit} />
+                        <AIRecipeButton productName={product.name} category={product.category} />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm space-y-4">
@@ -232,6 +327,24 @@ function ProductDetailPage() {
                             </div>
                         </div>
 
+                        {/* Scientific Benefits Section */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="p-8 bg-green-900 rounded-[2.5rem] text-white space-y-4 relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl" />
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center text-white">
+                                    <Microscope size={20} />
+                                </div>
+                                <h3 className="text-lg font-black tracking-tight">Scientific Knowledge</h3>
+                            </div>
+                            <p className="text-green-50/80 text-sm font-medium leading-relaxed italic border-l-2 border-green-500/50 pl-4">
+                                {product.scientificBenefits || "This millet is technically a power-grain with a low glycemic index, making it ideal for managing blood sugar levels while providing a high concentration of antioxidants and amino acids."}
+                            </p>
+                        </motion.div>
+
                         <div className="p-8 bg-zinc-900 rounded-[2.5rem] text-white space-y-4 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl" />
                             <div className="flex items-center gap-3">
@@ -244,9 +357,61 @@ function ProductDetailPage() {
                                 This millet requires 70% less water than rice and supports local biodiversity. By choosing {product.name}, you are helping 12 small-scale farmers in the Deccan region.
                             </p>
                         </div>
+
+                        {/* Review Section Toggle */}
+                        <div className="pt-10 border-t border-zinc-200">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h2 className="text-3xl font-black text-zinc-900">Community Feedback</h2>
+                                    <p className="text-zinc-500 font-medium">Hear what other health enthusiasts say</p>
+                                </div>
+                                <button
+                                    onClick={() => setShowReviewForm(true)}
+                                    className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-green-700 transition-colors shadow-lg shadow-green-600/10"
+                                >
+                                    <MessageSquare size={18} />
+                                    Write Review
+                                </button>
+                            </div>
+
+                            <ReviewList productId={id as string} />
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
+            <AnimatePresence>
+                {showReviewForm && (
+                    <ReviewForm
+                        productId={id as string}
+                        productName={product.name}
+                        onClose={() => setShowReviewForm(false)}
+                        onReviewSubmitted={() => {
+                            fetchProduct() // Refresh rating
+                        }}
+                    />
+                )}
+
+                {showNegotiation && userData && product.owner && (
+                    <NegotiationChat
+                        productId={product._id}
+                        buyerId={userData._id!}
+                        farmerId={product.owner._id || product.owner}
+                        farmerName={product.owner.name || "Farmer"}
+                        onClose={() => setShowNegotiation(false)}
+                    />
+                )}
+                {showShareModal && (
+                    <ShareModal
+                        isOpen={showShareModal}
+                        onClose={() => setShowShareModal(false)}
+                        url={typeof window !== 'undefined' ? `${window.location.origin}/product/${id}` : ''}
+                        title={`Check out this highly nutritious ${product.name}!`}
+                    />
+                )}
+            </AnimatePresence>
+
             <Footer />
         </div>
     )

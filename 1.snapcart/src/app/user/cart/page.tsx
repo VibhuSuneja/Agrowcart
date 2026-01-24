@@ -8,15 +8,19 @@ import { AppDispatch, RootState } from '@/redux/store'
 import Image from 'next/image'
 import { decreaseQuantity, increaseQuantity, removeFromCart } from '@/redux/cartSlice'
 import { useRouter } from 'next/navigation'
+import SustainabilityScore from '@/components/SustainabilityScore'
+import Nav from '@/components/Nav'
 
 function CartPage() {
   const { cartData, subTotal, finalTotal, deliveryFee } = useSelector((state: RootState) => state.cart)
+  const { userData } = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
 
   return (
     <div className='min-h-screen bg-zinc-50 pb-24 pt-12'>
-      <div className='w-[95%] sm:w-[90%] md:w-[85%] mx-auto relative'>
+      <Nav user={userData as any} />
+      <div className='w-[95%] sm:w-[90%] md:w-[85%] mx-auto relative pt-24'>
 
         <Link href="/" className='inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold transition-all group mb-12'>
           <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center group-hover:border-green-600 transition-colors">
@@ -157,8 +161,13 @@ function CartPage() {
                         <div className="text-4xl font-black tracking-tighter">₹{finalTotal}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] font-black uppercase text-green-500 tracking-widest mb-1">Saving</div>
-                        <div className="text-xl font-black text-green-400">₹0.00</div>
+                        <div className="text-[10px] font-black uppercase text-green-500 tracking-widest mb-1">Water Saved</div>
+                        <div className="text-xl font-black text-green-400">
+                          {cartData.reduce((acc, item) => {
+                            let mult = item.unit === 'kg' ? 1 : 0.5;
+                            return acc + (item.quantity * mult * 1600)
+                          }, 0).toLocaleString()}L
+                        </div>
                       </div>
                     </div>
                   </div>

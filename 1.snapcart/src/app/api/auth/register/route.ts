@@ -22,8 +22,18 @@ export async function POST(req: NextRequest) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
+
+        // Security: Prevent public registration as admin
+        let finalRole = role || 'user'
+        if (finalRole === 'admin') {
+            return NextResponse.json(
+                { message: "Unauthorized role assignment" },
+                { status: 403 }
+            )
+        }
+
         const user = await User.create({
-            name, email, password: hashedPassword, role: role || 'user'
+            name, email, password: hashedPassword, role: finalRole
         })
         return NextResponse.json(
             user,
