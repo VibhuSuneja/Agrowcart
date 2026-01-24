@@ -57,11 +57,21 @@ export async function POST(req: NextRequest) {
         const data = JSON.parse(jsonStr);
 
         return NextResponse.json(data);
-    } catch (error) {
-        console.error("Crop Doctor Error:", error);
-        return NextResponse.json(
-            { error: "Failed to analyze crop" },
-            { status: 500 }
-        );
+    } catch (error: any) {
+        console.error("Crop Doctor AI Error:", error.message);
+
+        // Graceful Degradation: return a "Service Busy" diagnosis instead of crashing
+        const fallbackResponse = {
+            isHealthy: false,
+            diagnosis: "AI Service Busy",
+            description: "We are currently experiencing high demand and our AI doctor is resting. Our expert guides are still available for your help.",
+            treatments: [
+                "Check the AgrowCart Library for Millet Care guides.",
+                "Ensure proper soil drainage and sunlight.",
+                "Consult local agriculture extension officer if the issue persists."
+            ]
+        };
+
+        return NextResponse.json(fallbackResponse, { status: 200 });
     }
 }
