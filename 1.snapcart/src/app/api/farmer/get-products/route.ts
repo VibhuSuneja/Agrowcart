@@ -8,7 +8,7 @@ export async function GET() {
         await connectDb()
         const session = await auth()
 
-        if (!session || !session.user || session.user.role !== "farmer") {
+        if (!session || !session.user || !["farmer", "shg", "processor"].includes(session.user.role)) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
         }
 

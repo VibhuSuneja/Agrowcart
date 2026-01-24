@@ -203,6 +203,24 @@ function Nav({ user: propUser }: { user: any }) {
                                 </div>
 
                                 <div className="space-y-1">
+                                    {user.role === "farmer" && (
+                                        <Link href={"/farmer-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
+                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
+                                            Dashboard
+                                        </Link>
+                                    )}
+                                    {user.role === "shg" && (
+                                        <Link href={"/shg-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
+                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
+                                            SHG Dashboard
+                                        </Link>
+                                    )}
+                                    {user.role === "processor" && (
+                                        <Link href={"/processor-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
+                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
+                                            Processor Hub
+                                        </Link>
+                                    )}
                                     {user.role !== "user" && (
                                         <Link href={"/marketplace"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
                                             <Package className='w-5 h-5 text-zinc-400' />

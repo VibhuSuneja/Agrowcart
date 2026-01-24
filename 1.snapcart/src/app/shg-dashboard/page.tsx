@@ -44,7 +44,7 @@ const CATEGORIES = [
     "Organic Mix"
 ]
 
-function FarmerDashboard() {
+function SHGDashboard() {
     const { userData } = useSelector((state: RootState) => state.user)
     const [region, setRegion] = useState('')
     const [quantity, setQuantity] = useState('')
@@ -55,7 +55,7 @@ function FarmerDashboard() {
     const [newCrop, setNewCrop] = useState<{
         name: string, quantity: string, price: string, category: string, unit: string, farmId: string, harvestDate: string, image: File | null, imagePreview: string | null
     }>({
-        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null
+        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'SHG-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null
     })
     const [crops, setCrops] = useState<Array<any>>([])
     const [selectedScheme, setSelectedScheme] = useState<string | null>(null)
@@ -68,8 +68,6 @@ function FarmerDashboard() {
         } else if (cmd.includes('close') || cmd.includes('cancel')) {
             setShowAddCrop(false)
             toast.success("Voice Command: Closing Form")
-        } else if (cmd.includes('analyze') || cmd.includes('predict')) {
-            toast("Please confirm details and click 'Run Simulation'", { icon: '🤖' })
         }
     }
 
@@ -90,7 +88,7 @@ function FarmerDashboard() {
         try {
             await axios.post("/api/admin/delete-product", { productId: id })
             setCrops(crops.filter(c => c._id !== id))
-            toast.success("Harvest removed from ledger")
+            toast.success("Record removed from ledger")
         } catch (error) {
             toast.error("Failed to delete Listing")
         }
@@ -103,7 +101,7 @@ function FarmerDashboard() {
         try {
             const res = await axios.post('/api/ai/millet-price', { region, quantity, crop })
             setPrediction(res.data)
-            toast.success("Intelligence Sync Complete")
+            toast.success("Market Intelligence Sync Complete")
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Market analysis offline")
         } finally {
@@ -133,17 +131,17 @@ function FarmerDashboard() {
                             animate={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-2 text-green-600 font-black uppercase tracking-[0.3em] text-[10px] bg-green-50 w-fit px-3 py-1 rounded-lg border border-green-100"
                         >
-                            <Sprout size={14} className="animate-pulse" />
-                            <span>Farmer Empowerment Hub</span>
+                            <Users size={14} className="animate-pulse" />
+                            <span>SHG Aggregate Hub</span>
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-[0.9] sm:leading-none'
                         >
-                            Grow. <span className="text-zinc-400">Predict.</span> <br />Scale.
+                            Collect. <span className="text-zinc-400">Manage.</span> <br />Empower.
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your produce with AI-driven market intelligence and SIH-standard traceability.</p>
+                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Aggregate community produce and manage listings with AI-driven market intelligence.</p>
                     </div>
 
                     <div className="flex gap-4 items-end">
@@ -156,7 +154,7 @@ function FarmerDashboard() {
                             </div>
                             <div>
                                 <div className="text-[10px] font-black uppercase text-zinc-400">Success Rate</div>
-                                <div className="text-xl font-black text-zinc-900">98.4%</div>
+                                <div className="text-xl font-black text-zinc-900">99.1%</div>
                             </div>
                         </div>
                     </div>
@@ -182,14 +180,14 @@ function FarmerDashboard() {
                                         <Zap className="text-green-400 fill-green-400" size={28} />
                                     </div>
                                     <div>
-                                        <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Market Analytics</h2>
-                                        <p className="text-zinc-500 text-sm font-medium italic">Neural prediction model v2.1</p>
+                                        <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Aggregation Analytics</h2>
+                                        <p className="text-zinc-500 text-sm font-medium italic">Market sentiment analysis v2.1</p>
                                     </div>
                                 </div>
                                 <div className="hidden sm:block">
                                     <div className="bg-green-50 text-green-700 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-100 flex items-center gap-2">
                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                        Live Processing
+                                        Network Active
                                     </div>
                                 </div>
                             </div>
@@ -214,7 +212,7 @@ function FarmerDashboard() {
                                 <div className="relative group">
                                     <TrendingUp className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
                                     <input
-                                        placeholder="Volume (kg)"
+                                        placeholder="Aggregate Volume"
                                         type="number"
                                         className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
                                         value={quantity} onChange={e => setQuantity(e.target.value)}
@@ -229,7 +227,7 @@ function FarmerDashboard() {
                                 >
                                     {loading ? <Loader className="animate-spin" /> : (
                                         <>
-                                            <span>Run Neural Price Simulation</span>
+                                            <span>Run Collective Market Simulation</span>
                                             <Sparkles size={20} />
                                         </>
                                     )}
@@ -246,21 +244,11 @@ function FarmerDashboard() {
                                         <div className="space-y-6">
                                             <div className="inline-flex items-center gap-3 px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
                                                 <ChartIcon size={12} />
-                                                <span>Prediction Outcome</span>
+                                                <span>Aggregate Prediction</span>
                                             </div>
                                             <div className="space-y-1">
-                                                <div className="text-sm text-zinc-400 font-bold uppercase tracking-widest">Expected Rate</div>
+                                                <div className="text-sm text-zinc-400 font-bold uppercase tracking-widest">Estimated Bulk Rate</div>
                                                 <div className="text-6xl font-black text-white tracking-tighter">₹{prediction.estimatedPrice}<span className="text-2xl text-green-400">/kg</span></div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <div className="bg-white/5 p-4 rounded-2xl flex-1">
-                                                    <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Sentiment</div>
-                                                    <div className="text-green-400 font-black uppercase tracking-widest mt-1">Bullish</div>
-                                                </div>
-                                                <div className="bg-white/5 p-4 rounded-2xl flex-1">
-                                                    <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Confidence</div>
-                                                    <div className="text-white font-black uppercase tracking-widest mt-1">92%</div>
-                                                </div>
                                             </div>
                                             <p className="text-zinc-400 font-medium leading-relaxed italic border-l-2 border-green-500/50 pl-4">
                                                 {prediction.advice}
@@ -306,26 +294,17 @@ function FarmerDashboard() {
                     <DemandHeatmap />
                     <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
-                        <h3 className="text-3xl font-black mb-4 relative z-10 leading-tight">Support <br />Programs</h3>
+                        <h3 className="text-3xl font-black mb-4 relative z-10 leading-tight">SHG Support <br />Programs</h3>
                         <div className="space-y-4 relative z-10 w-full mb-6">
-                            <div className="p-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('PM_POSHAN')}>
+                            <div className="p-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('SHG_LIVELIHOOD')}>
                                 <div className="flex items-center justify-between mb-1">
-                                    <h4 className="font-bold">PM POSHAN</h4>
+                                    <h4 className="font-bold">Livelihood Mission</h4>
                                     <ArrowRight size={16} />
                                 </div>
-                                <p className="text-[10px] text-white/70">15% premium for mid-day meals.</p>
+                                <p className="text-[10px] text-white/70">Support for community aggregation centers.</p>
                             </div>
                         </div>
-                        <button className="bg-white text-green-700 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs w-fit hover:bg-green-50 transition-colors relative z-10">
-                            View All Schemes
-                        </button>
                     </div>
-                </div>
-
-                {/* News & Schemes Resource Hub */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[500px]">
-                    <NewsCard />
-                    <SchemesCard />
                 </div>
 
                 <FarmerNegotiations farmerId={userData?._id!} />
@@ -334,8 +313,8 @@ function FarmerDashboard() {
                 <div className="space-y-10">
                     <div className="flex items-end justify-between">
                         <div className="space-y-3">
-                            <h2 className='text-4xl font-black text-zinc-900 tracking-tight'>Digital Harvest Log</h2>
-                            <p className="text-zinc-500 font-medium text-lg">Traceable produce active in the global marketplace.</p>
+                            <h2 className='text-4xl font-black text-zinc-900 tracking-tight'>Community Inventory</h2>
+                            <p className="text-zinc-500 font-medium text-lg">Active produces aggregated from your SHG members.</p>
                         </div>
                         <motion.button
                             whileHover={{ scale: 1.05, y: -2 }}
@@ -344,7 +323,7 @@ function FarmerDashboard() {
                             onClick={() => setShowAddCrop(true)}
                         >
                             <Plus size={20} />
-                            <span>List Harvest</span>
+                            <span>Add Community Produce</span>
                         </motion.button>
                     </div>
 
@@ -353,8 +332,8 @@ function FarmerDashboard() {
                             <div className="w-24 h-24 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
                                 <History className="text-zinc-200" size={40} />
                             </div>
-                            <h3 className="text-2xl font-black text-zinc-800 mb-2 tracking-tight">Empty Granary</h3>
-                            <p className="text-zinc-400 font-medium">Broadcast your produce to secure bulk buyer orders.</p>
+                            <h3 className="text-2xl font-black text-zinc-800 mb-2 tracking-tight">No Active Inventory</h3>
+                            <p className="text-zinc-400 font-medium">Add produce collected from your community farmers.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -386,15 +365,15 @@ function FarmerDashboard() {
                                     <div className="space-y-4 mt-auto">
                                         <div className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
                                             <Calendar size={12} />
-                                            <span>Harvested: {crop.harvestDate}</span>
+                                            <span>Collection Date: {crop.harvestDate}</span>
                                         </div>
                                         <div className="flex items-center justify-between pt-6 border-t border-zinc-50">
                                             <div>
-                                                <div className="text-[10px] font-black uppercase text-zinc-400">Available</div>
+                                                <div className="text-[10px] font-black uppercase text-zinc-400">Net Volume</div>
                                                 <div className="text-xl font-black text-zinc-900 leading-none mt-1">{crop.quantity} {crop.unit}</div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-[10px] font-black uppercase text-zinc-400">Fixed Rate</div>
+                                                <div className="text-[10px] font-black uppercase text-zinc-400">Bulk Rate</div>
                                                 <div className="text-xl font-black text-green-600 leading-none mt-1">₹{crop.price}</div>
                                             </div>
                                         </div>
@@ -406,7 +385,7 @@ function FarmerDashboard() {
                                             deleteCrop(crop._id)
                                         }}
                                         className="absolute top-4 right-4 bg-white p-2 rounded-full text-zinc-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"
-                                        title="Remove Listing"
+                                        title="Remove Record"
                                     >
                                         <Trash2 size={20} />
                                     </button>
@@ -417,7 +396,7 @@ function FarmerDashboard() {
                 </div>
             </div>
 
-            {/* Premium Modal */}
+            {/* Aggregation Modal */}
             <AnimatePresence>
                 {showAddCrop && (
                     <div className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden">
@@ -447,10 +426,10 @@ function FarmerDashboard() {
                             <div className="mb-12">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
                                     <Fingerprint size={12} />
-                                    <span>SIH #260 Traceability Protocol</span>
+                                    <span>SHG Collective Protocol</span>
                                 </div>
-                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">New Produce Log</h3>
-                                <p className="text-zinc-500 font-medium">Register your harvest on the blockchain-ready ledger.</p>
+                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">Aggregate Produce</h3>
+                                <p className="text-zinc-500 font-medium">Log community collections into the marketplace.</p>
                             </div>
 
                             <div className="space-y-6">
@@ -466,7 +445,6 @@ function FarmerDashboard() {
                                                     <span className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Upload Photo</span>
                                                 </>
                                             )}
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white font-bold text-xs uppercase tracking-widest">Change Image</div>
                                         </label>
                                         <input
                                             type="file"
@@ -491,8 +469,8 @@ function FarmerDashboard() {
                                             <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
                                             <input
                                                 type="text"
-                                                placeholder="Crop e.g. Foxtail Millet"
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                                placeholder="Crop Variety"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 focus:bg-white transition-all font-bold text-sm"
                                                 value={newCrop.name}
                                                 onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
                                             />
@@ -500,15 +478,12 @@ function FarmerDashboard() {
                                         <div className="relative group">
                                             <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                                             <select
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-10 text-zinc-800 outline-none font-bold text-sm appearance-none focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all cursor-pointer"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-10 outline-none font-bold text-sm"
                                                 value={newCrop.category}
                                                 onChange={(e) => setNewCrop({ ...newCrop, category: e.target.value })}
                                             >
                                                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                             </select>
-                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -518,8 +493,8 @@ function FarmerDashboard() {
                                         <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                                         <input
                                             type="number"
-                                            placeholder="Volume"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 outline-none font-bold text-sm"
+                                            placeholder="Total Volume"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 font-bold text-sm"
                                             value={newCrop.quantity}
                                             onChange={(e) => setNewCrop({ ...newCrop, quantity: e.target.value })}
                                         />
@@ -528,8 +503,8 @@ function FarmerDashboard() {
                                         <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-zinc-400 text-xs">₹</div>
                                         <input
                                             type="number"
-                                            placeholder="Rate/kg"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 outline-none font-bold text-sm"
+                                            placeholder="Bulk Rate"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 font-bold text-sm"
                                             value={newCrop.price}
                                             onChange={(e) => setNewCrop({ ...newCrop, price: e.target.value })}
                                         />
@@ -538,18 +513,18 @@ function FarmerDashboard() {
 
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="relative group">
-                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Farm ID</div>
+                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">SHG ID</div>
                                         <input
                                             readOnly
-                                            className="w-full bg-zinc-100 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-500 font-black text-xs cursor-default"
+                                            className="w-full bg-zinc-100 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-500 font-black text-xs"
                                             value={newCrop.farmId}
                                         />
                                     </div>
                                     <div className="relative group">
-                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Harvested</div>
+                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Collected</div>
                                         <input
                                             type="date"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-800 font-bold text-xs outline-none"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-800 font-bold text-xs"
                                             value={newCrop.harvestDate}
                                             onChange={(e) => setNewCrop({ ...newCrop, harvestDate: e.target.value })}
                                         />
@@ -559,13 +534,12 @@ function FarmerDashboard() {
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-6 rounded-[1.5rem] shadow-2xl shadow-zinc-900/30 flex items-center justify-center gap-4 mt-8 transition-all hover:bg-green-600 border border-white/10"
+                                    className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-6 rounded-[1.5rem] shadow-2xl flex items-center justify-center gap-4 mt-8 transition-all hover:bg-green-600"
                                     disabled={loading}
                                     onClick={async () => {
                                         if (newCrop.name && newCrop.quantity && newCrop.price) {
                                             try {
                                                 setLoading(true)
-
                                                 const formData = new FormData();
                                                 formData.append("name", newCrop.name);
                                                 formData.append("quantity", newCrop.quantity);
@@ -574,25 +548,17 @@ function FarmerDashboard() {
                                                 formData.append("unit", newCrop.unit);
                                                 formData.append("farmId", newCrop.farmId);
                                                 formData.append("harvestDate", newCrop.harvestDate);
-                                                if (newCrop.image) {
-                                                    formData.append("image", newCrop.image);
-                                                }
+                                                if (newCrop.image) formData.append("image", newCrop.image);
 
                                                 const res = await axios.post('/api/farmer/add-product', formData)
                                                 setCrops([...crops, res.data.product])
                                                 setShowAddCrop(false)
-                                                setNewCrop({
-                                                    ...newCrop, name: '', quantity: '', price: '', image: null, imagePreview: null,
-                                                    farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000)
-                                                })
-                                                toast.success('Blockchain Logged & Marketplace Updated!')
+                                                toast.success('Collective Record Logged!')
                                             } catch (error: any) {
-                                                toast.error(error.response?.data?.message || 'Verification failed')
+                                                toast.error('Logging failed')
                                             } finally {
                                                 setLoading(false)
                                             }
-                                        } else {
-                                            toast.error('Complete all telemetry fields')
                                         }
                                     }}
                                 >
@@ -608,207 +574,8 @@ function FarmerDashboard() {
                     </div>
                 )}
             </AnimatePresence>
-
-            {/* Scheme Details Modal */}
-            <AnimatePresence>
-                {selectedScheme && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden px-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/70 backdrop-blur-md"
-                            onClick={() => setSelectedScheme(null)}
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 30 }}
-                            className="bg-white rounded-[3rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-3xl relative z-[210] p-10"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button
-                                onClick={() => setSelectedScheme(null)}
-                                className="absolute top-8 right-8 text-zinc-400 hover:text-red-500 transition-colors bg-zinc-50 p-3 rounded-full"
-                            >
-                                <X size={24} />
-                            </button>
-
-                            {selectedScheme === 'PM_POSHAN' ? (
-                                <div className="space-y-6">
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full text-xs font-black uppercase tracking-widest mb-2">
-                                        <Briefcase size={14} />
-                                        <span>Government Scheme</span>
-                                    </div>
-                                    <h2 className="text-4xl font-black text-zinc-900 tracking-tight mb-4">PM POSHAN Programme</h2>
-                                    <p className="text-zinc-600 font-medium leading-relaxed mb-6">
-                                        The PM POSHAN (formerly Mid-Day Meal Scheme) aims to improve nutritional levels among school children and boost agricultural markets for millets.
-                                    </p>
-
-                                    <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-                                        <h3 className="font-black text-green-800 mb-3 flex items-center gap-2">
-                                            <ShieldCheck size={20} />
-                                            Key Benefits
-                                        </h3>
-                                        <ul className="space-y-2 text-sm text-green-700 font-medium">
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-green-600 mt-1">•</span>
-                                                <span>15% price premium over market rates</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-green-600 mt-1">•</span>
-                                                <span>Direct procurement contracts with schools</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-green-600 mt-1">•</span>
-                                                <span>Guaranteed payment within 30 days</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-green-600 mt-1">•</span>
-                                                <span>Long-term supply contracts (1-3 years)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                                        <h3 className="font-black text-blue-800 mb-3 flex items-center gap-2">
-                                            <Info size={20} />
-                                            Eligibility Criteria
-                                        </h3>
-                                        <ul className="space-y-2 text-sm text-blue-700 font-medium">
-                                            <li>✓ Registered farmer with Aadhaar linkage</li>
-                                            <li>✓ Minimum 2 acres of millet cultivation</li>
-                                            <li>✓ Organic certification (preferred but not mandatory)</li>
-                                            <li>✓ Located within 50km of participating schools</li>
-                                        </ul>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <h3 className="font-black text-zinc-800">How to Apply</h3>
-                                        <ol className="space-y-2 text-sm text-zinc-700 font-medium">
-                                            <li className="flex gap-3">
-                                                <span className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
-                                                <span>Register on the PM POSHAN portal with Aadhaar</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-                                                <span>Upload land documents and crop details</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
-                                                <span>Contact your District Education Officer for verification</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
-                                                <span>Sign supply agreement upon approval</span>
-                                            </li>
-                                        </ol>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-zinc-200 flex flex-col sm:flex-row gap-3">
-                                        <a href="https://pmposhan.education.gov.in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-green-600 text-white px-6 py-4 rounded-xl font-bold text-center hover:bg-green-700 transition-all">
-                                            Visit Official Portal
-                                        </a>
-                                        <button className="flex-1 bg-zinc-100 text-zinc-700 px-6 py-4 rounded-xl font-bold hover:bg-zinc-200 transition-all">
-                                            Download Guidelines (PDF)
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-6">
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 rounded-full text-xs font-black uppercase tracking-widest mb-2">
-                                        <Briefcase size={14} />
-                                        <span>Subsidy Programme</span>
-                                    </div>
-                                    <h2 className="text-4xl font-black text-zinc-900 tracking-tight mb-4">PLI Millet Processing Hub</h2>
-                                    <p className="text-zinc-600 font-medium leading-relaxed mb-6">
-                                        Production Linked Incentive scheme for setting up millet processing units and value-addition infrastructure.
-                                    </p>
-
-                                    <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-                                        <h3 className="font-black text-purple-800 mb-3 flex items-center gap-2">
-                                            <DollarSign size={20} />
-                                            Financial Support
-                                        </h3>
-                                        <ul className="space-y-2 text-sm text-purple-700 font-medium">
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-purple-600 mt-1">•</span>
-                                                <span>40% capital subsidy on machinery (up to ₹50 lakhs)</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-purple-600 mt-1">•</span>
-                                                <span>Interest subsidy on working capital loans (3%)</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-purple-600 mt-1">•</span>
-                                                <span>Training support for 10 workers per unit</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <span className="text-purple-600 mt-1">•</span>
-                                                <span>Marketing assistance via GeM portal</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                                        <h3 className="font-black text-orange-800 mb-3 flex items-center gap-2">
-                                            <Info size={20} />
-                                            Eligibility
-                                        </h3>
-                                        <ul className="space-y-2 text-sm text-orange-700 font-medium">
-                                            <li>✓ Farmer Producer Organizations (FPOs)</li>
-                                            <li>✓ SHG federations with banking linkage</li>
-                                            <li>✓ Minimum 50 farmer members</li>
-                                            <li>✓ Land availability for processing unit (min 500 sq m)</li>
-                                            <li>✓ Project cost between ₹25 lakhs - ₹2 crores</li>
-                                        </ul>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <h3 className="font-black text-zinc-800">Application Process</h3>
-                                        <ol className="space-y-2 text-sm text-zinc-700 font-medium">
-                                            <li className="flex gap-3">
-                                                <span className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
-                                                <span>Form FPO or SHG with minimum members</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-                                                <span>Prepare Detailed Project Report (DPR)</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
-                                                <span>Submit application to State Nodal Agency</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
-                                                <span>Technical evaluation and site inspection</span>
-                                            </li>
-                                            <li className="flex gap-3">
-                                                <span className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
-                                                <span>Approval and first tranche disbursement (30%)</span>
-                                            </li>
-                                        </ol>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-zinc-200 flex flex-col sm:flex-row gap-3">
-                                        <a href="https://pib.gov.in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-purple-600 text-white px-6 py-4 rounded-xl font-bold text-center hover:bg-purple-700 transition-all">
-                                            Learn More
-                                        </a>
-                                        <button className="flex-1 bg-zinc-100 text-zinc-700 px-6 py-4 rounded-xl font-bold hover:bg-zinc-200 transition-all">
-                                            Contact District Officer
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
         </div>
     )
 }
 
-export default FarmerDashboard
-
-
-
+export default SHGDashboard

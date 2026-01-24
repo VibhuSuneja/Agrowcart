@@ -69,9 +69,13 @@ async function Home(props: {
         <AdminDashboard />
       ) : user.role == "deliveryBoy" ? (
         <DeliveryBoy />
-      ) : user.role == "farmer" || user.role == "shg" ? (
+      ) : user.role == "farmer" ? (
         redirect("/farmer-dashboard")
-      ) : user.role == "buyer" || user.role == "startup" || user.role == "processor" ? (
+      ) : user.role == "shg" ? (
+        redirect("/shg-dashboard")
+      ) : user.role == "processor" ? (
+        redirect("/processor-dashboard")
+      ) : user.role == "buyer" || user.role == "startup" ? (
         redirect("/buyer-marketplace")
       ) : (
         <UserDashboard productList={productList} /> // Default fallback
