@@ -82,12 +82,14 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   const fetchCurrentOrder = async () => {
     try {
       const result = await axios.get("/api/delivery/current-order")
-      if (result.data.active) {
+      if (result.data?.active) {
         setActiveOrder(result.data.assignment)
-        setUserLocation({
-          latitude: result.data.assignment.order.address.latitude,
-          longitude: result.data.assignment.order.address.longitude
-        })
+        if (result.data.assignment?.order?.address) {
+          setUserLocation({
+            latitude: result.data.assignment.order.address.latitude,
+            longitude: result.data.assignment.order.address.longitude
+          })
+        }
       }
     } catch (error) {
       console.error(error)
@@ -102,7 +104,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   const sendOtp = async () => {
     setSendOtpLoading(true)
     try {
-      await axios.post("/api/delivery/otp/send", { orderId: activeOrder.order._id })
+      await axios.post("/api/delivery/otp/send", { orderId: activeOrder?.order?._id })
       setShowOtpBox(true)
       toast.success("OTP sent to Customer")
     } catch (error) {
@@ -115,7 +117,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   const verifyOtp = async () => {
     setVerifyOtpLoading(true)
     try {
-      await axios.post("/api/delivery/otp/verify", { orderId: activeOrder.order._id, otp })
+      await axios.post("/api/delivery/otp/verify", { orderId: activeOrder?.order?._id, otp })
       toast.success("Delivery Successful!")
       setActiveOrder(null)
       await fetchCurrentOrder()
@@ -153,7 +155,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
               </div>
               <div className='h-[150px] min-h-[150px] w-full'>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics || []}>
+                  <BarChart data={Array.isArray(analytics) ? analytics : []}>
                     <Bar dataKey="earnings" fill="#16A34A" radius={[10, 10, 0, 0]} />
                     <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '1rem', border: 'none' }} />
                   </BarChart>
@@ -215,7 +217,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
             </div>
             <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-zinc-100 flex items-center gap-3">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
-              <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">ID: #{activeOrder.order._id.slice(-6).toUpperCase()}</span>
+              <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">ID: #{activeOrder?.order?._id?.toString()?.slice(-6).toUpperCase() || 'N/A'}</span>
             </div>
           </div>
 
@@ -224,7 +226,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
               <div className='rounded-[3rem] border border-zinc-100 shadow-2xl shadow-blue-500/5 overflow-hidden h-[450px] relative bg-white'>
                 <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation} />
               </div>
-              <DeliveryChat orderId={activeOrder.order._id} deliveryBoyId={userData?._id?.toString()!} />
+              <DeliveryChat orderId={activeOrder?.order?._id} deliveryBoyId={userData?._id?.toString()!} />
             </div>
 
             <div className="space-y-8">
@@ -238,11 +240,11 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                     <MapPin size={16} />
                     <span>Drop-off Point</span>
                   </div>
-                  <p className="text-lg font-bold text-zinc-900 leading-tight">{activeOrder.order.address.fullAddress}</p>
+                  <p className="text-lg font-bold text-zinc-900 leading-tight">{activeOrder?.order?.address?.fullAddress}</p>
                 </div>
 
                 <div className="pt-8 border-t border-zinc-50 space-y-6">
-                  {!activeOrder.order.deliveryOtpVerification && !showOtpBox && (
+                  {!activeOrder?.order?.deliveryOtpVerification && !showOtpBox && (
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -288,7 +290,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                     )}
                   </AnimatePresence>
 
-                  {activeOrder.order.deliveryOtpVerification && (
+                  {activeOrder?.order?.deliveryOtpVerification && (
                     <div className='p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100 text-center flex flex-col items-center gap-3'>
                       <CheckCircle2 size={48} className="text-emerald-500" />
                       <span className='text-emerald-700 font-black uppercase tracking-widest text-xs'>Success Verification</span>
@@ -332,7 +334,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
               <div className="space-y-6">
                 <div>
                   <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-1">Assignment ID</div>
-                  <div className="text-xl font-black text-zinc-900">#{a?.order._id.slice(-6).toUpperCase()}</div>
+                  <div className="text-xl font-black text-zinc-900">#{a?.order?._id?.toString()?.slice(-6).toUpperCase() || 'N/A'}</div>
                 </div>
 
                 <div className="space-y-1">
@@ -340,7 +342,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                     <MapPin size={14} />
                     <span>Drop Point</span>
                   </div>
-                  <p className='text-zinc-600 text-sm font-medium line-clamp-2'>{a.order.address.fullAddress}</p>
+                  <p className='text-zinc-600 text-sm font-medium line-clamp-2'>{a?.order?.address?.fullAddress}</p>
                 </div>
               </div>
 

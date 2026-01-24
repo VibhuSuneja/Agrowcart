@@ -15,7 +15,7 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
   const [newMessage, setNewMessage] = useState("")
   const [messages, setMessages] = useState<IMessage[]>()
   const chatBoxRef = useRef<HTMLDivElement>(null)
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
   useEffect(() => {
     const socket = getSocket()
@@ -69,19 +69,19 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
     getAllMessages()
   }, [])
 
-const getSuggestion=async ()=>{
-  setLoading(true)
-  try {
+  const getSuggestion = async () => {
+    setLoading(true)
+    try {
 
-    const lastMessage=messages?.filter(m=>m.senderId.toString()!==deliveryBoyId)?.at(-1)
-    const result=await axios.post("/api/chat/ai-suggestions",{message:lastMessage?.text,role:"delivery_boy"})
-  setSuggestions(result.data)
-  setLoading(false)
-  } catch (error) {
-    console.log(error)
-    setLoading(false)
+      const lastMessage = messages?.filter(m => m.senderId.toString() !== deliveryBoyId)?.at(-1)
+      const result = await axios.post("/api/chat/ai-suggestions", { message: lastMessage?.text, role: "delivery_boy" })
+      setSuggestions(result.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
   }
-}
 
 
   return (
@@ -95,7 +95,7 @@ const getSuggestion=async ()=>{
           onClick={getSuggestion}
           className="px-3 py-1 text-xs flex items-center gap-1 bg-purple-100 text-purple-700 rounded-full shadow-sm border border-purple-200"
 
-        ><Sparkle size={14} />{loading?<Loader className="w-5 h-5 animate-spin" />:"AI suggest"}</motion.button>
+        ><Sparkle size={14} />{loading ? <Loader className="w-5 h-5 animate-spin" /> : "AI suggest"}</motion.button>
       </div>
 
       <div className='flex gap-2 flex-wrap mb-3'>
@@ -104,7 +104,7 @@ const getSuggestion=async ()=>{
             key={s}
             whileTap={{ scale: 0.92 }}
             className="px-3 py-1 text-xs bg-green-50 border border-green-200 cursor-pointer text-green-700 rounded-full"
-           onClick={()=>setNewMessage(s)}
+            onClick={() => setNewMessage(s)}
           >
             {s}
           </motion.div>
@@ -115,17 +115,17 @@ const getSuggestion=async ()=>{
 
       <div className='flex-1 overflow-y-auto p-2 space-y-3' ref={chatBoxRef}>
         <AnimatePresence>
-          {messages?.map((msg, index) => (
+          {Array.isArray(messages) && messages.map((msg, index) => (
             <motion.div
-              key={msg._id?.toString()}
+              key={msg?._id?.toString() || index}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className={`flex ${msg.senderId.toString() == deliveryBoyId ? "justify-end" : "justify-start"}`}
+              className={`flex ${(msg?.senderId?.toString() || "") == deliveryBoyId ? "justify-end" : "justify-start"}`}
             >
               <div className={`px-4 py-2 max-w-[75%] rounded-2xl shadow 
-                  ${msg.senderId.toString() === deliveryBoyId
+                  ${(msg?.senderId?.toString() || "") === deliveryBoyId
                   ? "bg-green-600 text-white rounded-br-none"
                   : "bg-gray-100 text-gray-800 rounded-bl-none"
                 }`}>
