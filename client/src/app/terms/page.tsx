@@ -76,7 +76,8 @@ const TermsAndConditions = () => {
                     </div>
                     <div>
                         <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2">Support Contact</p>
-                        <a href="mailto:vibhusun01@gmail.com" className="text-green-600 font-bold hover:underline">legal@agrowcart.com</a>
+                        <a href="mailto:vibhusun01@gmail.com" className="text-green-600 font-bold hover:underline block">vibhusun01@gmail.com</a>
+                        <a href="tel:9468150076" className="text-zinc-600 font-bold hover:text-zinc-900 block mt-1">+91 9468150076</a>
                     </div>
                 </div>
             </div>
