@@ -89,7 +89,9 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     try {
       await axios.post(`/api/delivery/assignment/${id}/accept-assignment`)
       toast.success("Assignment Accepted!")
-      fetchCurrentOrder()
+      // Refresh both to seamlessly transition
+      await fetchCurrentOrder()
+      await fetchAssignments()
     } catch (error) {
       toast.error("Failed to accept assignment")
     }
@@ -116,6 +118,9 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
             longitude: result.data.assignment.order.address.longitude
           })
         }
+      } else {
+        // Explicitly clear order if none is active
+        setActiveOrder(null)
       }
     } catch (error) {
       console.error(error)
@@ -154,9 +159,16 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     try {
       await axios.post("/api/delivery/otp/verify", { orderId: activeOrder?.order?._id, otp })
       toast.success("Delivery Successful!")
+      // Clear state immediately to remove "Success Verification" screen
       setActiveOrder(null)
+      setAssignments([])
+      setShowOtpBox(false)
+      setOtp("")
+
+      // Re-fetch to ensure sync with backend
       await fetchCurrentOrder()
-      window.location.reload()
+      await fetchAssignments()
+
     } catch (error) {
       setOtpError("Incorrect OTP provided")
       toast.error("Verification failed")
