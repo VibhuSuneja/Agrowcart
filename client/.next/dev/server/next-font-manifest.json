@@ -11,9 +11,6 @@
     ],
     "[project]/src/app/product/[id]/page": [
       "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
-    ],
-    "[project]/src/app/startup-dashboard/page": [
-      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
     ]
   },
   "appUsingSizeAdjust": true,
