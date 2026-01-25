@@ -15,7 +15,7 @@ interface IReview {
     createdAt: string
 }
 
-export default function ReviewList({ productId }: { productId: string }) {
+export default function ReviewList({ productId, refreshKey = 0 }: { productId: string, refreshKey?: number }) {
     const [reviews, setReviews] = useState<IReview[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -33,7 +33,7 @@ export default function ReviewList({ productId }: { productId: string }) {
             }
         }
         fetchReviews()
-    }, [productId])
+    }, [productId, refreshKey])
 
     if (loading) {
         return (

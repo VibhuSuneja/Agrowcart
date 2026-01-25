@@ -32,6 +32,7 @@ function ProductDetailPage() {
     const [showReviewForm, setShowReviewForm] = useState(false)
     const [showNegotiation, setShowNegotiation] = useState(false)
     const [showShareModal, setShowShareModal] = useState(false)
+    const [reviewsRefreshKey, setReviewsRefreshKey] = useState(0)
     const dispatch = useDispatch<AppDispatch>()
     const { cartData } = useSelector((state: RootState) => state.cart)
     const { userData } = useSelector((state: RootState) => state.user) // Get current user
@@ -374,7 +375,7 @@ function ProductDetailPage() {
                                 </button>
                             </div>
 
-                            <ReviewList productId={id as string} />
+                            <ReviewList productId={id as string} refreshKey={reviewsRefreshKey} />
                         </div>
                     </div>
                 </div>
@@ -388,7 +389,8 @@ function ProductDetailPage() {
                         productName={product.name}
                         onClose={() => setShowReviewForm(false)}
                         onReviewSubmitted={() => {
-                            fetchProduct() // Refresh rating
+                            fetchProduct() // Refresh rating summary
+                            setReviewsRefreshKey(prev => prev + 1) // Refresh review list
                         }}
                     />
                 )}
