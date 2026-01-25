@@ -5,7 +5,11 @@ import { MessageSquare, Send, Star, User } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-function FeedbackSection() {
+interface FeedbackSectionProps {
+    onReviewSubmitted?: () => void
+}
+
+function FeedbackSection({ onReviewSubmitted }: FeedbackSectionProps) {
     const [rating, setRating] = useState(0)
     const [feedback, setFeedback] = useState("")
     const [email, setEmail] = useState("")
@@ -28,6 +32,8 @@ function FeedbackSection() {
             setRating(0)
             setFeedback("")
             setEmail("")
+            // Trigger refresh in parent
+            if (onReviewSubmitted) onReviewSubmitted()
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Something went wrong")
         } finally {

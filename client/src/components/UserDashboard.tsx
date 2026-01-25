@@ -35,6 +35,12 @@ function UserDashboard({ productList }: { productList: IProduct[] }) {
     }
   ]
 
+  const [reviewsRefreshKey, setReviewsRefreshKey] = React.useState(0)
+
+  const handleFeedbackRefresh = () => {
+    setReviewsRefreshKey(prev => prev + 1)
+  }
+
   return (
     <div className="bg-white pb-20">
       <div id="home-hero">
@@ -85,8 +91,8 @@ function UserDashboard({ productList }: { productList: IProduct[] }) {
       </div>
 
       <MissionStory />
-      <ReviewMarquee />
-      <FeedbackSection />
+      <ReviewMarquee key={reviewsRefreshKey} />
+      <FeedbackSection onReviewSubmitted={handleFeedbackRefresh} />
       <TutorialGuide steps={CONSUMER_TOUR_STEPS} tourName="consumer_v1" />
     </div>
   )
