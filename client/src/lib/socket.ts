@@ -4,11 +4,11 @@ let socket: Socket | null = null
 
 export const getSocket = () => {
     if (!socket) {
-        let socketUrl = "http://localhost:3001";
+        let socketUrl = "http://localhost:4000";
 
         if (typeof window !== "undefined") {
             const hostname = window.location.hostname;
-            socketUrl = `http://${hostname}:3001`;
+            socketUrl = `http://${hostname}:4000`;
         }
 
         console.log("🔌 Attempting Socket Connection to:", socketUrl);
