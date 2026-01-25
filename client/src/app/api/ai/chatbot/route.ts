@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: NextRequest) {
     try {
         const { message } = await req.json();
+
+        if (!process.env.GEMINI_API_KEY) {
+            console.error("GEMINI_API_KEY is missing");
+            throw new Error("API Key missing");
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        // Using a stable model alias
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `You are AgrowCart AI, a helpful assistant for an organic millet delivery platform.
         
@@ -19,27 +29,18 @@ If the user asks about specific stock, say you can check the marketplace page.
 If the user asks about an order, ask them to check 'My Orders'.
 Be friendly and use 1-2 emojis.`;
 
-        // Using Gemini API
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                "contents": [
-                    {
-                        "parts": [{ "text": prompt }]
-                    }
-                ]
-            })
-        });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
 
-        const data = await response.json();
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm currently updating my knowledge base. Please try exploring our marketplace! 🌿";
+        // Fallback if text is empty
+        const reply = text || "I'm currently updating my knowledge base. Please try exploring our marketplace! 🌿";
 
         return NextResponse.json({ reply }, { status: 200 });
 
     } catch (error: any) {
-        console.error("ChatBot API Error:", error.message);
-        // Status 200 with fallback message to prevent UI from breaking
+        console.error("ChatBot API Error:", error);
+        // Fallback message for UI continuity
         return NextResponse.json(
             { reply: "I'm taking a short hydration break! 🌿 In the meantime, you can find our best millets in the marketplace or check your profile." },
             { status: 200 }
