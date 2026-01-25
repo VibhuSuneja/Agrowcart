@@ -78,7 +78,7 @@ const PrivacyPolicy = () => {
                     </div>
                     <div>
                         <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2">Privacy Hotline</p>
-                        <a href="mailto:privacy@agrowcart.com" className="text-green-600 font-bold hover:underline font-mono">privacy@agrowcart.com</a>
+                        <a href="mailto:vibhusun01@gmail.com" className="text-green-600 font-bold hover:underline font-mono">vibhusun01@gmail.com</a>
                     </div>
                 </div>
             </div>
