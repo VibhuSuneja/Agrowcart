@@ -40,9 +40,8 @@ Be friendly and use 1-2 emojis.`;
 
     } catch (error: any) {
         console.error("ChatBot API Error:", error);
-        // Fallback message for UI continuity
         return NextResponse.json(
-            { reply: "I'm taking a short hydration break! 🌿 In the meantime, you can find our best millets in the marketplace or check your profile." },
+            { reply: `I'm taking a short hydration break! 🌿 (Debug Error: ${error.message || error.toString()})` },
             { status: 200 }
         );
     }
