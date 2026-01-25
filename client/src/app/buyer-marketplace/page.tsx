@@ -12,6 +12,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Image from 'next/image'
 import NegotiationChat from '@/components/NegotiationChat'
+import CertificateModal from '@/components/CertificateModal'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import TutorialGuide from '@/components/TutorialGuide'
@@ -48,6 +49,7 @@ function BuyerMarketplace() {
     const [loadingProducts, setLoadingProducts] = useState(true)
     const [selectedProduct, setSelectedProduct] = useState<any>(null)
     const [showNegotiation, setShowNegotiation] = useState(false)
+    const [showCertificate, setShowCertificate] = useState(false)
     const [stats, setStats] = useState({ activeSellers: 0, bulkVolume: 0, formattedVolume: '0 kg' })
 
     const [analysis, setAnalysis] = useState<any>(null)
@@ -345,6 +347,7 @@ function BuyerMarketplace() {
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
+                                            onClick={() => setShowCertificate(true)}
                                             className="w-full py-5 bg-blue-600 rounded-[1.5rem] font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-2xl shadow-blue-500/20"
                                         >
                                             <span>Generate Certificate</span>
@@ -403,6 +406,13 @@ function BuyerMarketplace() {
                         buyerName={userData.name}
                         currentUserRole="buyer"
                         onClose={() => setShowNegotiation(false)}
+                    />
+                )}
+                {showCertificate && analysis && (
+                    <CertificateModal
+                        analysis={analysis}
+                        buyerName={userData?.name || "Verified Buyer"}
+                        onClose={() => setShowCertificate(false)}
                     />
                 )}
             </AnimatePresence>
