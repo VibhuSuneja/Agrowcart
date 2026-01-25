@@ -93,8 +93,10 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
     getOrder()
   }, [userData?._id])
 
-  useEffect((): any => {
+  useEffect(() => {
     const socket = getSocket()
+
+    // Listen for Delivery Boy Location
     socket.on("update-deliveryBoy-location", (data) => {
       console.log("Delivery Boy Location Update:", data)
       setDeliveryBoyLocation({
@@ -102,8 +104,37 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
         longitude: data.location.coordinates?.[0] ?? data.location.longitude,
       })
     })
-    return () => socket.off("update-deliveryBoy-location")
-  }, [order])
+
+    // Listen for Order Assignment (Fix for bug: assignment not showing)
+    socket.on("order-assigned", (data) => {
+      console.log("Order Assigned Socket Event:", data)
+      if (data.orderId === orderId) {
+        setOrder((prev) => prev ? { ...prev, status: "out of delivery", assignedDeliveryBoy: data.assignedDeliveryBoy, deliveryOtp: data.deliveryOtp } : prev)
+
+        // Also update initial location
+        if (data.assignedDeliveryBoy?.location?.coordinates) {
+          setDeliveryBoyLocation({
+            latitude: data.assignedDeliveryBoy.location.coordinates[1],
+            longitude: data.assignedDeliveryBoy.location.coordinates[0]
+          })
+        }
+      }
+    })
+
+    // Listen for Order Status Updates (Fix for bug: delivery not showing)
+    socket.on("order-status-updated", (data) => {
+      console.log("Order Status Update Socket Event:", data)
+      if (data.orderId === orderId) {
+        setOrder((prev) => prev ? { ...prev, status: data.status } : prev)
+      }
+    })
+
+    return () => {
+      socket.off("update-deliveryBoy-location")
+      socket.off("order-assigned")
+      socket.off("order-status-updated")
+    }
+  }, [orderId, order])
 
   useEffect(() => {
     if (!orderId) return
