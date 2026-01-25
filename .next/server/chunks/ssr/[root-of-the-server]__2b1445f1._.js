@@ -1,0 +1,3 @@
+module.exports=[193695,(a,b,c)=>{b.exports=a.x("next/dist/shared/lib/no-fallback-error.external.js",()=>require("next/dist/shared/lib/no-fallback-error.external.js"))},650645,a=>{a.n(a.i(827572))},43619,a=>{a.n(a.i(379962))},13718,a=>{a.n(a.i(685523))},118198,a=>{a.n(a.i(545518))},262212,a=>{a.n(a.i(866114))},997767,a=>{"use strict";var b=a.i(907997);a.s(["default",0,function(){return(0,b.jsxs)("div",{className:"flex flex-col items-center justify-center h-screen bg-gray-100",children:[(0,b.jsx)("h1",{className:"text-3xl font-bold text-red-600",children:"Access Denied 🚫"}),(0,b.jsx)("p",{className:"mt-2 text-gray-700",children:"You can not access this page."})]})}])}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__2b1445f1._.js.map

@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /farmer-dashboard/
+Disallow: /buyer-dashboard/
+
+Sitemap: https://agrowcart.vercel.app/sitemap.xml

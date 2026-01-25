@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/shg-dashboard/layout,_N_T_/shg-dashboard/page,_N_T_/shg-dashboard"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/shg-dashboard/__PAGE__",
+    "/shg-dashboard",
+    "/_index",
+    "/_head"
+  ]
+}

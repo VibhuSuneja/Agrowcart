@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///D:/Agrowcart/AgrowCart/Agrowcart/Agrowcart/src/app/unauthorized/page.tsx"],"sourcesContent":["import React from 'react'\r\n\r\nfunction Unauthorized() {\r\n  return (\r\n    <div className='flex flex-col items-center justify-center h-screen bg-gray-100'>\r\n      <h1 className='text-3xl font-bold text-red-600'>Access Denied 🚫</h1>\r\n      <p className='mt-2 text-gray-700'>You can not access this page.</p>\r\n    </div>\r\n  )\r\n}\r\n\r\nexport default Unauthorized\r\n"],"names":[],"mappings":";;;;;;AAEA,SAAS;IACP,qBACE,8OAAC;QAAI,WAAU;;0BACb,8OAAC;gBAAG,WAAU;0BAAkC;;;;;;0BAChD,8OAAC;gBAAE,WAAU;0BAAqB;;;;;;;;;;;;AAGxC;uCAEe"}}]
+}
