@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
                 <div className="flex flex-col md:flex-row justify-between gap-6">
                     <div>
                         <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest mb-2">Data Protection Officer</p>
-                        <p className="font-bold text-zinc-900">Vibhu Singh (Acting DPO)</p>
+                        <p className="font-bold text-zinc-900">Vibhu Suneja (Founder)</p>
                         <p className="text-sm text-zinc-500">AgrowCart Intelligence Unit</p>
                     </div>
                     <div>
