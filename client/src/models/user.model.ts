@@ -22,6 +22,7 @@ export interface IUser {
     socketId: string | null
     isOnline: Boolean
     wishlist?: mongoose.Types.ObjectId[]
+    agreedToTerms?: Date
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -73,7 +74,10 @@ const userSchema = new mongoose.Schema<IUser>({
     wishlist: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
-    }]
+    }],
+    agreedToTerms: {
+        type: Date
+    }
 }, { timestamps: true })
 
 userSchema.index({ location: "2dsphere" })
