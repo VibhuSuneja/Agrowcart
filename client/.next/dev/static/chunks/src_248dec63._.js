@@ -326,7 +326,7 @@ function GlobalChatBot() {
         {
             id: '1',
             role: 'bot',
-            text: 'Hello! I am your SnapCart Assistant. How can I help you today?',
+            text: 'Hello! I am your Agrowcart Assistant. How can I help you today?',
             time: new Date().toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -528,7 +528,7 @@ function GlobalChatBot() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                     className: "font-bold text-lg leading-tight",
-                                                    children: "SnapCart AI"
+                                                    children: "Agrowcart AI"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/GlobalChatBot.tsx",
                                                     lineNumber: 160,
@@ -878,7 +878,7 @@ function GlobalChatBot() {
         columnNumber: 9
     }, this);
 }
-_s(GlobalChatBot, "zwUtKung0hTFoRioj22I6X6b5EY=");
+_s(GlobalChatBot, "dm/hM4ov/MF6zDWDMkKnyys3vk0=");
 _c = GlobalChatBot;
 const __TURBOPACK__default__export__ = GlobalChatBot;
 var _c;

@@ -414,6 +414,31 @@ const productSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mong
     scientificBenefits: {
         type: String,
         default: "Cultivated for millennia, this millet is power-packed with essential minerals and fiber, promoting digestive health and sustained energy release."
+    },
+    // Legal & Compliance Schema Addition
+    fssaiLicense: {
+        type: String,
+        required: false // Optional for raw farmers, mandatory for processors
+    },
+    batchNumber: {
+        type: String,
+        required: false
+    },
+    isCompliant: {
+        type: Boolean,
+        default: false // Requires admin/system approval
+    },
+    disclaimer: {
+        type: String,
+        default: "Product information is provided by the seller. AgrowCart is a marketplace and not responsible for seller claims."
+    },
+    originState: {
+        type: String,
+        default: "Haryana"
+    },
+    originCity: {
+        type: String,
+        default: ""
     }
 }, {
     timestamps: true

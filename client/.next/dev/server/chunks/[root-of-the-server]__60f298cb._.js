@@ -340,14 +340,14 @@ async function POST(req) {
                 "card"
             ],
             mode: "payment",
-            success_url: `${process.env.NEXT_BASE_URL}/user/order-success`,
-            cancel_url: `${process.env.NEXT_BASE_URL}/user/order-cancel`,
+            success_url: `${req.headers.get("origin")}/user/order-success`,
+            cancel_url: `${req.headers.get("origin")}/user/order-cancel`,
             line_items: [
                 {
                     price_data: {
                         currency: 'inr',
                         product_data: {
-                            name: 'SnapCart Order Payment'
+                            name: 'AgrowCart Order Payment'
                         },
                         unit_amount: totalAmount * 100
                     },

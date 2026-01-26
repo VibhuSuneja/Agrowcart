@@ -11,30 +11,33 @@ export async function POST(req: NextRequest) {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Using a stable model alias
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        // Using the latest flagship model for better reliability
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-        const prompt = `You are AgrowCart AI, a helpful assistant for an organic millet delivery platform.
+        const prompt = `You are Agrowcart AI, the official agricultural intelligence for Agrowcart platform.
         
+User identifies as someone interested in organic millets.
 User Message: "${message}"
 
-Your Goal: Provide a helpful, concise response (max 2-3 sentences).
-Context:
-- AgrowCart connects farmers directly to consumers.
-- We sell Millets (Foxtail, Ragi, etc.), Pulses, and Value-added products.
-- We track product journey via blockchain for transparency.
-- We support farmers with fair prices.
+Your Goal: Provide a friendly, expert response (max 2-3 sentences).
+Platform Values:
+- Dedicated to the "International Year of Millets" initiative.
+- Direct Farmer-to-Consumer / SHG-to-Corporate connectivity.
+- Focus: Foxtail, Ragi, Bajra, Jowar, and other ancient grains.
+- Sustainability: Low water usage, gluten-free, and high nutrition.
 
-If the user asks about specific stock, say you can check the marketplace page.
-If the user asks about an order, ask them to check 'My Orders'.
-Be friendly and use 1-2 emojis.`;
+Instructions:
+- If asked about prices or stock: Refer them to the Marketplace page.
+- If asked about an order: Direct them to 'My Orders' in their dashboard.
+- If asked about health benefits: Highlight high fiber and mineral content.
+- Tone: Professional, warm, and tech-savvy. Use 1-2 green/farm emojis.`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
         // Fallback if text is empty
-        const reply = text || "I'm currently updating my knowledge base. Please try exploring our marketplace! 🌿";
+        const reply = text || "I am currently syncing my knowledge base with the latest harvest data. How else can I assist you? 🌾";
 
         return NextResponse.json({ reply }, { status: 200 });
 
@@ -42,7 +45,7 @@ Be friendly and use 1-2 emojis.`;
         console.error("ChatBot API Error:", error);
         // Fallback message for UI continuity
         return NextResponse.json(
-            { reply: "I'm taking a short hydration break! 🌿 In the meantime, you can find our best millets in the marketplace or check your profile." },
+            { reply: "Our digital farmer is taking a quick break to check the harvest! 🌿 Please try asking again in a moment, or browse our fresh millets in the marketplace." },
             { status: 200 }
         );
     }

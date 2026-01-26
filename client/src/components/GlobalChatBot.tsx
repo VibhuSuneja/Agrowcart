@@ -18,7 +18,7 @@ function GlobalChatBot() {
         {
             id: '1',
             role: 'bot',
-            text: 'Hello! I am your SnapCart Assistant. How can I help you today?',
+            text: 'Hello! I am your Agrowcart Assistant. How can I help you today?',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
     ])
@@ -157,7 +157,7 @@ function GlobalChatBot() {
                                     <Bot size={24} className="text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg leading-tight">SnapCart AI</h3>
+                                    <h3 className="font-bold text-lg leading-tight">Agrowcart AI</h3>
                                     <div className="flex items-center gap-1.5 opacity-80">
                                         <span className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span>
                                         <span className="text-[10px] uppercase tracking-widest font-bold">Online</span>

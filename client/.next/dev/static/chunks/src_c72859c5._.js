@@ -6,13 +6,35 @@ __turbopack_context__.s([
     "getSocket",
     ()=>getSocket
 ]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/socket.io-client/build/esm/index.js [app-client] (ecmascript) <locals>");
 ;
 let socket = null;
 const getSocket = ()=>{
     if (!socket) {
-        // Force port 3001 where our dedicated server is running
-        socket = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])("http://localhost:3001");
+        let socketUrl = "http://localhost:4000";
+        if ("TURBOPACK compile-time truthy", 1) {
+            const hostname = window.location.hostname;
+            socketUrl = `http://${hostname}:4000`;
+        }
+        console.log("🔌 Attempting Socket Connection to:", socketUrl);
+        socket = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])(("TURBOPACK compile-time value", "http://localhost:4000") || socketUrl, {
+            reconnectionAttempts: 10,
+            reconnectionDelay: 1000,
+            transports: [
+                'websocket'
+            ],
+            forceNew: false
+        });
+        socket.on("connect", ()=>{
+            console.log("🟢 Socket Connected Successfully! ID:", socket?.id);
+        });
+        socket.on("connect_error", (err)=>{
+            console.error("🔴 Socket Connection Error:", err.message);
+        });
+        socket.on("disconnect", (reason)=>{
+            console.warn("🟡 Socket Disconnected:", reason);
+        });
     }
     return socket;
 };

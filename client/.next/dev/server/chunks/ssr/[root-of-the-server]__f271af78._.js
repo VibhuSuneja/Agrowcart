@@ -329,11 +329,20 @@ const TermsAndConditions = ()=>{
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                                     href: "mailto:vibhusun01@gmail.com",
-                                    className: "text-green-600 font-bold hover:underline",
-                                    children: "legal@agrowcart.com"
+                                    className: "text-green-600 font-bold hover:underline block",
+                                    children: "vibhusun01@gmail.com"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/terms/page.tsx",
                                     lineNumber: 79,
+                                    columnNumber: 25
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                    href: "tel:9468150076",
+                                    className: "text-zinc-600 font-bold hover:text-zinc-900 block mt-1",
+                                    children: "+91 9468150076"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/terms/page.tsx",
+                                    lineNumber: 80,
                                     columnNumber: 25
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]

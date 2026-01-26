@@ -158,7 +158,10 @@ const userSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoos
             type: __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$29$__["default"].Schema.Types.ObjectId,
             ref: "Product"
         }
-    ]
+    ],
+    agreedToTerms: {
+        type: Date
+    }
 }, {
     timestamps: true
 });
@@ -238,7 +241,8 @@ const { handlers, signIn, signOut, auth } = (0, __TURBOPACK__imported__module__$
                     id: user._id.toString(),
                     email: user.email,
                     name: user.name,
-                    role: user.role
+                    role: user.role,
+                    agreedToTerms: user.agreedToTerms
                 };
             }
         }),
@@ -265,15 +269,20 @@ const { handlers, signIn, signOut, auth } = (0, __TURBOPACK__imported__module__$
                 }
                 user.id = dbUser._id.toString();
                 user.role = dbUser.role;
+                // @ts-ignore
+                user.agreedToTerms = dbUser.agreedToTerms;
             }
             return true;
         },
         jwt ({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id, token.name = user.name, token.email = user.email, token.role = user.role;
+                // @ts-ignore
+                token.agreedToTerms = user.agreedToTerms;
             }
             if (trigger == "update") {
                 token.role = session.role;
+                if (session.agreedToTerms) token.agreedToTerms = session.agreedToTerms;
             }
             return token;
         },
@@ -281,6 +290,8 @@ const { handlers, signIn, signOut, auth } = (0, __TURBOPACK__imported__module__$
             if (session.user) {
                 session.user.id = token.id, session.user.name = token.name, session.user.email = token.email;
                 session.user.role = token.role;
+                // @ts-ignore
+                session.user.agreedToTerms = token.agreedToTerms;
             }
             return session;
         }

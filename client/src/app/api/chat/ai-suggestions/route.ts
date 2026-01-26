@@ -46,19 +46,19 @@ Last message: ${message}`
             })
         })
 
-        const data=await response.json()
-        const replyText=data.candidates?.[0].content.parts?.[0].text || ""
-        const suggestions=replyText
-        .split(",")
-        .map((s:string)=>s.trim())
-        
+        const data = await response.json()
+        const replyText = data.candidates?.[0].content.parts?.[0].text || ""
+        const suggestions = replyText
+            .split(",")
+            .map((s: string) => s.trim())
+
         return NextResponse.json(
-            suggestions,{status:200}
+            suggestions, { status: 200 }
         )
 
     } catch (error) {
- return NextResponse.json(
-            {message:`gemini error ${error}`},{status:200}
+        return NextResponse.json(
+            { message: `gemini error ${error}` }, { status: 200 }
         )
     }
 }

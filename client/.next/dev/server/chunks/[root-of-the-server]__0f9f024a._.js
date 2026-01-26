@@ -49,54 +49,53 @@ __turbopack_context__.s([
     ()=>POST
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@google/generative-ai/dist/index.mjs [app-route] (ecmascript)");
+;
 ;
 async function POST(req) {
     try {
         const { message } = await req.json();
-        const prompt = `You are AgrowCart AI, a helpful assistant for an organic millet delivery platform.
+        if (!process.env.GEMINI_API_KEY) {
+            console.error("GEMINI_API_KEY is missing");
+            throw new Error("API Key missing");
+        }
+        const genAI = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$route$5d$__$28$ecmascript$29$__["GoogleGenerativeAI"](process.env.GEMINI_API_KEY);
+        // Using the latest flagship model for better reliability
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash"
+        });
+        const prompt = `You are Agrowcart AI, the official agricultural intelligence for Agrowcart platform.
         
+User identifies as someone interested in organic millets.
 User Message: "${message}"
 
-Your Goal: Provide a helpful, concise response (max 2-3 sentences).
-Context:
-- AgrowCart connects farmers directly to consumers.
-- We sell Millets (Foxtail, Ragi, etc.), Pulses, and Value-added products.
-- We track product journey via blockchain for transparency.
-- We support farmers with fair prices.
+Your Goal: Provide a friendly, expert response (max 2-3 sentences).
+Platform Values:
+- Dedicated to the "International Year of Millets" initiative.
+- Direct Farmer-to-Consumer / SHG-to-Corporate connectivity.
+- Focus: Foxtail, Ragi, Bajra, Jowar, and other ancient grains.
+- Sustainability: Low water usage, gluten-free, and high nutrition.
 
-If the user asks about specific stock, say you can check the marketplace page.
-If the user asks about an order, ask them to check 'My Orders'.
-Be friendly and use 1-2 emojis.`;
-        // Using Gemini API
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "contents": [
-                    {
-                        "parts": [
-                            {
-                                "text": prompt
-                            }
-                        ]
-                    }
-                ]
-            })
-        });
-        const data = await response.json();
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm currently updating my knowledge base. Please try exploring our marketplace! 🌿";
+Instructions:
+- If asked about prices or stock: Refer them to the Marketplace page.
+- If asked about an order: Direct them to 'My Orders' in their dashboard.
+- If asked about health benefits: Highlight high fiber and mineral content.
+- Tone: Professional, warm, and tech-savvy. Use 1-2 green/farm emojis.`;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        // Fallback if text is empty
+        const reply = text || "I am currently syncing my knowledge base with the latest harvest data. How else can I assist you? 🌾";
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             reply
         }, {
             status: 200
         });
     } catch (error) {
-        console.error("ChatBot API Error:", error.message);
-        // Status 200 with fallback message to prevent UI from breaking
+        console.error("ChatBot API Error:", error);
+        // Fallback message for UI continuity
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            reply: "I'm taking a short hydration break! 🌿 In the meantime, you can find our best millets in the marketplace or check your profile."
+            reply: "Our digital farmer is taking a quick break to check the harvest! 🌿 Please try asking again in a moment, or browse our fresh millets in the marketplace."
         }, {
             status: 200
         });
