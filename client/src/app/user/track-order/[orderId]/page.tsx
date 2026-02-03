@@ -61,7 +61,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   const [messages, setMessages] = useState<IMessage[]>()
   const chatBoxRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<string[]>([])
   const [userLocation, setUserLocation] = useState<ILocation>(
     {
       latitude: 0,
@@ -142,7 +142,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
     socket.emit("join-room", orderId)
     socket.on("send-message", (message) => {
       if (message.roomId === orderId) {
-        setMessages((prev) => [...prev!, message])
+        setMessages((prev) => [...(prev || []), message])
       }
     })
 
@@ -169,6 +169,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   }
   useEffect(() => {
     const getAllMessages = async () => {
+      if (!orderId) return
       try {
         const result = await axios.post("/api/chat/messages", { roomId: orderId })
         setMessages(result.data)
@@ -177,7 +178,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
       }
     }
     getAllMessages()
-  }, [])
+  }, [orderId])
 
   useEffect(() => {
     chatBoxRef.current?.scrollTo({
@@ -187,15 +188,23 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   }, [messages])
 
   const getSuggestion = async () => {
+    if (!messages || messages.length === 0) return
+    const lastMessage = messages.filter(m => m.senderId.toString() !== userData?._id)?.at(-1)
+    if (!lastMessage) return
+
     setLoading(true)
     try {
+      const result = await axios.post("/api/chat/ai-suggestions", {
+        message: lastMessage.text,
+        role: "user"
+      })
 
-      const lastMessage = messages?.filter(m => m.senderId.toString() !== userData?._id)?.at(-1)
-      const result = await axios.post("/api/chat/ai-suggestions", { message: lastMessage?.text, role: "user" })
-      setSuggestions(result.data)
-      setLoading(false)
+      if (Array.isArray(result.data)) {
+        setSuggestions(result.data)
+      }
     } catch (error) {
       console.log(error)
+    } finally {
       setLoading(false)
     }
   }

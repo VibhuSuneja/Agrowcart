@@ -16,14 +16,14 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
   const [messages, setMessages] = useState<IMessage[]>()
   const chatBoxRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<string[]>([])
   useEffect(() => {
     if (!orderId) return
     const socket = getSocket()
     socket.emit("join-room", orderId)
     socket.on("send-message", (message) => {
       if (message.roomId === orderId) {
-        setMessages((prev) => [...prev!, message])
+        setMessages((prev) => [...(prev || []), message])
       }
     })
 
@@ -70,15 +70,23 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
   }, [orderId])
 
   const getSuggestion = async () => {
+    if (!messages || messages.length === 0) return
+    const lastMessage = messages.filter(m => m.senderId.toString() !== deliveryBoyId)?.at(-1)
+    if (!lastMessage) return
+
     setLoading(true)
     try {
+      const result = await axios.post("/api/chat/ai-suggestions", {
+        message: lastMessage.text,
+        role: "delivery_boy"
+      })
 
-      const lastMessage = messages?.filter(m => m.senderId.toString() !== deliveryBoyId)?.at(-1)
-      const result = await axios.post("/api/chat/ai-suggestions", { message: lastMessage?.text, role: "delivery_boy" })
-      setSuggestions(result.data)
-      setLoading(false)
+      if (Array.isArray(result.data)) {
+        setSuggestions(result.data)
+      }
     } catch (error) {
       console.log(error)
+    } finally {
       setLoading(false)
     }
   }
