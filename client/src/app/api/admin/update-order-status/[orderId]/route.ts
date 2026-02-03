@@ -83,10 +83,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ orderI
 
             await deliveryAssignment.populate("order");
             for (const boyId of candidates) {
-                const boy = await User.findById(boyId)
-                if (boy.socketId) {
-                    await emitEventHandler("new-assignment", deliveryAssignment, boy.socketId)
-                }
+                await emitEventHandler("new-assignment", deliveryAssignment, undefined, `user:${boyId}`)
             }
 
 

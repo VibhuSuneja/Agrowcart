@@ -198,8 +198,8 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
         lastMessage = messages.at(-1)
       }
 
-      // If still no messages, use a generic prompt
-      const messageText = lastMessage?.text || "Hello, I'm tracking my order"
+      // If still no messages, messageText will be empty, and the API will generate starters
+      const messageText = lastMessage?.text || ""
 
       const result = await axios.post("/api/chat/ai-suggestions", {
         message: messageText,
@@ -221,7 +221,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
       <Nav user={userData as any} />
       <div className='max-w-2xl mx-auto pb-24 pt-24'>
         <div className='sticky top-0 bg-white/80 backdrop-blur-xl p-4 border-b shadow flex gap-3 items-center z-999'>
-          <button className='p-2 bg-green-100 rounded-full' onClick={() => router.back()}><ArrowLeft className="text-green-700" size={20} /></button>
+          <button className='p-2 bg-green-100 rounded-full' onClick={() => router.push('/user/my-orders')}><ArrowLeft className="text-green-700" size={20} /></button>
           <div>
             <h2 className='text-xl font-bold'>Track Order</h2>
             <p className='text-sm text-gray-600'>order#{order?._id?.toString().slice(-6)} <span className='text-green-700 font-semibold'>{order?.status}</span></p>

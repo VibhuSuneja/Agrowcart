@@ -1,5 +1,5 @@
 'use client'
-import { getSocket } from '@/lib/socket'
+import { useSocket } from '@/context/SocketContext'
 import { RootState } from '@/redux/store'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -43,6 +43,7 @@ const DELIVERY_TOUR_STEPS = [
 ]
 
 function DeliveryBoyDashboard({ earning }: { earning: number }) {
+  const { socket } = useSocket()
   const [assignments, setAssignments] = useState<any[]>([])
   const { userData } = useSelector((state: RootState) => state.user)
   const [activeOrder, setActiveOrder] = useState<any>(null)
@@ -53,6 +54,16 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   const [otp, setOtp] = useState("")
   const [userLocation, setUserLocation] = useState<ILocation>({ latitude: 0, longitude: 0 })
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState<ILocation>({ latitude: 0, longitude: 0 })
+  const [realTimeEarning, setRealTimeEarning] = useState(earning)
+
+  const fetchStats = async () => {
+    try {
+      const res = await axios.get('/api/delivery/stats')
+      setRealTimeEarning(res.data.earnings)
+    } catch (error) {
+      console.error("Failed to fetch delivery stats", error)
+    }
+  }
 
   const fetchAssignments = async () => {
     try {
@@ -64,8 +75,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   }
 
   useEffect(() => {
-    const socket = getSocket()
-    if (!userData?._id) return
+    if (!socket || !userData?._id) return
     if (!navigator.geolocation) return
     const watcher = navigator.geolocation.watchPosition((pos) => {
       const lat = pos.coords.latitude
@@ -74,11 +84,13 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       socket.emit("update-location", { userId: userData?._id, latitude: lat, longitude: lon })
     }, (err) => console.error(err), { enableHighAccuracy: true })
     return () => navigator.geolocation.clearWatch(watcher)
-  }, [userData?._id])
+  }, [userData?._id, socket])
 
   useEffect((): any => {
-    const socket = getSocket()
+    if (!socket) return
+
     socket.on("new-assignment", (deliveryAssignment) => {
+      console.log("LOG: New Assignment received via socket", deliveryAssignment)
       setAssignments((prev) => [...prev, deliveryAssignment])
       toast.success("New Delivery Assignment!")
     })
@@ -87,13 +99,14 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
         toast.error(`Order #${orderId.slice(-6).toUpperCase()} has been cancelled`)
         fetchCurrentOrder()
         fetchAssignments()
+        fetchStats()
       }
     })
     return () => {
       socket.off("new-assignment")
       socket.off("order-status-update")
     }
-  }, [])
+  }, [socket])
 
   const handleAccept = async (id: string) => {
     try {
@@ -145,6 +158,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   useEffect(() => {
     fetchCurrentOrder()
     fetchAssignments()
+    fetchStats()
   }, [userData])
 
   const sendOtp = async () => {
@@ -189,6 +203,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       // Re-fetch to ensure sync with backend
       await fetchCurrentOrder()
       await fetchAssignments()
+      await fetchStats()
 
     } catch (error) {
       setOtpError("Incorrect OTP provided")
@@ -199,7 +214,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   }
 
   if (!activeOrder && assignments.length === 0) {
-    const analytics = [{ name: "Today", earnings: earning, deliveries: Math.round(earning / 40) }]
+    const analytics = [{ name: "Today", earnings: realTimeEarning, deliveries: Math.round(realTimeEarning / 40) }]
     return (
       <div className='min-h-screen bg-zinc-50 pt-[120px] pb-20'>
         <TutorialGuide steps={DELIVERY_TOUR_STEPS} tourName="delivery_v1" />
@@ -233,11 +248,11 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
               <div className="flex justify-between items-center px-4">
                 <div className="text-left">
                   <div className="text-[10px] font-black uppercase text-zinc-400">Total</div>
-                  <div className="text-xl font-black text-zinc-900">₹{earning}</div>
+                  <div className="text-xl font-black text-zinc-900">₹{realTimeEarning}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] font-black uppercase text-zinc-400">Deliveries</div>
-                  <div className="text-xl font-black text-green-600">{Math.round(earning / 40)}</div>
+                  <div className="text-xl font-black text-green-600">{Math.round(realTimeEarning / 40)}</div>
                 </div>
               </div>
             </div>

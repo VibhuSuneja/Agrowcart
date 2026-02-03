@@ -80,8 +80,8 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
         lastMessage = messages.at(-1)
       }
 
-      // If still no messages, use a generic prompt for delivery context
-      const messageText = lastMessage?.text || "I'm on my way with your order"
+      // If still no messages, messageText will be empty, and the API will generate starters
+      const messageText = lastMessage?.text || ""
 
       const result = await axios.post("/api/chat/ai-suggestions", {
         message: messageText,

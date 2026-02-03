@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: NextRequest) {
     try {
@@ -25,7 +22,8 @@ export async function POST(req: NextRequest) {
         }
         const base64Data = parts[1];
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const apiKey = process.env.GEMINI_API_KEY;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         const prompt = `Analyze this crop image for diseases. 
     Return a STRICT JSON object with these fields:
@@ -37,18 +35,32 @@ export async function POST(req: NextRequest) {
     }
     If the image is not a plant/crop, set diagnosis to "Not a crop" and isHealthy to false.`;
 
-        const result = await model.generateContent([
-            prompt,
-            {
-                inlineData: {
-                    data: base64Data,
-                    mimeType: "image/jpeg", // Assuming JPEG for simplicity, can detect from header
-                },
-            },
-        ]);
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "contents": [
+                    {
+                        "parts": [
+                            { "text": prompt },
+                            {
+                                "inlineData": {
+                                    "data": base64Data,
+                                    "mimeType": "image/jpeg"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
 
-        const response = await result.response;
-        const text = response.text();
+        if (!response.ok) {
+            throw new Error(`Gemini API Error: ${response.statusText}`);
+        }
+
+        const dataRes = await response.json();
+        const text = dataRes.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
 
         // Extract JSON from markdown code block if present
         const jsonMatch = text.match(/\{[\s\S]*\}/);

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
 Context:
 - Role of person receiving suggestions: ${role}
-- Last message received: "${message}"
+- Last message received: "${message || '(No messages yet - provide starters)'}"
 
 Task:
 Generate exactly 3 short, helpful, and natural reply suggestions.
@@ -22,6 +22,7 @@ Generate exactly 3 short, helpful, and natural reply suggestions.
 👉 If role is "delivery_boy" → generate replies for a delivery boy to send to a customer.
 
 Rules:
+- If context is "(No messages yet - provide starters)", generate common opening questions or updates (e.g., "Where are you?", "Any update?", "I'm coming down").
 - Replies must be relevant to the context of the last message.
 - Keep replies short (max 6 words).
 - Use max one emoji per reply.

@@ -5,12 +5,14 @@ import { motion } from 'motion/react';
 import { Upload, Loader2, Sprout, AlertCircle, CheckCircle, ArrowLeft, X } from 'lucide-react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
 export default function CropDoctorPage() {
+    const router = useRouter();
     const { userData } = useSelector((state: RootState) => state.user)
     const [image, setImage] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
@@ -60,12 +62,15 @@ export default function CropDoctorPage() {
 
             <div className="pt-32 pb-20 px-4">
                 <div className="max-w-2xl mx-auto">
-                    <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-colors group">
-                        <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-green-50 transition-colors">
-                            <ArrowLeft size={18} />
+                    <button
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-3 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-all group"
+                    >
+                        <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center group-hover:bg-green-50 group-hover:rotate-[-10deg] transition-all">
+                            <ArrowLeft size={20} />
                         </div>
-                        <span>Back to Home</span>
-                    </Link>
+                        <span className="text-sm uppercase tracking-widest">Back to Dashboard</span>
+                    </button>
 
                     <div className="text-center mb-10">
                         <motion.div
@@ -94,11 +99,17 @@ export default function CropDoctorPage() {
                                 <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                             </label>
                         ) : (
-                            <div className="relative rounded-2xl overflow-hidden mb-6 group">
-                                <img src={preview} alt="Crop Preview" className="w-full h-64 object-cover" />
+                            <div className="relative rounded-2xl overflow-hidden mb-6 shadow-lg border border-zinc-100 group h-64">
+                                <img src={preview} alt="Crop Preview" className="w-full h-full object-cover" />
                                 <button
-                                    onClick={() => { setPreview(null); setImage(null); setResult(null); }}
-                                    className="absolute top-4 right-4 z-50 bg-white/90 p-2 rounded-full text-red-500 hover:text-red-700 shadow-lg border border-red-50 transition-all hover:scale-110 active:scale-95"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setPreview(null);
+                                        setImage(null);
+                                        setResult(null);
+                                    }}
+                                    className="absolute top-4 right-4 z-[9999] bg-white/90 p-2 rounded-full text-red-500 hover:text-red-700 shadow-xl border border-red-100 hover:scale-110 active:scale-95 transition-all cursor-pointer"
                                     title="Remove image"
                                 >
                                     <X size={20} />
@@ -151,7 +162,7 @@ export default function CropDoctorPage() {
 
                                 <div className="text-center pt-4 border-t border-zinc-100">
                                     <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Analysis Verified By</p>
-                                    <p className="text-xs font-bold text-zinc-600">AgrowCart AI Specialist • Cluster-01-Haryana</p>
+                                    <p className="text-xs font-bold text-zinc-600">Dr. Aryan Sharma • Senior AI Specialist</p>
                                 </div>
                             </motion.div>
                         )}

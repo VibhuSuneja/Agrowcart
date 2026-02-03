@@ -1,9 +1,9 @@
 import axios from 'axios'
 import React from 'react'
 
-async function emitEventHandler(event:string,data:any,socketId?:string) {
+async function emitEventHandler(event: string, data: any, socketId?: string, room?: string) {
   try {
-    await axios.post(`${process.env.NEXT_PUBLIC_SOCKET_SERVER}/notify`,{socketId,event,data})
+    await axios.post(`${process.env.NEXT_PUBLIC_SOCKET_SERVER}/notify`, { socketId, room, event, data })
   } catch (error) {
     console.log(error)
   }

@@ -181,8 +181,10 @@ io.on("connection", (socket) => {
 
 // Notify endpoint for Next.js to push events (Dynamic Updates)
 app.post("/notify", (req, res) => {
-    const { event, data, socketId } = req.body;
-    if (socketId) {
+    const { event, data, socketId, room } = req.body;
+    if (room) {
+        io.to(room).emit(event, data);
+    } else if (socketId) {
         io.to(socketId).emit(event, data);
     } else {
         io.emit(event, data);

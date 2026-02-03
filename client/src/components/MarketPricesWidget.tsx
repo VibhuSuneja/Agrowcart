@@ -25,6 +25,9 @@ export default function MarketPricesWidget() {
 
     useEffect(() => {
         fetchPrices()
+        // Auto-refresh every 5 minutes (300,000 ms)
+        const interval = setInterval(fetchPrices, 300000)
+        return () => clearInterval(interval)
     }, [])
 
     return (
