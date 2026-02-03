@@ -2,8 +2,16 @@ import connectDb from "@/lib/db";
 import User from "@/models/user.model";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import { authRateLimit, getClientIdentifier, rateLimitResponse } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
+    // Rate limiting check
+    const clientId = getClientIdentifier(req);
+    const rateLimitResult = authRateLimit.check(`register:${clientId}`);
+    if (!rateLimitResult.success) {
+        return rateLimitResponse(rateLimitResult.resetIn);
+    }
+
     try {
         await connectDb()
         const { name, email, password, role } = await req.json()

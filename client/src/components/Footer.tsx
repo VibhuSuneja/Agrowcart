@@ -82,6 +82,7 @@ function Footer() {
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-green-400 transition-colors">Terms of Service</Link>
+            <Link href="/refund-policy" className="hover:text-green-400 transition-colors">Refund Policy</Link>
           </div>
           <p>© {new Date().getFullYear()} Millet Platform. </p>
           <p className="font-medium">

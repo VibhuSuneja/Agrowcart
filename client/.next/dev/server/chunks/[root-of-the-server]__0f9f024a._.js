@@ -62,7 +62,7 @@ async function POST(req) {
         const genAI = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$route$5d$__$28$ecmascript$29$__["GoogleGenerativeAI"](process.env.GEMINI_API_KEY);
         // Using the latest flagship model for better reliability
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash"
+            model: "gemini-2.5-flash"
         });
         const prompt = `You are Agrowcart AI, the official agricultural intelligence for Agrowcart platform.
         

@@ -127,7 +127,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\Agrowcart",
+    "outputFileTracingRoot": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\client",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -317,11 +317,11 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts",
     "turbopack": {
-      "root": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\Agrowcart"
+      "root": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\client"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\Agrowcart",
+  "appDir": "D:\\Agrowcart\\AgrowCart\\Agrowcart\\client",
   "relativeAppDir": "",
   "files": [
     ".next\\routes-manifest.json",

@@ -276,6 +276,12 @@
       "namedRegex": "^/api/analytics/demand\\-heatmap(?:/)?$"
     },
     {
+      "page": "/api/analytics/platform-stats",
+      "regex": "^/api/analytics/platform\\-stats(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/analytics/platform\\-stats(?:/)?$"
+    },
+    {
       "page": "/api/auth/register",
       "regex": "^/api/auth/register(?:/)?$",
       "routeKeys": {},
@@ -432,6 +438,12 @@
       "namedRegex": "^/api/user/payment(?:/)?$"
     },
     {
+      "page": "/api/user/record-terms",
+      "regex": "^/api/user/record\\-terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/user/record\\-terms(?:/)?$"
+    },
+    {
       "page": "/api/user/stripe/webhook",
       "regex": "^/api/user/stripe/webhook(?:/)?$",
       "routeKeys": {},
@@ -520,6 +532,12 @@
       "regex": "^/recipes(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/recipes(?:/)?$"
+    },
+    {
+      "page": "/refund-policy",
+      "regex": "^/refund\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/refund\\-policy(?:/)?$"
     },
     {
       "page": "/register",

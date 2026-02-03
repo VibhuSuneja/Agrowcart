@@ -571,7 +571,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io
 let socket = null;
 const getSocket = ()=>{
     if (!socket) {
-        let socketUrl = "http://localhost:3001";
+        let socketUrl = "http://localhost:4000";
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
         console.log("🔌 Attempting Socket Connection to:", socketUrl);
@@ -4937,7 +4937,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot
 ;
 ;
 ;
-function FeedbackSection() {
+function FeedbackSection({ onReviewSubmitted }) {
     const [rating, setRating] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
     const [feedback, setFeedback] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [email, setEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
@@ -4959,6 +4959,8 @@ function FeedbackSection() {
             setRating(0);
             setFeedback("");
             setEmail("");
+            // Trigger refresh in parent
+            if (onReviewSubmitted) onReviewSubmitted();
         } catch (error) {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].error(error.response?.data?.message || "Something went wrong");
         } finally{
@@ -4974,14 +4976,14 @@ function FeedbackSection() {
                     className: "absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] -mr-32 -mt-32"
                 }, void 0, false, {
                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                    lineNumber: 42,
+                    lineNumber: 48,
                     columnNumber: 17
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -ml-32 -mb-32"
                 }, void 0, false, {
                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                    lineNumber: 43,
+                    lineNumber: 49,
                     columnNumber: 17
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4998,7 +5000,7 @@ function FeedbackSection() {
                                             size: 18
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 48,
+                                            lineNumber: 54,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5006,13 +5008,13 @@ function FeedbackSection() {
                                             children: "Voice of the People"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 49,
+                                            lineNumber: 55,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                    lineNumber: 47,
+                                    lineNumber: 53,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -5024,14 +5026,14 @@ function FeedbackSection() {
                                             children: "Drives"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 53,
+                                            lineNumber: 59,
                                             columnNumber: 43
                                         }, this),
                                         " Our Innovation."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                    lineNumber: 52,
+                                    lineNumber: 58,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5039,7 +5041,7 @@ function FeedbackSection() {
                                     children: "Help us refine the millet value chain from Kurukshetra to the world. Tell us about your experience or suggest new features to empower farmers."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                    lineNumber: 56,
+                                    lineNumber: 62,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5053,7 +5055,7 @@ function FeedbackSection() {
                                                     children: "4.9/5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 62,
+                                                    lineNumber: 68,
                                                     columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5061,13 +5063,13 @@ function FeedbackSection() {
                                                     children: "Average Satisfaction"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 63,
+                                                    lineNumber: 69,
                                                     columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 61,
+                                            lineNumber: 67,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5078,7 +5080,7 @@ function FeedbackSection() {
                                                     children: "2k+"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 66,
+                                                    lineNumber: 72,
                                                     columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5086,25 +5088,25 @@ function FeedbackSection() {
                                                     children: "Total Stories"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 67,
+                                                    lineNumber: 73,
                                                     columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 65,
+                                            lineNumber: 71,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                    lineNumber: 60,
+                                    lineNumber: 66,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                            lineNumber: 46,
+                            lineNumber: 52,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5121,7 +5123,7 @@ function FeedbackSection() {
                                                 children: "Overall Rating"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                lineNumber: 75,
+                                                lineNumber: 81,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5142,23 +5144,23 @@ function FeedbackSection() {
                                                             className: star <= rating ? "text-yellow-400 fill-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]" : "text-zinc-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                            lineNumber: 85,
+                                                            lineNumber: 91,
                                                             columnNumber: 45
                                                         }, this)
                                                     }, star, false, {
                                                         fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                        lineNumber: 78,
+                                                        lineNumber: 84,
                                                         columnNumber: 41
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                lineNumber: 76,
+                                                lineNumber: 82,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/FeedbackSection.tsx",
-                                        lineNumber: 74,
+                                        lineNumber: 80,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5169,7 +5171,7 @@ function FeedbackSection() {
                                                 size: 18
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                lineNumber: 95,
+                                                lineNumber: 101,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5180,13 +5182,13 @@ function FeedbackSection() {
                                                 onChange: (e)=>setEmail(e.target.value)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                lineNumber: 96,
+                                                lineNumber: 102,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/FeedbackSection.tsx",
-                                        lineNumber: 94,
+                                        lineNumber: 100,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5200,12 +5202,12 @@ function FeedbackSection() {
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 106,
+                                            lineNumber: 112,
                                             columnNumber: 33
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FeedbackSection.tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 111,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].button, {
@@ -5222,7 +5224,7 @@ function FeedbackSection() {
                                             className: "w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                                            lineNumber: 124,
+                                            lineNumber: 130,
                                             columnNumber: 37
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                             children: [
@@ -5230,49 +5232,49 @@ function FeedbackSection() {
                                                     children: "Submit Feedback"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 133,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__["Send"], {
                                                     size: 18
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                                                    lineNumber: 128,
+                                                    lineNumber: 134,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/FeedbackSection.tsx",
-                                        lineNumber: 116,
+                                        lineNumber: 122,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/FeedbackSection.tsx",
-                                lineNumber: 73,
+                                lineNumber: 79,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/FeedbackSection.tsx",
-                            lineNumber: 72,
+                            lineNumber: 78,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/FeedbackSection.tsx",
-                    lineNumber: 45,
+                    lineNumber: 51,
                     columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/FeedbackSection.tsx",
-            lineNumber: 40,
+            lineNumber: 46,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/FeedbackSection.tsx",
-        lineNumber: 39,
+        lineNumber: 45,
         columnNumber: 9
     }, this);
 }
@@ -6651,6 +6653,7 @@ __turbopack_context__.s([
     ()=>__TURBOPACK__default__export__
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/HeroSection.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CategorySlider$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/CategorySlider.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ProductItemCard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ProductItemCard.tsx [app-ssr] (ecmascript)");
@@ -6662,6 +6665,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ReviewM
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$i18n$2f$LanguageProvider$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/i18n/LanguageProvider.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$TutorialGuide$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/TutorialGuide.tsx [app-ssr] (ecmascript)");
 'use client';
+;
 ;
 ;
 ;
@@ -6692,6 +6696,10 @@ function UserDashboard({ productList }) {
             content: 'Check out the latest harvests listed directly by farmers and SHGs. Transparent pricing and full traceability guaranteed.'
         }
     ];
+    const [reviewsRefreshKey, setReviewsRefreshKey] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(0);
+    const handleFeedbackRefresh = ()=>{
+        setReviewsRefreshKey((prev)=>prev + 1);
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "bg-white pb-20",
         children: [
@@ -6699,24 +6707,24 @@ function UserDashboard({ productList }) {
                 id: "home-hero",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$HeroSection$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/UserDashboard.tsx",
-                    lineNumber: 41,
+                    lineNumber: 47,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 40,
+                lineNumber: 46,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 id: "home-categories",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CategorySlider$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                     fileName: "[project]/src/components/UserDashboard.tsx",
-                    lineNumber: 45,
+                    lineNumber: 51,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 44,
+                lineNumber: 50,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6736,20 +6744,20 @@ function UserDashboard({ productList }) {
                                                 size: 16
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                                lineNumber: 52,
+                                                lineNumber: 58,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Curated Selection"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                                lineNumber: 53,
+                                                lineNumber: 59,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/UserDashboard.tsx",
-                                        lineNumber: 51,
+                                        lineNumber: 57,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -6757,7 +6765,7 @@ function UserDashboard({ productList }) {
                                         children: t('title')
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/UserDashboard.tsx",
-                                        lineNumber: 55,
+                                        lineNumber: 61,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6765,13 +6773,13 @@ function UserDashboard({ productList }) {
                                         children: "Discover our highest-rated products, handpicked from organic farms across the country for their nutritional excellence."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/UserDashboard.tsx",
-                                        lineNumber: 56,
+                                        lineNumber: 62,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 50,
+                                lineNumber: 56,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6785,7 +6793,7 @@ function UserDashboard({ productList }) {
                                                 children: "Total Produce"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                                lineNumber: 61,
+                                                lineNumber: 67,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6796,13 +6804,13 @@ function UserDashboard({ productList }) {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                                lineNumber: 62,
+                                                lineNumber: 68,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/UserDashboard.tsx",
-                                        lineNumber: 60,
+                                        lineNumber: 66,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6811,24 +6819,24 @@ function UserDashboard({ productList }) {
                                             size: 20
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/UserDashboard.tsx",
-                                            lineNumber: 65,
+                                            lineNumber: 71,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/UserDashboard.tsx",
-                                        lineNumber: 64,
+                                        lineNumber: 70,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 59,
+                                lineNumber: 65,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/UserDashboard.tsx",
-                        lineNumber: 49,
+                        lineNumber: 55,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6837,12 +6845,12 @@ function UserDashboard({ productList }) {
                                 item: item
                             }, index, false, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 72,
+                                lineNumber: 78,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/UserDashboard.tsx",
-                        lineNumber: 70,
+                        lineNumber: 76,
                         columnNumber: 9
                     }, this),
                     productList.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6855,12 +6863,12 @@ function UserDashboard({ productList }) {
                                     size: 32
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/UserDashboard.tsx",
-                                    lineNumber: 79,
+                                    lineNumber: 85,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 78,
+                                lineNumber: 84,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -6868,7 +6876,7 @@ function UserDashboard({ productList }) {
                                 children: "No products found"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 81,
+                                lineNumber: 87,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6876,34 +6884,36 @@ function UserDashboard({ productList }) {
                                 children: "We're currently stocking up on the freshest harvests. Check back soon!"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/UserDashboard.tsx",
-                                lineNumber: 82,
+                                lineNumber: 88,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/UserDashboard.tsx",
-                        lineNumber: 77,
+                        lineNumber: 83,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 48,
+                lineNumber: 54,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$MissionStory$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 87,
+                lineNumber: 93,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ReviewMarquee$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ReviewMarquee$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, reviewsRefreshKey, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 88,
+                lineNumber: 94,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$FeedbackSection$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$FeedbackSection$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                onReviewSubmitted: handleFeedbackRefresh
+            }, void 0, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 89,
+                lineNumber: 95,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$TutorialGuide$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -6911,13 +6921,13 @@ function UserDashboard({ productList }) {
                 tourName: "consumer_v1"
             }, void 0, false, {
                 fileName: "[project]/src/components/UserDashboard.tsx",
-                lineNumber: 90,
+                lineNumber: 96,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/UserDashboard.tsx",
-        lineNumber: 39,
+        lineNumber: 45,
         columnNumber: 5
     }, this);
 }

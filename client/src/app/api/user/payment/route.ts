@@ -3,10 +3,18 @@ import Order from "@/models/order.model";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { paymentRateLimit, getClientIdentifier, rateLimitResponse } from "@/lib/rateLimit";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
+  // Rate limiting check
+  const clientId = getClientIdentifier(req);
+  const rateLimitResult = paymentRateLimit.check(`payment:${clientId}`);
+  if (!rateLimitResult.success) {
+    return rateLimitResponse(rateLimitResult.resetIn);
+  }
+
   try {
     await connectDb()
     const { userId, items, paymentMethod, totalAmount, address } = await req.json()

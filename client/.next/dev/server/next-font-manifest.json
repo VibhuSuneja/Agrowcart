@@ -3,7 +3,22 @@
     "[project]/src/app/buyer-marketplace/page": [
       "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
     ],
+    "[project]/src/app/marketplace/page": [
+      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
+    ],
     "[project]/src/app/page": [
+      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
+    ],
+    "[project]/src/app/user/cart/page": [
+      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
+    ],
+    "[project]/src/app/user/checkout/page": [
+      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
+    ],
+    "[project]/src/app/user/my-orders/page": [
+      "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
+    ],
+    "[project]/src/app/user/track-order/[orderId]/page": [
       "static/media/0acc7fdf55eb3220-s.p.532ccaa1.woff2"
     ]
   },

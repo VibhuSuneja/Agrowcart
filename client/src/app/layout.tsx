@@ -12,6 +12,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import GoogleAds from "@/components/GoogleAds";
 import { Analytics } from "@vercel/analytics/next"
 import { SocketProvider } from "@/context/SocketContext";
+import CookieConsent from "@/components/CookieConsent";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://agrowcart.vercel.app'), // Replace with actual domain
@@ -101,6 +102,7 @@ export default function RootLayout({
               </LanguageProvider>
             </StoreProvider>
           </SocketProvider>
+          <CookieConsent />
         </Provider>
       </body>
     </html>
