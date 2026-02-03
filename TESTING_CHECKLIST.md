@@ -83,46 +83,46 @@
 ## 2.5 My Orders
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.5.1 | View Orders | Go to `/user/my-orders` | All orders listed | |
-| 2.5.2 | Order Status | Check order status | Shows pending/out for delivery/delivered | |
-| 2.5.3 | Order Details | Click on an order | Shows items, address, payment info | |
-| 2.5.4 | Track Order Button | Click "Track Order" | Redirects to tracking page | |
+| 2.5.1 | View Orders | Go to `/user/my-orders` | All orders listed |done|
+| 2.5.2 | Order Status | Check order status | Shows pending/out for delivery/delivered |done|
+| 2.5.3 | Order Details | Click on an order | Shows items, address, payment info |done|
+| 2.5.4 | Track Order Button | Click "Track Order" | Redirects to tracking page |done|
 
 ## 2.6 Order Tracking (⭐ CRITICAL)
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.6.1 | Map Display | Open tracking page | Map loads with markers | |
-| 2.6.2 | Marker Legend | Check below map | Legend shows Delivery Partner (green) & Your Location (blue) | |
-| 2.6.3 | Live Location | Wait for updates | Delivery boy marker moves in real-time | |
-| 2.6.4 | Recenter Button | Click "Recenter View" | Map recenters on markers | |
-| 2.6.5 | Delivery OTP | When driver arrives | OTP displayed on screen | |
-| 2.6.6 | Chat with Driver | Type and send message | Message appears in chat | |
-| 2.6.7 | Receive Message | Driver sends message | Message appears instantly | |
-| 2.6.8 | AI Suggest (No Messages) | Click "AI Suggest" before any chat | Shows starter suggestions | |
-| 2.6.9 | AI Suggest (With Messages) | Click "AI Suggest" after chat | Shows contextual suggestions | |
-| 2.6.10 | Use Suggestion | Click a suggestion | Text fills in message input | |
+| 2.6.1 | Map Display | Open tracking page | Map loads with markers |done |
+| 2.6.2 | Marker Legend | Check below map | Legend shows Delivery Partner (green) & Your Location (blue) |done |
+| 2.6.3 | Live Location | Wait for updates | Delivery boy marker moves in real-time |done |
+| 2.6.4 | Recenter Button | Click "Recenter View" | Map recenters on markers |done |
+| 2.6.5 | Delivery OTP | When driver arrives | OTP displayed on screen |done |
+| 2.6.6 | Chat with Driver | Type and send message | Message appears in chat |done |
+| 2.6.7 | Receive Message | Driver sends message | Message appears instantly |done |
+| 2.6.8 | AI Suggest (No Messages) | Click "AI Suggest" before any chat | Shows starter suggestions |not working properly |
+| 2.6.9 | AI Suggest (With Messages) | Click "AI Suggest" after chat | Shows contextual suggestions |not working properly |
+| 2.6.10 | Use Suggestion | Click a suggestion | Text fills in message input |not working properly |
 
 ## 2.7 Community Forum
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.7.1 | Browse Forum | Go to `/community` | Threads displayed | |
-| 2.7.2 | Create Thread | Click "New Thread", fill form | Thread created | |
-| 2.7.3 | Reply to Thread | Open thread, add reply | Reply posted | |
-| 2.7.4 | AI Forum Assist | Ask farm-related question | AI provides helpful answer | |
+| 2.7.1 | Browse Forum | Go to `/community` | Threads displayed |done |
+| 2.7.2 | Create Thread | Click "New Thread", fill form | Thread created |done |
+| 2.7.3 | Reply to Thread | Open thread, add reply | Reply posted |done |
+| 2.7.4 | AI Forum Assist | Ask farm-related question | AI provides helpful answer |checking as daily credits vanished |
 
 ## 2.8 Recipes
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.8.1 | Browse Recipes | Go to `/recipes` | Recipe cards displayed | |
-| 2.8.2 | View Recipe | Click a recipe | Full recipe with ingredients, steps | |
-| 2.8.3 | AI Recipe Suggestion | On product page, click recipe | AI generates recipe for that millet | |
+| 2.8.1 | Browse Recipes | Go to `/recipes` | Recipe cards displayed |done |
+| 2.8.2 | View Recipe | Click a recipe | Full recipe with ingredients, steps |done but audio note not able to listen |
+| 2.8.3 | AI Recipe Suggestion | On product page, click recipe | AI generates recipe for that millet | checking as daily credits vanished    |
 
 ## 2.9 AI Features
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.9.1 | AI Chatbot | Click chat widget | Chatbot responds to queries | |
-| 2.9.2 | Crop Doctor | Upload crop image | AI analyzes and provides diagnosis | |
-| 2.9.3 | Agricultural News | Check news section | AI-generated news displayed | |
+| 2.9.1 | AI Chatbot | Click chat widget | Chatbot responds to queries |checking as daily credits vanished |
+| 2.9.2 | Crop Doctor | Upload crop image | AI analyzes and provides diagnosis |done , need to add sample checker name rather than vibhu also close button not working and back button needed|
+| 2.9.3 | Agricultural News | Check news section | AI-generated news displayed |done |
 
 ---
 
@@ -131,38 +131,38 @@
 ## 3.1 Dashboard
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 3.1.1 | Dashboard Load | Login as delivery boy | Dashboard loads with stats | |
-| 3.1.2 | Earning Display | Check earnings card | Today's earnings shown | |
-| 3.1.3 | Go Online | Click "Go Online" | Status changes, ready for orders | |
-| 3.1.4 | Check New | Click "Check New" | Refreshes assignment list | |
+| 3.1.1 | Dashboard Load | Login as delivery boy | Dashboard loads with stats |yes, but have to refresh again and again to see stats |
+| 3.1.2 | Earning Display | Check earnings card | Today's earnings shown | done|
+| 3.1.3 | Go Online | Click "Go Online" | Status changes, ready for orders |working |
+| 3.1.4 | Check New | Click "Check New" | Refreshes assignment list | working|
 
 ## 3.2 Order Assignments (⭐ CRITICAL)
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 3.2.1 | Receive Assignment | Wait for broadcast | New assignment appears with toast | |
-| 3.2.2 | Accept Assignment | Click "Accept" | Assignment accepted, shows on map | |
-| 3.2.3 | Accept when Busy | Accept while having active order | Shows "already assigned to other order" error | |
-| 3.2.4 | Reject Assignment | Click "Reject" | Assignment removed from list | |
-| 3.2.5 | Expired Assignment | Try to accept stale order | Shows "assignment expired" error | |
+| 3.2.1 | Receive Assignment | Wait for broadcast | New assignment appears with toast | yes, but no toast notification|
+| 3.2.2 | Accept Assignment | Click "Accept" | Assignment accepted, shows on map | yes working|
+| 3.2.3 | Accept when Busy | Accept while having active order | Shows "already assigned to other order" error | yes working|
+| 3.2.4 | Reject Assignment | Click "Reject" | Assignment removed from list | yes working|
+| 3.2.5 | Expired Assignment | Try to accept stale order | Shows "assignment expired" error | not checked yet|
 
 ## 3.3 Active Delivery
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 3.3.1 | Map with Route | Accept order | Map shows user location and route | |
-| 3.3.2 | Delivery Address | Check address section | Full address displayed | |
-| 3.3.3 | Chat with Customer | Send message | Message delivered to customer | |
-| 3.3.4 | Receive Message | Customer sends message | Message appears instantly | |
-| 3.3.5 | AI Suggest (Delivery Boy) | Click "AI Suggest" | Shows delivery-relevant suggestions | |
+| 3.3.1 | Map with Route | Accept order | Map shows user location and route | yes working|
+| 3.3.2 | Delivery Address | Check address section | Full address displayed |yes |
+| 3.3.3 | Chat with Customer | Send message | Message delivered to customer |yes |
+| 3.3.4 | Receive Message | Customer sends message | Message appears instantly |yes|
+| 3.3.5 | AI Suggest (Delivery Boy) | Click "AI Suggest" | Shows delivery-relevant suggestions | ai credits over for today check later|
 
 ## 3.4 Delivery Completion (⭐ CRITICAL)
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 3.4.1 | Arrived at Location | Click "Arrived at Location" | OTP input appears | |
-| 3.4.2 | Enter Wrong OTP | Enter incorrect OTP | Shows "Incorrect OTP" error | |
-| 3.4.3 | Enter Correct OTP | Enter customer's OTP | Shows "Delivery Successful!" | |
-| 3.4.4 | Map Clears | After successful delivery | Map disappears, returns to dashboard | |
-| 3.4.5 | Accept New Order | After completing delivery | Can accept new order without error | |
-| 3.4.6 | Earnings Update | After delivery | Earnings reflect new delivery | |
+| 3.4.1 | Arrived at Location | Click "Arrived at Location" | OTP input appears | yes|
+| 3.4.2 | Enter Wrong OTP | Enter incorrect OTP | Shows "Incorrect OTP" error | yes|
+| 3.4.3 | Enter Correct OTP | Enter customer's OTP | Shows "Delivery Successful!" |yes |
+| 3.4.4 | Map Clears | After successful delivery | Map disappears, returns to dashboard | yes|
+| 3.4.5 | Accept New Order | After completing delivery | Can accept new order without error | yes|
+| 3.4.6 | Earnings Update | After delivery | Earnings reflect new delivery | yes but have to refresh|
 
 ---
 
@@ -171,24 +171,24 @@
 ## 4.1 Dashboard Access
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 4.1.1 | Admin Login | Login as admin | Redirected to admin dashboard | |
-| 4.1.2 | Unauthorized Access | Non-admin visits `/admin` | Redirected to unauthorized page | |
+| 4.1.1 | Admin Login | Login as admin | Redirected to admin dashboard | yes|
+| 4.1.2 | Unauthorized Access | Non-admin visits `/admin` | Redirected to unauthorized page |yes |
 
 ## 4.2 Product Management
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 4.2.1 | View Products | Go to `/admin/view-products` | All products listed | |
-| 4.2.2 | Add Product | Go to `/admin/add-product`, fill form | Product created | |
-| 4.2.3 | Edit Product | Click edit on a product | Form pre-filled, can update | |
-| 4.2.4 | Delete Product | Click delete | Product removed | |
-| 4.2.5 | Upload Image | Upload product image | Image uploads to Cloudinary | |
+| 4.2.1 | View Products | Go to `/admin/view-products` | All products listed | yes|
+| 4.2.2 | Add Product | Go to `/admin/add-product`, fill form | Product created, redirects |done |
+| 4.2.3 | Edit Product | Click edit on a product | Form pre-filled, can update | yes|
+| 4.2.4 | Delete Product | Click delete | Product removed |yes |
+| 4.2.5 | Upload Image | Upload product image | Image uploads to Cloudinary |not working |
 
 ## 4.3 Order Management
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 4.3.1 | View Orders | Go to `/admin/manage-orders` | All orders listed | |
-| 4.3.2 | Assign Delivery | Click "Assign Delivery" | Broadcasts to nearby delivery boys | |
-| 4.3.3 | Order Status | Check order statuses | Shows correct status for each | |
+| 4.3.1 | View Orders | Go to `/admin/manage-orders` | All orders listed |yes |
+| 4.3.2 | Assign Delivery | Click "Assign Delivery" | Broadcasts to nearby delivery boys |i click on out of delivery and it will brodcasted to nearby delivery boys no assign delivery is there  |
+| 4.3.3 | Order Status | Check order statuses | Shows correct status for each | working|
 
 ---
 
@@ -197,10 +197,10 @@
 ## 5.1 Dashboard Features
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 5.1.1 | Dashboard Load | Login as farmer | Dashboard loads | |
-| 5.1.2 | Crop Analysis | Upload crop photo | AI analyzes quality | |
-| 5.1.3 | Market Prices | View market prices | Current millet prices shown | |
-| 5.1.4 | AI Farming Advice | Ask farming question | AI provides advice | |
+| 5.1.1 | Dashboard Load | Login as farmer | Dashboard loads | true |
+| 5.1.2 | Crop Analysis | Upload crop photo | AI analyzes quality |no crop photo upload feature is there for farmer dashboard  |
+| 5.1.3 | Market Prices | View market prices | Current millet prices shown |digital harvest guide is there but no market prices  |
+| 5.1.4 | AI Farming Advice | Ask farming question | AI provides advice | chatbot is there but i dont understand what u are saying|
 
 ---
 
@@ -209,24 +209,24 @@
 ## 6.1 Real-time Features
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 6.1.1 | Socket Connection | Open app | Socket connects (check console) | |
-| 6.1.2 | Live Chat | Send message | Received in < 1 second | |
-| 6.1.3 | Location Updates | Move device (delivery) | Location updates on customer map | |
-| 6.1.4 | Order Notifications | Assign order | Delivery boy receives toast | |
+| 6.1.1 | Socket Connection | Open app | Socket connects (check console) |yes |
+| 6.1.2 | Live Chat | Send message | Received in < 1 second |yes |
+| 6.1.3 | Location Updates | Move device (delivery) | Location updates on customer map |yes |
+| 6.1.4 | Order Notifications | Assign order | Delivery boy receives toast |no toast notification |
 
 ## 6.2 Error Handling
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 6.2.1 | Network Offline | Disable network, perform action | Graceful error message | |
-| 6.2.2 | Invalid Route | Visit `/random-page` | 404 page displayed | |
-| 6.2.3 | API Timeout | Slow network | Loading states show, no crash | |
+| 6.2.1 | Network Offline | Disable network, perform action | Graceful error message |no |
+| 6.2.2 | Invalid Route | Visit `/random-page` | 404 page displayed |yes |
+| 6.2.3 | API Timeout | Slow network | Loading states show, no crash |yes |
 
 ## 6.3 Security
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 6.3.1 | Protected Routes | Visit `/user/*` without login | Redirected to login | |
-| 6.3.2 | Admin Routes | Non-admin visits admin pages | Access denied | |
-| 6.3.3 | API Auth | Call API without session | Returns 401 Unauthorized | |
+| 6.3.1 | Protected Routes | Visit `/user/*` without login | Redirected to login |yes |
+| 6.3.2 | Admin Routes | Non-admin visits admin pages | Access denied |yes |
+| 6.3.3 | API Auth | Call API without session | Returns 401 Unauthorized |i dont understand |
 
 ---
 
@@ -234,12 +234,12 @@
 
 | # | Test Case | Device | Status |
 |---|-----------|--------|--------|
-| 7.1 | Homepage | iPhone 14 | |
-| 7.2 | Marketplace | iPhone 14 | |
-| 7.3 | Product Detail | iPhone 14 | |
-| 7.4 | Cart | iPhone 14 | |
-| 7.5 | Checkout | iPhone 14 | |
-| 7.6 | Order Tracking | iPhone 14 | |
+| 7.1 | Homepage | iPhone 14 |yes |
+| 7.2 | Marketplace | iPhone 14 |yes |
+| 7.3 | Product Detail | iPhone 14 | yes|
+| 7.4 | Cart | iPhone 14 |yes |
+| 7.5 | Checkout | iPhone 14 |done |yes
+| 7.6 | Order Tracking | iPhone 14 |yes |
 | 7.7 | Delivery Dashboard | iPhone 14 | |
 | 7.8 | Chat Interface | iPhone 14 | |
 

@@ -62,6 +62,8 @@ async function getMarketAnalysis(crop: string, district: string) {
     }
 }
 
+import { ArrowLeft } from "lucide-react";
+
 export default async function MarketPricePage({ params }: Props) {
     const { crop, district } = params;
     const decodedCrop = decodeURIComponent(crop).replace(/-/g, ' ');
@@ -72,6 +74,12 @@ export default async function MarketPricePage({ params }: Props) {
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
+                <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-colors group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-green-50 transition-colors">
+                        <ArrowLeft size={18} />
+                    </div>
+                    <span>Back to Home</span>
+                </Link>
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2 capitalize">
                         {decodedCrop} Market Price in {decodedDistrict}

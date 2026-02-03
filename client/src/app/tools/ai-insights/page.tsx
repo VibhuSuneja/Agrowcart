@@ -6,13 +6,15 @@ import { RootState } from '@/redux/store'
 import {
     Zap, Sparkles, TrendingUp, MapPin, Search,
     Brain, BarChart3, Globe, ShieldCheck, ArrowRight,
-    Loader, Sprout, Info, DollarSign, Package
+    Loader, Sprout, Info, DollarSign, Package, ArrowLeft
 } from 'lucide-react'
 import axios from 'axios'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import DemandHeatmap from '@/components/DemandHeatmap'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Prediction {
     estimatedPrice: number
@@ -26,8 +28,6 @@ interface MarketInsight {
     forecast: string
     highDemandRegions: string[]
 }
-
-import { useRouter } from 'next/navigation'
 
 export default function AIInsightsPage() {
     const { userData } = useSelector((state: RootState) => state.user)
@@ -87,6 +87,12 @@ export default function AIInsightsPage() {
             <Nav user={userData} />
 
             <div className="w-[95%] md:w-[90%] xl:w-[85%] mx-auto py-12 space-y-16">
+                <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-colors group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-green-50 transition-colors">
+                        <ArrowLeft size={18} />
+                    </div>
+                    <span>Back to Home</span>
+                </Link>
 
                 {/* Hero / Header */}
                 <header className="max-w-4xl space-y-6">

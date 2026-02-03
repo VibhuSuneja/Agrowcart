@@ -6,12 +6,13 @@ import RecipeCard from '@/components/RecipeCard'
 import CreateRecipeModal from '@/components/CreateRecipeModal'
 import RecipeDetailModal from '@/components/RecipeDetailModal'
 import ExpertOpinions from '@/components/ExpertOpinions'
-import { Plus, ChefHat, Search, Loader, Sparkles } from 'lucide-react'
+import { Plus, ChefHat, Search, Loader, Sparkles, ArrowLeft } from 'lucide-react'
 import Nav from "@/components/Nav"
 import Footer from "@/components/Footer"
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
 
 function CommunityRecipes() {
     const { userData } = useSelector((state: RootState) => state.user)
@@ -63,6 +64,12 @@ function CommunityRecipes() {
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
             <Nav user={userData || { name: "Guest", email: "", role: "user" }} />
             <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+                <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-colors group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-green-50 transition-colors">
+                        <ArrowLeft size={18} />
+                    </div>
+                    <span>Back to Marketplace</span>
+                </Link>
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">

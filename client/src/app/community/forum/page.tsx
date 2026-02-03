@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { MessageSquare, ThumbsUp, Eye, Send, Plus, AlertCircle, ShieldCheck, User, Sparkles, Loader2 } from 'lucide-react'
+import { MessageSquare, ThumbsUp, Eye, Send, Plus, AlertCircle, ShieldCheck, User, Sparkles, Loader2, ArrowLeft } from 'lucide-react'
 import Nav from "@/components/Nav"
 import Footer from "@/components/Footer"
 import { useSelector } from 'react-redux'
@@ -9,6 +9,7 @@ import { RootState } from '@/redux/store'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function MilletForum() {
     const { userData } = useSelector((state: RootState) => state.user)
@@ -49,7 +50,7 @@ function MilletForum() {
             await axios.post('/api/community/discussions', {
                 title: newTitle,
                 body: newBody,
-                tags: newTags.split(',').map(t => t.trim()).filter(t => t)
+                tags: newTags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
             })
             toast.success('Question posted successfully!')
             setIsAskModalOpen(false)
@@ -113,172 +114,180 @@ function MilletForum() {
         <div className="min-h-screen bg-zinc-50">
             <Nav user={userData || { name: "Guest", email: "", role: "user" }} />
 
-            <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                {/* Main Content - Feed */}
-                <div className="lg:col-span-3 space-y-6">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h1 className="text-3xl font-black text-zinc-900 tracking-tight">Millet Forum</h1>
-                            <p className="text-zinc-500">Ask, discuss, and learn from the community</p>
-                        </div>
-                        <button
-                            onClick={() => userData ? setIsAskModalOpen(true) : toast.error('Please login to ask')}
-                            className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-green-700 transition shadow-lg shadow-green-600/20"
-                        >
-                            <Plus size={18} />
-                            Ask Question
-                        </button>
+            <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+                <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-green-600 font-bold mb-8 transition-colors group">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-green-50 transition-colors">
+                        <ArrowLeft size={18} />
                     </div>
+                    <span>Back to Marketplace</span>
+                </Link>
 
-                    {loading ? (
-                        <div className="text-center py-20 text-zinc-400">Loading discussions...</div>
-                    ) : discussions.map((discussion) => (
-                        <div key={discussion._id} className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-100 hover:shadow-md transition">
-                            <div className="flex items-start gap-4">
-                                <div className="flex flex-col items-center gap-1 min-w-[3rem]">
-                                    <button
-                                        onClick={() => toggleLike(discussion._id)}
-                                        className={`p-2 rounded-lg flex flex-col items-center gap-1 transition ${discussion.likedBy?.includes(userData?._id)
-                                            ? 'text-green-600 bg-green-50'
-                                            : 'text-zinc-400 hover:bg-zinc-50'
-                                            }`}
-                                    >
-                                        <ThumbsUp size={20} />
-                                        <span className="font-bold text-sm">{discussion.likes}</span>
-                                    </button>
-                                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Main Content - Feed */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h1 className="text-3xl font-black text-zinc-900 tracking-tight">Millet Forum</h1>
+                                <p className="text-zinc-500">Ask, discuss, and learn from the community</p>
+                            </div>
+                            <button
+                                onClick={() => userData ? setIsAskModalOpen(true) : toast.error('Please login to ask')}
+                                className="bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-green-700 transition shadow-lg shadow-green-600/20"
+                            >
+                                <Plus size={18} />
+                                Ask Question
+                            </button>
+                        </div>
 
-                                <div className="flex-1">
-                                    <h3
-                                        onClick={() => toggleExpand(discussion._id)}
-                                        className="text-xl font-bold text-zinc-900 mb-2 cursor-pointer hover:text-green-600 transition"
-                                    >
-                                        {discussion.title}
-                                    </h3>
-                                    <p className="text-zinc-600 leading-relaxed mb-4 line-clamp-3">{discussion.body}</p>
-
-                                    <div className="flex items-center gap-4 text-xs text-zinc-400 mb-4">
-                                        <span className="flex items-center gap-1 bg-zinc-100 px-2 py-1 rounded-md">
-                                            {discussion.userImage ? (
-                                                <Image src={discussion.userImage} width={16} height={16} className="rounded-full" alt="" />
-                                            ) : <User size={12} />}
-                                            {discussion.userName || 'Anonymous'}
-                                        </span>
-                                        <span className="flex items-center gap-1">
-                                            <Eye size={14} /> {discussion.views} views
-                                        </span>
-                                        <span className="flex items-center gap-1">
-                                            <MessageSquare size={14} /> {discussion.comments?.length || 0} answers
-                                        </span>
-                                        {discussion.tags?.map((tag: string, i: number) => (
-                                            <span key={i} className="text-green-600 bg-green-50 px-2 py-0.5 rounded-full">#{tag}</span>
-                                        ))}
+                        {loading ? (
+                            <div className="text-center py-20 text-zinc-400">Loading discussions...</div>
+                        ) : discussions.map((discussion) => (
+                            <div key={discussion._id} className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-100 hover:shadow-md transition">
+                                <div className="flex items-start gap-4">
+                                    <div className="flex flex-col items-center gap-1 min-w-[3rem]">
+                                        <button
+                                            onClick={() => toggleLike(discussion._id)}
+                                            className={`p-2 rounded-lg flex flex-col items-center gap-1 transition ${discussion.likedBy?.includes(userData?._id)
+                                                ? 'text-green-600 bg-green-50'
+                                                : 'text-zinc-400 hover:bg-zinc-50'
+                                                }`}
+                                        >
+                                            <ThumbsUp size={20} />
+                                            <span className="font-bold text-sm">{discussion.likes}</span>
+                                        </button>
                                     </div>
 
-                                    {/* Action Bar */}
-                                    <div className="flex items-center gap-4 pt-4 border-t border-zinc-100">
-                                        <button
+                                    <div className="flex-1">
+                                        <h3
                                             onClick={() => toggleExpand(discussion._id)}
-                                            className="text-zinc-500 font-bold text-sm hover:text-green-600 transition"
+                                            className="text-xl font-bold text-zinc-900 mb-2 cursor-pointer hover:text-green-600 transition"
                                         >
-                                            {expandedIds.includes(discussion._id) ? 'Collapse' : 'View Answers'}
-                                        </button>
-                                        <button
-                                            onClick={() => handleAiAssist(discussion._id, discussion.title, discussion.body)}
-                                            className="flex items-center gap-1.5 text-purple-600 font-bold text-sm hover:text-purple-700 transition"
-                                            disabled={assistLoading === discussion._id}
-                                        >
-                                            {assistLoading === discussion._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                                            Draft AI Answer
-                                        </button>
-                                    </div>
+                                            {discussion.title}
+                                        </h3>
+                                        <p className="text-zinc-600 leading-relaxed mb-4 line-clamp-3">{discussion.body}</p>
 
-                                    {/* Expanded Comments Section */}
-                                    {expandedIds.includes(discussion._id) && (
-                                        <div className="mt-6 space-y-6">
-                                            {/* Existing Comments */}
-                                            {discussion.comments?.map((comment: any, idx: number) => (
-                                                <div key={idx} className="flex gap-3 bg-zinc-50 p-4 rounded-xl">
-                                                    <div className="w-8 h-8 rounded-full bg-zinc-200 overflow-hidden flex-shrink-0">
-                                                        {comment.userImage ? (
-                                                            <Image src={comment.userImage} width={32} height={32} alt="" />
-                                                        ) : <User className="w-full h-full p-1.5 text-zinc-400" />}
-                                                    </div>
-                                                    <div>
-                                                        <div className="flex items-baseline gap-2 mb-1">
-                                                            <span className="font-bold text-sm text-zinc-900">{comment.userName}</span>
-                                                            <span className="text-xs text-zinc-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
-                                                        </div>
-                                                        <p className="text-zinc-700 text-sm">{comment.content}</p>
-                                                    </div>
-                                                </div>
+                                        <div className="flex items-center gap-4 text-xs text-zinc-400 mb-4">
+                                            <span className="flex items-center gap-1 bg-zinc-100 px-2 py-1 rounded-md">
+                                                {discussion.userImage ? (
+                                                    <Image src={discussion.userImage} width={16} height={16} className="rounded-full" alt="" />
+                                                ) : <User size={12} />}
+                                                {discussion.userName || 'Anonymous'}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <Eye size={14} /> {discussion.views} views
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <MessageSquare size={14} /> {discussion.comments?.length || 0} answers
+                                            </span>
+                                            {discussion.tags?.map((tag: string, i: number) => (
+                                                <span key={i} className="text-green-600 bg-green-50 px-2 py-0.5 rounded-full">#{tag}</span>
                                             ))}
-
-                                            {/* Add Comment Input */}
-                                            <div className="flex gap-2">
-                                                <input
-                                                    type="text"
-                                                    value={commentInputs[discussion._id] || ''}
-                                                    onChange={e => setCommentInputs(prev => ({ ...prev, [discussion._id]: e.target.value }))}
-                                                    placeholder="Write a helpful answer..."
-                                                    className="flex-1 px-4 py-2 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20"
-                                                />
-                                                <button
-                                                    onClick={() => postComment(discussion._id)}
-                                                    className="bg-zinc-900 text-white p-2 rounded-xl hover:bg-zinc-800 transition"
-                                                >
-                                                    <Send size={18} />
-                                                </button>
-                                            </div>
                                         </div>
-                                    )}
+
+                                        {/* Action Bar */}
+                                        <div className="flex items-center gap-4 pt-4 border-t border-zinc-100">
+                                            <button
+                                                onClick={() => toggleExpand(discussion._id)}
+                                                className="text-zinc-500 font-bold text-sm hover:text-green-600 transition"
+                                            >
+                                                {expandedIds.includes(discussion._id) ? 'Collapse' : 'View Answers'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleAiAssist(discussion._id, discussion.title, discussion.body)}
+                                                className="flex items-center gap-1.5 text-purple-600 font-bold text-sm hover:text-purple-700 transition"
+                                                disabled={assistLoading === discussion._id}
+                                            >
+                                                {assistLoading === discussion._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                                                Draft AI Answer
+                                            </button>
+                                        </div>
+
+                                        {/* Expanded Comments Section */}
+                                        {expandedIds.includes(discussion._id) && (
+                                            <div className="mt-6 space-y-6">
+                                                {/* Existing Comments */}
+                                                {discussion.comments?.map((comment: any, idx: number) => (
+                                                    <div key={idx} className="flex gap-3 bg-zinc-50 p-4 rounded-xl">
+                                                        <div className="w-8 h-8 rounded-full bg-zinc-200 overflow-hidden flex-shrink-0">
+                                                            {comment.userImage ? (
+                                                                <Image src={comment.userImage} width={32} height={32} alt="" />
+                                                            ) : <User className="w-full h-full p-1.5 text-zinc-400" />}
+                                                        </div>
+                                                        <div>
+                                                            <div className="flex items-baseline gap-2 mb-1">
+                                                                <span className="font-bold text-sm text-zinc-900">{comment.userName}</span>
+                                                                <span className="text-xs text-zinc-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                            <p className="text-zinc-700 text-sm">{comment.content}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                {/* Add Comment Input */}
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={commentInputs[discussion._id] || ''}
+                                                        onChange={e => setCommentInputs(prev => ({ ...prev, [discussion._id]: e.target.value }))}
+                                                        placeholder="Write a helpful answer..."
+                                                        className="flex-1 px-4 py-2 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                                                    />
+                                                    <button
+                                                        onClick={() => postComment(discussion._id)}
+                                                        className="bg-zinc-900 text-white p-2 rounded-xl hover:bg-zinc-800 transition"
+                                                    >
+                                                        <Send size={18} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
 
-                {/* Sidebar - Rules */}
-                <div className="lg:col-span-1">
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-100 sticky top-32">
-                        <div className="flex items-center gap-2 mb-4 text-zinc-900 font-black">
-                            <ShieldCheck className="text-green-600" />
-                            <h2>Community Rules</h2>
-                        </div>
-                        <ul className="space-y-4 text-sm text-zinc-600">
-                            <li className="flex gap-3">
-                                <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">1</span>
-                                <div>
-                                    <span className="font-bold text-zinc-900 block">Be Respectful</span>
-                                    No vulgarity, hate speech, or personal attacks. Treat everyone with kindness.
-                                </div>
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">2</span>
-                                <div>
-                                    <span className="font-bold text-zinc-900 block">No Politics</span>
-                                    Keep discussions focused on millets, health, and nutrition.
-                                </div>
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">3</span>
-                                <div>
-                                    <span className="font-bold text-zinc-900 block">Provide Value</span>
-                                    Ask genuine questions and provide helpful, accurate answers.
-                                </div>
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">4</span>
-                                <div>
-                                    <span className="font-bold text-zinc-900 block">No Spam</span>
-                                    Do not post promotional content or repeated messages.
-                                </div>
-                            </li>
-                        </ul>
-                        <div className="mt-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100 text-xs text-yellow-800 flex gap-2">
-                            <AlertCircle size={16} className="shrink-0" />
-                            <p>Violating these rules may result in account suspension. Let's keep this a safe space for everyone.</p>
+                    {/* Sidebar - Rules */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-100 sticky top-32">
+                            <div className="flex items-center gap-2 mb-4 text-zinc-900 font-black">
+                                <ShieldCheck className="text-green-600" />
+                                <h2>Community Rules</h2>
+                            </div>
+                            <ul className="space-y-4 text-sm text-zinc-600">
+                                <li className="flex gap-3">
+                                    <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">1</span>
+                                    <div>
+                                        <span className="font-bold text-zinc-900 block">Be Respectful</span>
+                                        No vulgarity, hate speech, or personal attacks. Treat everyone with kindness.
+                                    </div>
+                                </li>
+                                <li className="flex gap-3">
+                                    <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">2</span>
+                                    <div>
+                                        <span className="font-bold text-zinc-900 block">No Politics</span>
+                                        Keep discussions focused on millets, health, and nutrition.
+                                    </div>
+                                </li>
+                                <li className="flex gap-3">
+                                    <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">3</span>
+                                    <div>
+                                        <span className="font-bold text-zinc-900 block">Provide Value</span>
+                                        Ask genuine questions and provide helpful, accurate answers.
+                                    </div>
+                                </li>
+                                <li className="flex gap-3">
+                                    <span className="bg-green-100 text-green-700 w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold shrink-0">4</span>
+                                    <div>
+                                        <span className="font-bold text-zinc-900 block">No Spam</span>
+                                        Do not post promotional content or repeated messages.
+                                    </div>
+                                </li>
+                            </ul>
+                            <div className="mt-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100 text-xs text-yellow-800 flex gap-2">
+                                <AlertCircle size={16} className="shrink-0" />
+                                <p>Violating these rules may result in account suspension. Let's keep this a safe space for everyone.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

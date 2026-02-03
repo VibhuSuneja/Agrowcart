@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react"
 import {
     ChevronDown, ChevronUp, CreditCard, MapPin, Package,
     Truck, UserCheck, Calendar, IndianRupee,
-    ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles
+    ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles, X
 } from 'lucide-react'
 import Image from 'next/image'
 import { getSocket } from '@/lib/socket'
@@ -38,7 +38,7 @@ interface IOrder {
     }
     assignment?: string
     assignedDeliveryBoy?: any
-    status: "pending" | "out of delivery" | "delivered",
+    status: "pending" | "out of delivery" | "delivered" | "cancelled" | "refunded",
     createdAt?: Date
     updatedAt?: Date
     deliveryOtp?: string | null
@@ -57,6 +57,8 @@ function UserOrderCard({ order }: { order: IOrder }) {
                 return "bg-blue-50 text-blue-600 border-blue-100"
             case "delivered":
                 return "bg-green-50 text-green-600 border-green-100"
+            case "cancelled":
+                return "bg-red-50 text-red-600 border-red-100"
             default:
                 return "bg-zinc-50 text-zinc-600 border-zinc-100"
         }
@@ -139,7 +141,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                         </div>
                     </div>
 
-                    {status !== 'delivered' && (
+                    {status !== 'delivered' && status !== 'cancelled' && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -242,6 +244,18 @@ function UserOrderCard({ order }: { order: IOrder }) {
                             <div>
                                 <h4 className="font-black text-green-700 tracking-tight">Order Fulfilled</h4>
                                 <p className="text-xs text-green-600/70 font-medium">Thank you for supporting sustainable agriculture.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {status === 'cancelled' && (
+                        <div className="p-6 bg-red-50 border border-red-100 rounded-[2rem] flex items-center gap-6">
+                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-red-600 shadow-sm border border-red-100">
+                                <X size={24} />
+                            </div>
+                            <div>
+                                <h4 className="font-black text-red-700 tracking-tight">Order Cancelled</h4>
+                                <p className="text-xs text-red-600/70 font-medium">This order has been cancelled by the administration.</p>
                             </div>
                         </div>
                     )}

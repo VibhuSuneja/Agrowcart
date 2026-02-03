@@ -37,38 +37,38 @@ interface IOrder {
     }
     assignment?: string
     assignedDeliveryBoy?: IUser
-    status: "pending" | "out of delivery" | "delivered",
+    status: "pending" | "out of delivery" | "delivered" | "cancelled" | "refunded",
     createdAt?: Date
     updatedAt?: Date
 }
 function AdminOrderCard({ order }: { order: IOrder }) {
     const [expanded, setExpanded] = useState(false)
     const [status, setStatus] = useState<string>("pending")
-    const statusOptions = ["pending", "out of delivery"]
-    
+    const statusOptions = ["pending", "out of delivery", "cancelled"]
+
     const updateStatus = async (orderId: string, status: string) => {
         try {
             const result = await axios.post(`/api/admin/update-order-status/${orderId}`, { status })
             console.log(result.data)
             setStatus(status)
-           
+
         } catch (error) {
             console.log(error)
         }
     }
 
-    useEffect(()=>{
-      setStatus(order.status)
-    },[order])
-    useEffect(():any=>{
-    const socket=getSocket()
-    socket.on("order-status-update",(data)=>{
-        if(data.orderId.toString()==order?._id!.toString()){
-            setStatus(data.status)
-        }
-    })
-    return ()=>socket.off("order-status-update")
-        },[])
+    useEffect(() => {
+        setStatus(order.status)
+    }, [order])
+    useEffect((): any => {
+        const socket = getSocket()
+        socket.on("order-status-update", (data) => {
+            if (data.orderId.toString() == order?._id!.toString()) {
+                setStatus(data.status)
+            }
+        })
+        return () => socket.off("order-status-update")
+    }, [])
     return (
         <motion.div
             key={order._id?.toString()}
@@ -83,13 +83,13 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                         <Package size={20} />
                         Order #{order._id?.toString().slice(-6)}
                     </p>
-                    {status!="delivered" &&  <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border ${order.isPaid
-                            ? "bg-green-100 text-green-700 border-green-300"
-                            : "bg-red-100 text-red-700 border-red-300"
+                    {status != "delivered" && <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border ${order.isPaid
+                        ? "bg-green-100 text-green-700 border-green-300"
+                        : "bg-red-100 text-red-700 border-red-300"
                         }`}>
                         {order.isPaid ? "Paid" : "Unpaid"}
                     </span>}
-                   
+
                     <p className='text-gray-500 text-sm'>
                         {new Date(order.createdAt!).toLocaleString()}
                     </p>
@@ -115,18 +115,18 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                         <CreditCard size={16} className='text-green-600' />
                         <span>{order.paymentMethod === "cod" ? "Cash On Delivery" : "Online Payment"}</span>
                     </p>
-              
-              {order.assignedDeliveryBoy && <div className='mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between'>
-                <div className='flex items-center gap-3 text-sm text-gray-700'>
-                  <UserCheck className="text-blue-600" size={18}/>
-                  <div className='font-semibold text-gray-800'>
-                    <p className=''>Assigned to : <span>{order.assignedDeliveryBoy.name}</span></p>
-                    <p className='text-xs text-gray-600'>📞 +91 {order.assignedDeliveryBoy.mobile}</p>
-                  </div>
-                </div>
 
-                <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className='bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition'>Call</a>
-                </div>}
+                    {order.assignedDeliveryBoy && <div className='mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between'>
+                        <div className='flex items-center gap-3 text-sm text-gray-700'>
+                            <UserCheck className="text-blue-600" size={18} />
+                            <div className='font-semibold text-gray-800'>
+                                <p className=''>Assigned to : <span>{order.assignedDeliveryBoy.name}</span></p>
+                                <p className='text-xs text-gray-600'>📞 +91 {order.assignedDeliveryBoy.mobile}</p>
+                            </div>
+                        </div>
+
+                        <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className='bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition'>Call</a>
+                    </div>}
 
 
 
@@ -134,14 +134,16 @@ function AdminOrderCard({ order }: { order: IOrder }) {
 
                 <div className='flex flex-col items-start md:items-end gap-2'>
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${status === "delivered"
-                            ? "bg-green-100 text-green-700"
-                            : status === "pending"
-                                ? "bg-yellow-100 text-yellow-700"
+                        ? "bg-green-100 text-green-700"
+                        : status === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : status === "cancelled"
+                                ? "bg-red-100 text-red-700"
                                 : "bg-blue-100 text-blue-700"
                         }`}>
                         {status}
                     </span>
-                   {status !="delivered" && <select className='border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none'
+                    {status != "delivered" && <select className='border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition focus:ring-2 focus:ring-green-500 outline-none'
                         value={status}
                         onChange={(e) => updateStatus(order._id?.toString()!, e.target.value)}
                     >
@@ -149,7 +151,7 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                             <option key={st} value={st}>{st.toUpperCase()}</option>
                         ))}
                     </select>}
-                    
+
                 </div>
             </div>
             <div className='border-t border-gray-200 mt-3 pt-3'>

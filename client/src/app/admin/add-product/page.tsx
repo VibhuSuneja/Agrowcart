@@ -5,6 +5,9 @@ import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
 import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+
 const categories = [
     "Raw Millets",
     "Millet Rice",
@@ -19,6 +22,7 @@ const units = [
     "kg", "g", "liter", "ml", "piece", "pack", "quintal"
 ]
 function AddProduct() {
+    const router = useRouter()
     const [name, setName] = useState("")
     const [category, setCategory] = useState("")
     const [unit, setUnit] = useState("")
@@ -27,6 +31,7 @@ function AddProduct() {
     const [loading, setLoading] = useState(false)
     const [preview, setPreview] = useState<string | null>()
     const [backendImage, setBackendImage] = useState<File | null>()
+
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
         if (!files || files.length == 0) return
@@ -37,6 +42,9 @@ function AddProduct() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        if (!name || !category || !unit || !price) {
+            return toast.error("Please fill all required fields")
+        }
         setLoading(true)
         try {
             const formData = new FormData()
@@ -49,12 +57,28 @@ function AddProduct() {
                 formData.append("image", backendImage)
             }
 
-
             const result = await axios.post("/api/admin/add-product", formData)
             console.log(result.data)
+            toast.success("Product added successfully!")
+
+            // Reset form
+            setName("")
+            setCategory("")
+            setUnit("")
+            setPrice("")
+            setStock("100")
+            setPreview(null)
+            setBackendImage(null)
+
+            // Redirect after delay
+            setTimeout(() => {
+                router.push("/admin/view-products")
+            }, 1500)
+
             setLoading(false)
         } catch (error) {
             console.log(error)
+            toast.error("Failed to add product")
             setLoading(false)
         }
     }

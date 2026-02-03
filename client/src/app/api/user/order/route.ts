@@ -2,6 +2,7 @@ import connectDb from "@/lib/db";
 import emitEventHandler from "@/lib/emitEventHandler";
 import { sendOrderConfirmation } from "@/lib/email";
 import Order from "@/models/order.model";
+import Product from "@/models/product.model";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,9 +24,32 @@ export async function POST(req: NextRequest) {
             )
         }
 
+        // Check and update stock
+        for (const item of items) {
+            const product = await Product.findById(item.grocery || item._id)
+            if (product && product.stock !== undefined && product.stock !== null) {
+                if (product.stock < item.quantity) {
+                    return NextResponse.json(
+                        { message: `Insufficient stock for ${product.name}` },
+                        { status: 400 }
+                    )
+                }
+                // Decrement stock
+                product.stock -= item.quantity
+                await product.save()
+            }
+        }
+
         const newOrder = await Order.create({
             user: userId,
-            items,
+            items: items.map((item: any) => ({
+                grocery: item.grocery || item._id,
+                name: item.name,
+                price: item.price,
+                unit: item.unit,
+                image: item.image,
+                quantity: item.quantity
+            })),
             paymentMethod,
             totalAmount,
             address

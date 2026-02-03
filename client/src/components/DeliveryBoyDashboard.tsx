@@ -82,7 +82,17 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       setAssignments((prev) => [...prev, deliveryAssignment])
       toast.success("New Delivery Assignment!")
     })
-    return () => socket.off("new-assignment")
+    socket.on("order-status-update", ({ orderId, status }) => {
+      if (status === "cancelled") {
+        toast.error(`Order #${orderId.slice(-6).toUpperCase()} has been cancelled`)
+        fetchCurrentOrder()
+        fetchAssignments()
+      }
+    })
+    return () => {
+      socket.off("new-assignment")
+      socket.off("order-status-update")
+    }
   }, [])
 
   const handleAccept = async (id: string) => {
