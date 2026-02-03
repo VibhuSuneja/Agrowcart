@@ -40,3 +40,8 @@ coverage/
 
 # Misc
 *.pem
+
+# Internal Docs & Logs (Keep local only)
+FEATURE_IMPLEMENTATION_SUMMARY.md
+TESTING_CHECKLIST.md
+log_check.txt
