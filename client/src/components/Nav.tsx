@@ -153,7 +153,29 @@ function Nav({ user: propUser }: { user: any }) {
                 </div>
 
                 {/* Footer */}
-                <div className='p-4 border-t border-zinc-100 bg-zinc-50/50'>
+                <div className='p-4 border-t border-zinc-100 bg-zinc-50/50 space-y-3'>
+                    <button
+                        onClick={async () => {
+                            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                                try {
+                                    const res = await fetch('/api/user/delete-account', { method: 'DELETE' });
+                                    const data = await res.json();
+                                    if (res.ok) {
+                                        alert("Account deleted successfully.");
+                                        await signOut({ callbackUrl: "/" });
+                                    } else {
+                                        alert(data.message || "Failed to delete account.");
+                                    }
+                                } catch (error) {
+                                    alert("An error occurred. Please try again.");
+                                }
+                            }
+                        }}
+                        className='flex items-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm'
+                    >
+                        <User size={18} />
+                        Delete My Account
+                    </button>
                     <button
                         onClick={async () => {
                             setMenuOpen(false);
