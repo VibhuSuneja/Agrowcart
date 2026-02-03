@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2 } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -10,7 +10,7 @@ import { signOut } from 'next-auth/react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import GoogleTranslator from './GoogleTranslator'
 import TextToSpeech from './TextToSpeech'
 import GlobalCallListener from './GlobalCallListener'
@@ -35,6 +35,7 @@ function Nav({ user: propUser }: { user: any }) {
     const { cartData } = useSelector((state: RootState) => state.cart)
     const [search, setSearch] = useState("")
     const router = useRouter()
+    const pathname = usePathname()
     const t = useTranslations('common')
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -216,6 +217,18 @@ function Nav({ user: propUser }: { user: any }) {
                 >
                     <Menu className="w-6 h-6" />
                 </button>
+
+                {/* Back Button - visible on all pages except home */}
+                {pathname !== "/" && (
+                    <button
+                        onClick={() => router.back()}
+                        className='mr-2 p-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl transition-all flex items-center justify-center shadow-sm group'
+                        title="Go Back"
+                        aria-label="Navigate to previous page"
+                    >
+                        <ArrowLeft className='w-5 h-5 group-hover:-translate-x-0.5 transition-transform' />
+                    </button>
+                )}
 
                 <Link href={"/"} className='flex items-center gap-3 group hover:-translate-y-0.5 transition-transform duration-300'>
                     <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:shadow-2xl group-hover:shadow-green-500/50 group-hover:from-green-400 group-hover:to-emerald-500 transition-all duration-500">
