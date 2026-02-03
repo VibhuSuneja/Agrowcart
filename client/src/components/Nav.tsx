@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2 } from 'lucide-react'
 
 import Link from 'next/link'
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
@@ -171,9 +171,9 @@ function Nav({ user: propUser }: { user: any }) {
                                 }
                             }
                         }}
-                        className='flex items-center gap-3 w-full p-4 rounded-2xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm'
+                        className='flex items-center gap-3 w-full p-4 rounded-2xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-all text-sm border border-red-200'
                     >
-                        <User size={18} />
+                        <Trash2 size={18} />
                         Delete My Account
                     </button>
                     <button

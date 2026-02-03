@@ -369,22 +369,7 @@ function FarmerDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <DemandHeatmap />
-                    <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
-                        <h3 className="text-3xl font-black mb-4 relative z-10 leading-tight">Support <br />Programs</h3>
-                        <div className="space-y-4 relative z-10 w-full mb-6">
-                            <div className="p-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('PM_POSHAN')}>
-                                <div className="flex items-center justify-between mb-1">
-                                    <h4 className="font-bold">PM POSHAN</h4>
-                                    <ArrowRight size={16} />
-                                </div>
-                                <p className="text-[10px] text-white/70">15% premium for mid-day meals.</p>
-                            </div>
-                        </div>
-                        <button className="bg-white text-green-700 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs w-fit hover:bg-green-50 transition-colors relative z-10">
-                            View All Schemes
-                        </button>
-                    </div>
+                    <MarketPricesWidget />
                 </div>
 
                 {/* News & Schemes Resource Hub */}

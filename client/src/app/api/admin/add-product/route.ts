@@ -21,20 +21,36 @@ export async function POST(req: NextRequest) {
         const price = formData.get("price") as string
         const stock = formData.get("stock") as string
         const file = formData.get("image") as Blob | null
-        let imageUrl
+
+        let imageUrl = null
         if (file) {
-            imageUrl = await uploadOnCloudinary(file)
+            try {
+                console.log("Attempting Cloudinary upload for product:", name)
+                imageUrl = await uploadOnCloudinary(file)
+                if (!imageUrl) {
+                    console.warn("Cloudinary upload returned null, proceeding without image")
+                }
+            } catch (uploadError) {
+                console.error("Cloudinary upload failed:", uploadError)
+                // Continue without image rather than failing entire product creation
+            }
         }
+
         const product = await Product.create({
             name, price, category, unit, image: imageUrl, stock: stock ? Number(stock) : null
         })
+
+        console.log("Product created successfully:", product._id)
+
         return NextResponse.json(
             product,
             { status: 200 }
         )
-    } catch (error) {
+    } catch (error: any) {
+        console.error("Add product error:", error)
+        console.error("Error stack:", error.stack)
         return NextResponse.json(
-            { message: `add product error ${error}` },
+            { message: `add product error: ${error.message || error}` },
             { status: 500 }
         )
     }
