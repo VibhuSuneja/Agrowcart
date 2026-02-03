@@ -19,14 +19,19 @@ function RegisterForm({ previousStep }: propType) {
   const [role, setRole] = useState("user")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [agreed, setAgreed] = useState(false)
   const router = useRouter()
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!agreed) {
+      toast.error("Please agree to the Terms & Privacy Policy")
+      return
+    }
     setLoading(true)
     try {
       await axios.post("/api/auth/register", {
-        name, email, password, role
+        name, email, password, role, agreed
       })
       toast.success("Account created successfully!")
       router.push("/login")
@@ -147,6 +152,26 @@ function RegisterForm({ previousStep }: propType) {
               </>
             )}
           </button>
+
+          <div className="flex items-start gap-3 mt-1 px-1">
+            <div className="relative flex items-center">
+              <input
+                type="checkbox"
+                id="terms"
+                className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-zinc-300 transition-all checked:border-green-600 checked:bg-green-600 hover:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            <label htmlFor="terms" className="text-xs text-zinc-500 cursor-pointer select-none leading-relaxed">
+              I agree to the <a href="/terms" target="_blank" className="text-green-600 font-bold hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-green-600 font-bold hover:underline">Privacy Policy</a>
+            </label>
+          </div>
 
           <div className='flex items-center gap-4 py-2'>
             <div className='flex-1 h-px bg-zinc-100' />

@@ -14,17 +14,13 @@ function Login() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [agreed, setAgreed] = useState(false)
   const [showLegalModal, setShowLegalModal] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
   const router = useRouter()
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
-    if (!agreed) {
-      toast.error("Please agree to the Terms & Privacy Policy")
-      return
-    }
+
     setLoading(true)
     try {
       const result = await signIn("credentials", {
@@ -158,33 +154,12 @@ function Login() {
             type="button"
             className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-4 rounded-2xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed'
             onClick={() => {
-              if (agreed) signIn("google", { callbackUrl: "/" })
-              else toast.error("Please agree to the Terms & Privacy Policy")
+              signIn("google", { callbackUrl: "/" })
             }}
           >
             <Image src={googleImage} width={20} height={20} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
             <span>Continue with Google</span>
           </button>
-
-          <div className="flex items-start gap-3 mt-2 px-1">
-            <div className="relative flex items-center">
-              <input
-                type="checkbox"
-                id="terms"
-                className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-zinc-300 transition-all checked:border-green-600 checked:bg-green-600 hover:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-              />
-              <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-            <label htmlFor="terms" className="text-xs text-zinc-500 cursor-pointer select-none leading-relaxed">
-              I agree to the <button type="button" onClick={() => { setLegalType('terms'); setShowLegalModal(true) }} className="text-green-600 font-bold hover:underline">Terms of Service</button> and <button type="button" onClick={() => { setLegalType('privacy'); setShowLegalModal(true) }} className="text-green-600 font-bold hover:underline">Privacy Policy</button>. I consent to my data being processed as per the policy.
-            </label>
-          </div>
         </motion.form>
 
         <p className='text-zinc-500 mt-10 text-sm text-center font-medium'>
