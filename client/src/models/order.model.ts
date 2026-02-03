@@ -31,7 +31,10 @@ export interface IOrder {
     }
     assignment?: mongoose.Types.ObjectId
     assignedDeliveryBoy?: mongoose.Types.ObjectId
-    status: "pending" | "out of delivery" | "delivered",
+    status: "pending" | "confirmed" | "out of delivery" | "delivered" | "cancelled" | "refunded",
+    cancelledAt?: Date
+    refundedAt?: Date
+    cancellationReason?: string
     createdAt?: Date
     updatedAt?: Date
     deliveryOtp: string | null
@@ -91,8 +94,17 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     status: {
         type: String,
-        enum: ["pending", "out of delivery", "delivered"],
+        enum: ["pending", "confirmed", "out of delivery", "delivered", "cancelled", "refunded"],
         default: "pending"
+    },
+    cancelledAt: {
+        type: Date
+    },
+    refundedAt: {
+        type: Date
+    },
+    cancellationReason: {
+        type: String
     },
     deliveryOtp: {
         type: String,

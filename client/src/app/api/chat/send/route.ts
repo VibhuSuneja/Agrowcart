@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import connectDb from "@/lib/db";
 import Message from "@/models/message.model";
 import { NextRequest, NextResponse } from "next/server";
+import { sanitizeText } from "@/lib/sanitize";
 
 export async function POST(req: NextRequest) {
     try {
@@ -11,7 +12,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
         }
 
-        const { roomId, text, senderId, time } = await req.json()
+        const body = await req.json()
+        const { roomId, senderId, time } = body
+        const text = sanitizeText(body.text || '')  // Sanitize message text
 
         // 1. Strict Sender Verification
         if (session.user.id !== senderId) {

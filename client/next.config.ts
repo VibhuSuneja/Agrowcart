@@ -14,6 +14,41 @@ const nextConfig: NextConfig = {
       { hostname: "www.archanaskitchen.com" },
       { hostname: "rakskitchen.net" }
     ]
+  },
+
+  // Security Headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'  // Prevents clickjacking attacks
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'  // Prevents MIME type sniffing
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'  // Controls referrer info
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'  // Legacy XSS protection
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(self), geolocation=(self), payment=(self)'  // Restricts browser APIs
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'  // Enables DNS prefetching for performance
+          }
+        ]
+      }
+    ]
   }
 };
 

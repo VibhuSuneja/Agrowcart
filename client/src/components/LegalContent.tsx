@@ -72,7 +72,7 @@ export const TermsContent = () => (
 export const PrivacyContent = () => (
     <div className="prose prose-green max-w-none">
         <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Privacy Protocol</h1>
-        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Last Updated: January 25, 2026</p>
+        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Last Updated: February 3, 2026 • DPDP Act 2023 Compliant</p>
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -80,7 +80,7 @@ export const PrivacyContent = () => (
                 Data Stewardship
             </h2>
             <p className="text-zinc-600 leading-relaxed text-xs">
-                We are committed to processing your agricultural and personal data with absolute transparency and for specified, lawful purposes only.
+                We are committed to processing your agricultural and personal data with absolute transparency and for specified, lawful purposes only, in compliance with India&apos;s Digital Personal Data Protection Act (DPDP) 2023.
             </p>
         </section>
 
@@ -97,11 +97,59 @@ export const PrivacyContent = () => (
             </div>
         </section>
 
+        <section className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-[10px]">03</span>
+                Data Retention Period
+            </h2>
+            <p className="text-zinc-600 leading-relaxed text-xs">
+                Your personal data is retained for <strong>3 years</strong> from your last transaction or account activity. After this period, data is automatically anonymized or deleted unless required by law.
+            </p>
+        </section>
+
+        <section className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-[10px]">04</span>
+                Third-Party Data Sharing
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="p-3 bg-zinc-50 rounded-lg text-center">
+                    <p className="text-[8px] font-bold text-zinc-500">Payment</p>
+                    <p className="text-[10px] font-black text-zinc-800">Stripe</p>
+                </div>
+                <div className="p-3 bg-zinc-50 rounded-lg text-center">
+                    <p className="text-[8px] font-bold text-zinc-500">Images</p>
+                    <p className="text-[10px] font-black text-zinc-800">Cloudinary</p>
+                </div>
+                <div className="p-3 bg-zinc-50 rounded-lg text-center">
+                    <p className="text-[8px] font-bold text-zinc-500">AI Analysis</p>
+                    <p className="text-[10px] font-black text-zinc-800">Google Gemini</p>
+                </div>
+                <div className="p-3 bg-zinc-50 rounded-lg text-center">
+                    <p className="text-[8px] font-bold text-zinc-500">Auth</p>
+                    <p className="text-[10px] font-black text-zinc-800">Google OAuth</p>
+                </div>
+            </div>
+        </section>
+
         <section className="mb-8 p-6 bg-zinc-900 rounded-3xl text-white">
             <h2 className="text-lg font-bold mb-3">🔒 Zero-Leak Promise</h2>
             <p className="text-zinc-400 text-[10px] leading-relaxed mb-4">
-                We do not sell raw personal or agricultural data to any third-party marketing firms. Data sharing is strictly restricted to functional partners.
+                We do not sell raw personal or agricultural data to any third-party marketing firms. Data sharing is strictly restricted to functional partners listed above.
             </p>
+        </section>
+
+        <section className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">05</span>
+                Your Rights (DPDP Act)
+            </h2>
+            <div className="space-y-2 text-xs text-zinc-600">
+                <p><strong>Right to Erasure:</strong> Request deletion of your account and all associated data by emailing vibhusun01@gmail.com</p>
+                <p><strong>Right to Correction:</strong> Update your personal information anytime via your profile settings</p>
+                <p><strong>Right to Data Portability:</strong> Request a copy of your data in machine-readable format (JSON)</p>
+                <p><strong>Right to Withdraw Consent:</strong> Opt out of optional data processing at any time</p>
+            </div>
         </section>
 
         <div className="mt-8 pt-6 border-t border-gray-100">
