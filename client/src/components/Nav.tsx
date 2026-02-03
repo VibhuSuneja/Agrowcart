@@ -2,6 +2,7 @@
 import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2 } from 'lucide-react'
 
 import Link from 'next/link'
+import toast from 'react-hot-toast'
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'motion/react'
@@ -156,18 +157,18 @@ function Nav({ user: propUser }: { user: any }) {
                 <div className='p-4 border-t border-zinc-100 bg-zinc-50/50 space-y-3'>
                     <button
                         onClick={async () => {
-                            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                            if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
                                 try {
                                     const res = await fetch('/api/user/delete-account', { method: 'DELETE' });
                                     const data = await res.json();
                                     if (res.ok) {
-                                        alert("Account deleted successfully.");
-                                        await signOut({ callbackUrl: "/" });
+                                        toast.success("Account deleted successfully.");
+                                        setTimeout(() => signOut({ callbackUrl: "/" }), 2000);
                                     } else {
-                                        alert(data.message || "Failed to delete account.");
+                                        toast.error(data.message || "Failed to delete account.");
                                     }
                                 } catch (error) {
-                                    alert("An error occurred. Please try again.");
+                                    toast.error("An error occurred. Please try again.");
                                 }
                             }
                         }}
@@ -408,6 +409,30 @@ function Nav({ user: propUser }: { user: any }) {
                                         <TrendingUp className='w-5 h-5 text-zinc-400' />
                                         Re-Take Tour
                                     </button>
+
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                                                try {
+                                                    const res = await fetch('/api/user/delete-account', { method: 'DELETE' });
+                                                    const data = await res.json();
+                                                    if (res.ok) {
+                                                        toast.success("Account deleted successfully.");
+                                                        setTimeout(() => signOut({ callbackUrl: "/" }), 2000);
+                                                    } else {
+                                                        toast.error(data.message || "Failed to delete account.");
+                                                    }
+                                                } catch (error) {
+                                                    toast.error("An error occurred. Please try again.");
+                                                }
+                                            }
+                                        }}
+                                        className='flex items-center gap-3 w-full text-left px-4 py-3 hover:bg-red-50 rounded-xl text-red-600 font-semibold transition-colors'
+                                    >
+                                        <Trash2 className='w-5 h-5 text-red-400' />
+                                        Delete My Account
+                                    </button>
+
 
                                     <button className='flex items-center gap-3 w-full text-left px-4 py-3 hover:bg-red-50 rounded-xl text-red-600 font-semibold transition-colors' onClick={() => {
                                         setOpen(false)
