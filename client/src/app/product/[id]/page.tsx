@@ -228,54 +228,67 @@ function ProductDetailPage() {
                         </div>
 
                         {/* Order Controls */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="flex flex-wrap items-center gap-6"
-                        >
-                            <div className="flex items-center bg-white rounded-3xl p-2 gap-6 border border-zinc-200 shadow-sm">
-                                <button
-                                    onClick={() => dispatch(decreaseQuantity(product._id))}
-                                    disabled={!cartItem}
-                                    className="w-14 h-14 flex items-center justify-center rounded-2xl bg-zinc-50 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <Minus size={20} />
-                                </button>
-                                <span className="text-2xl font-black text-zinc-900 min-w-[30px] text-center">{cartItem?.quantity || 0}</span>
-                                <button
-                                    onClick={() => cartItem ? dispatch(increaseQuantity(product._id)) : dispatch(addToCart({ ...product, quantity: 1 }))}
-                                    className="w-14 h-14 flex items-center justify-center rounded-2xl bg-zinc-50 hover:bg-green-50 hover:text-green-600 transition-colors"
-                                >
-                                    <Plus size={20} />
-                                </button>
-                            </div>
-                            <button
-                                onClick={() => !cartItem && dispatch(addToCart({ ...product, quantity: 1 }))}
-                                className="flex-1 bg-zinc-900 text-white py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-600 shadow-2xl shadow-zinc-900/20 transition-all"
+                        {product.stock === 0 ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="w-full bg-red-50 border-2 border-red-200 rounded-[2rem] p-8 text-center"
                             >
-                                <ShoppingCart size={20} />
-                                <span>{cartItem ? 'In Your Bag' : 'Add to Basket'}</span>
-                            </button>
-                            <button
-                                onClick={() => {
-                                    if (!userData) {
-                                        toast.error("Please login to negotiate")
-                                        router.push('/login')
-                                        return
-                                    }
-                                    if (!product.owner) {
-                                        toast.error("Contact info unavailable for this product")
-                                        return
-                                    }
-                                    setShowNegotiation(true)
-                                }}
-                                className="w-full bg-white border-2 border-zinc-900 text-zinc-900 py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-zinc-50 transition-all"
+                                <div className="text-red-500 font-black text-xl uppercase tracking-widest mb-2">Out of Stock</div>
+                                <p className="text-red-400 text-sm font-medium">This item is currently unavailable. Please check back later or explore similar products.</p>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-wrap items-center gap-6"
                             >
-                                <MessageSquare size={20} />
-                                <span>Bulk Inquiry</span>
-                            </button>
-                        </motion.div>
+                                <div className="flex items-center bg-white rounded-3xl p-2 gap-6 border border-zinc-200 shadow-sm">
+                                    <button
+                                        onClick={() => dispatch(decreaseQuantity(product._id))}
+                                        disabled={!cartItem}
+                                        className="w-14 h-14 flex items-center justify-center rounded-2xl bg-zinc-50 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <Minus size={20} />
+                                    </button>
+                                    <span className="text-2xl font-black text-zinc-900 min-w-[30px] text-center">{cartItem?.quantity || 0}</span>
+                                    <button
+                                        onClick={() => cartItem ? dispatch(increaseQuantity(product._id)) : dispatch(addToCart({ ...product, quantity: 1 }))}
+                                        className="w-14 h-14 flex items-center justify-center rounded-2xl bg-zinc-50 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                    >
+                                        <Plus size={20} />
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => !cartItem && dispatch(addToCart({ ...product, quantity: 1 }))}
+                                    className="flex-1 bg-zinc-900 text-white py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-600 shadow-2xl shadow-zinc-900/20 transition-all"
+                                >
+                                    <ShoppingCart size={20} />
+                                    <span>{cartItem ? 'In Your Bag' : 'Add to Basket'}</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (!userData) {
+                                            toast.error("Please login to negotiate")
+                                            router.push('/login')
+                                            return
+                                        }
+                                        if (!product.owner) {
+                                            toast.error("Contact info unavailable for this product")
+                                            return
+                                        }
+                                        setShowNegotiation(true)
+                                    }}
+                                    className="w-full bg-white border-2 border-zinc-900 text-zinc-900 py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-zinc-50 transition-all"
+                                >
+                                    <MessageSquare size={20} />
+                                    <span>Bulk Inquiry</span>
+                                </button>
+                            </motion.div>
+                        )}
+
 
                         <SustainabilityScore quantity={cartItem?.quantity || 1} unit={product.unit} />
                         <AIRecipeButton productName={product.name} category={product.category} />

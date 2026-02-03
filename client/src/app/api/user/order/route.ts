@@ -1,5 +1,6 @@
 import connectDb from "@/lib/db";
 import emitEventHandler from "@/lib/emitEventHandler";
+import { sendOrderConfirmation } from "@/lib/email";
 import Order from "@/models/order.model";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
@@ -31,7 +32,23 @@ export async function POST(req: NextRequest) {
         })
 
 
-        await emitEventHandler("new-order",newOrder)
+        await emitEventHandler("new-order", newOrder)
+
+        // Send order confirmation email (async, don't block response)
+        if (user.email) {
+            sendOrderConfirmation(user.email, {
+                customerName: user.name || address.fullName || 'Valued Customer',
+                orderId: newOrder._id.toString(),
+                items: items.map((item: any) => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price
+                })),
+                totalAmount: totalAmount,
+                address: address.fullAddress || `${address.city}, ${address.state} - ${address.pincode}`,
+                paymentMethod: paymentMethod
+            }).catch(err => console.error('Email sending failed:', err))
+        }
 
         return NextResponse.json(
             newOrder,
@@ -39,9 +56,9 @@ export async function POST(req: NextRequest) {
         )
 
     } catch (error) {
- return NextResponse.json(
-                {message:`place order error ${error}`},
-                {status:500}
-            )
+        return NextResponse.json(
+            { message: `place order error ${error}` },
+            { status: 500 }
+        )
     }
 }

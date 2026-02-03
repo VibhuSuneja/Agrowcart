@@ -17,6 +17,8 @@ export interface IProduct {
     createdAt?: Date,
     updatedAt?: Date,
     owner?: mongoose.Types.ObjectId,
+    // Stock Management
+    stock?: number, // null/undefined = in stock, 0 = out of stock
     // Legal & Compliance Fields
     fssaiLicense?: string,
     batchNumber?: string,
@@ -118,6 +120,10 @@ const productSchema = new mongoose.Schema<IProduct>({
     originCity: {
         type: String,
         default: ""
+    },
+    stock: {
+        type: Number,
+        default: null // null = unlimited/in stock
     }
 }, {
     timestamps: true

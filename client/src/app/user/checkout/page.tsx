@@ -207,13 +207,23 @@ function Checkout() {
                                     <Home className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={18} />
                                     <input type="text" placeholder="Full Detailed Address" value={address.fullAddress} onChange={(e) => setAddress((prev) => ({ ...prev, fullAddress: e.target.value }))} className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/10 focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
                                 </div>
-                                <div className='grid grid-cols-3 gap-4'>
+                                <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
                                     <input type="text" value={address.city} placeholder='City' onChange={(e) => setAddress((prev) => ({ ...prev, city: e.target.value }))} className='bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-zinc-800 focus:bg-white focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
                                     <input type="text" value={address.state} placeholder='State' onChange={(e) => setAddress((prev) => ({ ...prev, state: e.target.value }))} className='bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-zinc-800 focus:bg-white focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
                                     <input type="text" value={address.pincode} placeholder='Pincode' onChange={(e) => setAddress((prev) => ({ ...prev, pincode: e.target.value }))} className='bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-zinc-800 focus:bg-white focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
                                 </div>
 
-                                <div className='flex gap-2 mt-8'>
+                                {/* Use My Location Button - Mobile Friendly */}
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    className='w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-green-600/20 hover:bg-green-700 transition-all flex items-center justify-center gap-3 mt-6'
+                                    onClick={handleCurrentLocation}
+                                >
+                                    <LocateFixed size={20} />
+                                    <span>Use My Current Location</span>
+                                </motion.button>
+
+                                <div className='flex flex-col sm:flex-row gap-2 mt-4'>
                                     <div className="relative flex-1 group">
                                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={18} />
                                         <input type="text" placeholder='Search your location...' className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 focus:bg-white focus:border-green-500 focus:outline-none transition-all font-medium text-sm' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
@@ -223,15 +233,16 @@ function Checkout() {
                                     </motion.button>
                                 </div>
 
-                                <div className='relative mt-6 h-[400px] rounded-[2.5rem] overflow-hidden border border-zinc-200 shadow-inner group'>
+                                <div className='relative mt-6 h-[300px] sm:h-[400px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden border border-zinc-200 shadow-inner group'>
                                     {position && <CheckOutMap position={position} setPosition={setPosition} />}
                                     <motion.button
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
-                                        className='absolute bottom-6 right-6 bg-green-600 text-white shadow-2xl rounded-2xl p-4 hover:bg-green-700 transition-all flex items-center justify-center z-10'
+                                        className='absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-green-600 text-white shadow-2xl rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:bg-green-700 transition-all flex items-center justify-center z-10'
                                         onClick={handleCurrentLocation}
+                                        title="Use My Location"
                                     >
-                                        <LocateFixed size={24} />
+                                        <LocateFixed size={20} className="sm:w-6 sm:h-6" />
                                     </motion.button>
                                 </div>
                             </div>

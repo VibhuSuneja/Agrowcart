@@ -28,7 +28,8 @@ interface IProduct {
   isCompliant?: boolean,
   fssaiLicense?: string,
   originState?: string,
-  originCity?: string
+  originCity?: string,
+  stock?: number | null // null = in stock, 0 = out of stock
 }
 
 function ProductItemCard({ item }: { item: IProduct }) {
@@ -162,6 +163,15 @@ function ProductItemCard({ item }: { item: IProduct }) {
               <span className='text-[8px] font-black text-white uppercase tracking-widest'>Verified Seller</span>
             </div>
           )}
+
+          {/* Out of Stock Badge */}
+          {item.stock === 0 && (
+            <div className='absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center'>
+              <div className='bg-red-500 text-white px-4 py-2 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg'>
+                Out of Stock
+              </div>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -193,7 +203,11 @@ function ProductItemCard({ item }: { item: IProduct }) {
             </div>
           </div>
 
-          {!cartItem ? (
+          {item.stock === 0 ? (
+            <div className='bg-zinc-100 text-zinc-400 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest'>
+              Sold Out
+            </div>
+          ) : !cartItem ? (
             <motion.button
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
