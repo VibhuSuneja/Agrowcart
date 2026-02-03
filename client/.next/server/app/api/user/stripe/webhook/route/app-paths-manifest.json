@@ -1,3 +1,0 @@
-{
-  "/api/user/stripe/webhook/route": "app/api/user/stripe/webhook/route.js"
-}
