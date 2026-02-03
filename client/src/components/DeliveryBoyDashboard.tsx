@@ -92,8 +92,13 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       // Refresh both to seamlessly transition
       await fetchCurrentOrder()
       await fetchAssignments()
-    } catch (error) {
-      toast.error("Failed to accept assignment")
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Failed to accept assignment"
+      toast.error(errorMessage)
+      // If expired or already taken, refresh assignments list
+      if (errorMessage.includes("expired") || errorMessage.includes("already")) {
+        await fetchAssignments()
+      }
     }
   }
 
@@ -159,11 +164,17 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     try {
       await axios.post("/api/delivery/otp/verify", { orderId: activeOrder?.order?._id, otp })
       toast.success("Delivery Successful!")
-      // Clear state immediately to remove "Success Verification" screen
+
+      // Clear ALL state immediately to remove the active delivery screen
       setActiveOrder(null)
       setAssignments([])
       setShowOtpBox(false)
       setOtp("")
+      setOtpError("")
+      setUserLocation({ latitude: 0, longitude: 0 })
+
+      // Small delay to ensure backend has fully updated the assignment status
+      await new Promise(resolve => setTimeout(resolve, 500))
 
       // Re-fetch to ensure sync with backend
       await fetchCurrentOrder()
