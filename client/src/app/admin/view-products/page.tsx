@@ -72,6 +72,7 @@ function ViewProducts() {
             formData.append("isCompliant", editing.isCompliant ? "true" : "false")
             formData.append("originState", editing.originState || "Haryana")
             formData.append("originCity", editing.originCity || "")
+            formData.append("stock", editing.stock?.toString() || "0")
             const result = await axios.post("/api/admin/edit-product", formData)
             setLoading(false)
             toast.success(`Product batch updated!`)
@@ -244,6 +245,16 @@ function ViewProducts() {
                                         <option key={i} value={u}>{u}</option>
                                     ))}
                                 </select>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Stock Level (0 = Out of Stock)</label>
+                                    <input
+                                        type="number"
+                                        placeholder='Stock Inventory'
+                                        value={editing.stock || 0}
+                                        onChange={(e) => setEditing({ ...editing, stock: Number(e.target.value) })}
+                                        className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
+                                    />
+                                </div>
                                 <textarea
                                     placeholder='Scientific Knowledge (3-4 lines)'
                                     value={editing.scientificBenefits}

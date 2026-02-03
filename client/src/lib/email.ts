@@ -21,6 +21,9 @@ const createTransporter = () => {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
         },
+        tls: {
+            rejectUnauthorized: false
+        }
     });
 };
 
@@ -35,11 +38,17 @@ interface EmailOptions {
  * Send email using configured transporter
  */
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
+    const transporter = createTransporter();
+
     try {
-        const transporter = createTransporter();
+        // Verify connection configuration
+        await transporter.verify();
+
+        const fromEmail = process.env.EMAIL_USER; // Use the authenticated email to avoid spam filters
+        const fromName = "AgrowCart";
 
         await transporter.sendMail({
-            from: process.env.EMAIL_FROM || '"AgrowCart" <noreply@agrowcart.com>',
+            from: `"${fromName}" <${fromEmail}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,

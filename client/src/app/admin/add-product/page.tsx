@@ -23,6 +23,7 @@ function AddProduct() {
     const [category, setCategory] = useState("")
     const [unit, setUnit] = useState("")
     const [price, setPrice] = useState("")
+    const [stock, setStock] = useState<string>("100")
     const [loading, setLoading] = useState(false)
     const [preview, setPreview] = useState<string | null>()
     const [backendImage, setBackendImage] = useState<File | null>()
@@ -43,6 +44,7 @@ function AddProduct() {
             formData.append("category", category)
             formData.append("price", price)
             formData.append("unit", unit)
+            formData.append("stock", stock)
             if (backendImage) {
                 formData.append("image", backendImage)
             }
@@ -112,6 +114,13 @@ function AddProduct() {
                         <input type="text" id='name' placeholder='eg. 120' className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
                             onChange={(e) => setPrice(e.target.value)}
                             value={price}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="stock" className='block text-gray-700 font-medium mb-1'> Stock Inventory (kg/units) <span className='text-zinc-400 text-xs'>(0 for Out of Stock)</span></label>
+                        <input type="number" id='stock' placeholder='eg. 100' className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
+                            onChange={(e) => setStock(e.target.value)}
+                            value={stock}
                         />
                     </div>
                     <div className='flex flex-col sm:flex-row items-center gap-5'>

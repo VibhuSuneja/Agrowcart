@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
         const isCompliant = formData.get("isCompliant") === "true"
         const originState = formData.get("originState") as string
         const originCity = formData.get("originCity") as string
+        const stock = formData.get("stock") as string
         const file = formData.get("image") as Blob | null
 
         const product = await Product.findById(productId)
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
         product.isCompliant = isCompliant;
         product.originState = originState;
         product.originCity = originCity;
+        product.stock = stock ? Number(stock) : 0;
 
         if (file && file.size > 0) {
             const imageUrl = await uploadOnCloudinary(file)

@@ -34,20 +34,25 @@ export async function POST(req: NextRequest) {
 
         await emitEventHandler("new-order", newOrder)
 
-        // Send order confirmation email (async, don't block response)
+        // Send order confirmation email
         if (user.email) {
-            sendOrderConfirmation(user.email, {
-                customerName: user.name || address.fullName || 'Valued Customer',
-                orderId: newOrder._id.toString(),
-                items: items.map((item: any) => ({
-                    name: item.name,
-                    quantity: item.quantity,
-                    price: item.price
-                })),
-                totalAmount: totalAmount,
-                address: address.fullAddress || `${address.city}, ${address.state} - ${address.pincode}`,
-                paymentMethod: paymentMethod
-            }).catch(err => console.error('Email sending failed:', err))
+            try {
+                await sendOrderConfirmation(user.email, {
+                    customerName: user.name || address.fullName || 'Valued Customer',
+                    orderId: newOrder._id.toString(),
+                    items: items.map((item: any) => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    })),
+                    totalAmount: totalAmount,
+                    address: address.fullAddress || `${address.city}, ${address.state} - ${address.pincode}`,
+                    paymentMethod: paymentMethod
+                });
+                console.log('Order confirmation email sent successfully');
+            } catch (err) {
+                console.error('Email sending failed:', err);
+            }
         }
 
         return NextResponse.json(

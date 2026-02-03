@@ -19,13 +19,14 @@ export async function POST(req: NextRequest) {
         const category = formData.get("category") as string
         const unit = formData.get("unit") as string
         const price = formData.get("price") as string
+        const stock = formData.get("stock") as string
         const file = formData.get("image") as Blob | null
         let imageUrl
         if (file) {
             imageUrl = await uploadOnCloudinary(file)
         }
         const product = await Product.create({
-            name, price, category, unit, image: imageUrl
+            name, price, category, unit, image: imageUrl, stock: stock ? Number(stock) : null
         })
         return NextResponse.json(
             product,

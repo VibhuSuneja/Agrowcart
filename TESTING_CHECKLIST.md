@@ -20,22 +20,22 @@
 ## 1.1 Registration
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 1.1.1 | Register with Email | Go to `/register`, fill form, submit | Account created, redirected to login | |
-| 1.1.2 | Register with Google | Click "Continue with Google" | OAuth flow completes, account created | |
-| 1.1.3 | Terms & Conditions | Register without accepting T&C | Should show error, cannot proceed | |
-| 1.1.4 | Duplicate Email | Register with existing email | Should show "Email already exists" | |
-| 1.1.5 | Invalid Email Format | Enter invalid email format | Should show validation error | |
-| 1.1.6 | Weak Password | Enter password < 6 chars | Should show password strength error | |
+| 1.1.1 | Register with Email | Go to `/register`, fill form, submit | Account created, redirected to login |done |
+| 1.1.2 | Register with Google | Click "Continue with Google" | OAuth flow completes, account created |done |
+| 1.1.3 | Terms & Conditions | Register without accepting T&C | Should show error, cannot proceed |done |
+| 1.1.4 | Duplicate Email | Register with existing email | Should show "Email already exists" |done |
+| 1.1.5 | Invalid Email Format | Enter invalid email format | Should show validation error |done |
+| 1.1.6 | Weak Password | Enter password < 6 chars | Should show password strength error |done |
 
 ## 1.2 Login
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 1.2.1 | Login with Email | Go to `/login`, enter credentials | Logged in, redirected to dashboard | |
-| 1.2.2 | Login with Google | Click "Continue with Google" | OAuth flow completes, logged in | |
-| 1.2.3 | Wrong Password | Enter wrong password | Should show "Invalid credentials" | |
-| 1.2.4 | Non-existent Email | Enter unregistered email | Should show appropriate error | |
-| 1.2.5 | Session Persistence | Login, close tab, reopen | Should remain logged in | |
-| 1.2.6 | Logout | Click logout button | Session cleared, redirected to home | |
+| 1.2.1 | Login with Email | Go to `/login`, enter credentials | Logged in, redirected to dashboard |done |
+| 1.2.2 | Login with Google | Click "Continue with Google" | OAuth flow completes, logged in |done |
+| 1.2.3 | Wrong Password | Enter wrong password | Should show "Invalid credentials" |done |
+| 1.2.4 | Non-existent Email | Enter unregistered email | Should show appropriate error |done |
+| 1.2.5 | Session Persistence | Login, close tab, reopen | Should remain logged in |done |
+| 1.2.6 | Logout | Click logout button | Session cleared, redirected to home |done |
 
 ---
 
@@ -44,41 +44,41 @@
 ## 2.1 Homepage & Navigation
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.1.1 | Homepage Load | Visit `/` | Page loads with products, navigation | |
-| 2.1.2 | Navigation Menu | Click all nav links | All pages load correctly | |
-| 2.1.3 | Responsive Design | Test on mobile viewport | Layout adapts properly | |
-| 2.1.4 | Google Translate | Use language selector | Content translates | |
+| 2.1.1 | Homepage Load | Visit `/` | Page loads with products, navigation |done |
+| 2.1.2 | Navigation Menu | Click all nav links | All pages load correctly |done |
+| 2.1.3 | Responsive Design | Test on mobile viewport | Layout adapts properly |done |
+| 2.1.4 | Google Translate | Use language selector | Content translates |done |
 
 ## 2.2 Marketplace & Products
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.2.1 | Browse Marketplace | Go to `/marketplace` | Products displayed with images/prices | |
-| 2.2.2 | Category Filter | Click a category | Products filter by category | |
-| 2.2.3 | Product Details | Click on a product | `/product/[id]` shows full details | |
-| 2.2.4 | Product Images | View product images | Images load, zoom works | |
-| 2.2.5 | Price Display | Check product prices | Prices shown in ₹ correctly | |
-| 2.2.6 | Stock Status | View out-of-stock item | Should show "Out of Stock" | |
+| 2.2.1 | Browse Marketplace | Go to `/marketplace` | Products displayed with images/prices |done |
+| 2.2.2 | Category Filter | Click a category | Products filter by category |done |
+| 2.2.3 | Product Details | Click on a product | `/product/[id]` shows full details |done |
+| 2.2.4 | Product Images | View product images | Images load, zoom works |done |
+| 2.2.5 | Price Display | Check product prices | Prices shown in ₹ correctly |done |
+| 2.2.6 | Stock Status | View out-of-stock item | Should show "Out of Stock" |done |
 
 ## 2.3 Cart & Checkout
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.3.1 | Add to Cart | Click "Add to Cart" | Product added, cart count updates | |
-| 2.3.2 | View Cart | Go to `/user/cart` | All cart items displayed | |
-| 2.3.3 | Update Quantity | Change item quantity | Total recalculates | |
-| 2.3.4 | Remove from Cart | Click remove button | Item removed, total updates | |
-| 2.3.5 | Empty Cart | Remove all items | Shows "Cart is empty" message | |
-| 2.3.6 | Proceed to Checkout | Click checkout button | Redirects to `/user/checkout` | |
+| 2.3.1 | Add to Cart | Click "Add to Cart" | Product added, cart count updates |done |
+| 2.3.2 | View Cart | Go to `/user/cart` | All cart items displayed |done |
+| 2.3.3 | Update Quantity | Change item quantity | Total recalculates |done |
+| 2.3.4 | Remove from Cart | Click remove button | Item removed, total updates |done |
+| 2.3.5 | Empty Cart | Remove all items | Shows "Cart is empty" message |done |
+| 2.3.6 | Proceed to Checkout | Click checkout button | Redirects to `/user/checkout` |done |
 
 ## 2.4 Checkout & Payment
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 2.4.1 | Address Form | Fill delivery address | Form validates, accepts input | |
-| 2.4.2 | Location Detection | Click "Use My Location" | GPS coordinates captured | |
-| 2.4.3 | COD Payment | Select "Cash on Delivery" | Order placed successfully | |
-| 2.4.4 | Online Payment | Select "Pay Online" | Razorpay modal opens | |
-| 2.4.5 | Payment Success | Complete payment | Redirected to success page | |
-| 2.4.6 | Payment Failure | Cancel/fail payment | Error handled gracefully | |
-| 2.4.7 | Order Confirmation | After successful order | Order ID shown, email sent | |
+| 2.4.1 | Address Form | Fill delivery address | Form validates, accepts input |done|
+| 2.4.2 | Location Detection | Click "Use My Location" | GPS coordinates captured |done|
+| 2.4.3 | COD Payment | Select "Cash on Delivery" | Order placed successfully |done|
+| 2.4.4 | Online Payment | Select "Pay Online" | Razorpay modal opens |done|
+| 2.4.5 | Payment Success | Complete payment | Redirected to success page |done|
+| 2.4.6 | Payment Failure | Cancel/fail payment | Error handled gracefully |done|
+| 2.4.7 | Order Confirmation | After successful order | Order ID shown, email sent |done|
 
 ## 2.5 My Orders
 | # | Test Case | Steps | Expected Result | Status |

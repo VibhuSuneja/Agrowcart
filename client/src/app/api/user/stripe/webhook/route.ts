@@ -32,18 +32,23 @@ export async function POST(req: NextRequest) {
 
         // Send order confirmation email after successful payment
         if (order && order.user?.email) {
-            sendOrderConfirmation(order.user.email, {
-                customerName: order.user.name || order.address?.fullName || 'Valued Customer',
-                orderId: order._id.toString(),
-                items: order.items.map((item: any) => ({
-                    name: item.name,
-                    quantity: item.quantity,
-                    price: item.price
-                })),
-                totalAmount: order.totalAmount,
-                address: order.address?.fullAddress || `${order.address?.city}, ${order.address?.state}`,
-                paymentMethod: 'online'
-            }).catch(err => console.error('Email sending failed:', err))
+            try {
+                await sendOrderConfirmation(order.user.email, {
+                    customerName: order.user.name || order.address?.fullName || 'Valued Customer',
+                    orderId: order._id.toString(),
+                    items: order.items.map((item: any) => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    })),
+                    totalAmount: order.totalAmount,
+                    address: order.address?.fullAddress || `${order.address?.city}, ${order.address?.state}`,
+                    paymentMethod: 'online'
+                });
+                console.log('Order confirmation email sent for online payment');
+            } catch (err) {
+                console.error('Email sending failed for online payment:', err);
+            }
         }
     }
 
