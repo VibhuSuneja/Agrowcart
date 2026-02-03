@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
         // Check and update stock
         for (const item of items) {
-            const product = await Product.findById(item.grocery || item._id)
+            const product = await Product.findById(item.product || item.grocery || item._id)
             if (product && product.stock !== undefined && product.stock !== null) {
                 if (product.stock < item.quantity) {
                     return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         const newOrder = await Order.create({
             user: userId,
             items: items.map((item: any) => ({
-                grocery: item.grocery || item._id,
+                product: item.product || item.grocery || item._id,
                 name: item.name,
                 price: item.price,
                 unit: item.unit,
