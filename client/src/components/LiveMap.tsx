@@ -94,6 +94,23 @@ function LiveMap({ userLocation, deliveryBoyLocation, children }: Iprops) {
                 </MapContainer>
             </div>
 
+            {/* Map Legend - Always visible outside the map */}
+            <div className="flex flex-wrap items-center gap-4 px-4 py-3 bg-white rounded-2xl shadow-md border border-zinc-100">
+                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Legend:</span>
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-white rounded-full border-3 border-green-600 flex items-center justify-center shadow-sm" style={{ borderWidth: '3px' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 17h4V5H2v12h3" /><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5" /><path d="M14 17h1" /><circle cx="7.5" cy="17.5" r="2.5" /><circle cx="17.5" cy="17.5" r="2.5" /></svg>
+                    </div>
+                    <span className="text-sm font-semibold text-green-700">Delivery Partner</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-white rounded-full border-3 border-blue-600 flex items-center justify-center shadow-sm" style={{ borderWidth: '3px' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                    </div>
+                    <span className="text-sm font-semibold text-blue-700">Your Location</span>
+                </div>
+            </div>
+
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-2">
                 <div className="w-full md:w-auto order-2 md:order-1">
                     {children}
