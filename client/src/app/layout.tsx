@@ -13,6 +13,7 @@ import GoogleAds from "@/components/GoogleAds";
 import { Analytics } from "@vercel/analytics/next"
 import { SocketProvider } from "@/context/SocketContext";
 import CookieConsent from "@/components/CookieConsent";
+import NetworkStatus from "@/components/NetworkStatus";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://agrowcart.vercel.app'), // Replace with actual domain
@@ -94,6 +95,7 @@ export default function RootLayout({
 
                 <Toaster position="top-right" />
                 <GlobalChatBot />
+                <NetworkStatus />
 
                 <main id="main-content" className="relative outline-none" tabIndex={-1}>
                   {children}

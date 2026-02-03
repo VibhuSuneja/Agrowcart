@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
     Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
-    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users
+    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle
 } from 'lucide-react'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -20,6 +20,7 @@ import WeatherCard from '@/components/WeatherCard'
 import EventCalendar from '@/components/EventCalendar'
 import NewsCard from '@/components/NewsCard'
 import SchemesCard from '@/components/SchemesCard'
+import MarketPricesWidget from '@/components/MarketPricesWidget'
 import Nav from '@/components/Nav'
 import TutorialGuide from '@/components/TutorialGuide'
 
@@ -87,6 +88,10 @@ function FarmerDashboard() {
     })
     const [crops, setCrops] = useState<Array<any>>([])
     const [selectedScheme, setSelectedScheme] = useState<string | null>(null)
+    const [cropImage, setCropImage] = useState<File | null>(null)
+    const [cropPreview, setCropPreview] = useState<string | null>(null)
+    const [analysisResult, setAnalysisResult] = useState<any>(null)
+    const [analyzing, setAnalyzing] = useState(false)
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -136,6 +141,34 @@ function FarmerDashboard() {
             toast.error(error.response?.data?.message || "Market analysis offline")
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleCropImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setCropImage(file)
+            setCropPreview(URL.createObjectURL(file))
+        }
+    }
+
+    const analyzeCrop = async () => {
+        if (!cropImage) return
+        setAnalyzing(true)
+        setAnalysisResult(null)
+        try {
+            const reader = new FileReader()
+            reader.onloadend = async () => {
+                const base64 = reader.result as string
+                const res = await axios.post('/api/ai/crop-analysis', { image: base64 })
+                setAnalysisResult(res.data)
+                toast.success("Crop analysis complete!")
+            }
+            reader.readAsDataURL(cropImage)
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Analysis failed")
+        } finally {
+            setAnalyzing(false)
         }
     }
 
@@ -358,6 +391,130 @@ function FarmerDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[500px] h-auto">
                     <NewsCard />
                     <SchemesCard />
+                </div>
+
+                {/* Crop Quality Analysis */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 md:p-12 rounded-[3.5rem] border border-blue-100 shadow-2xl shadow-blue-900/10 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32" />
+
+                    <div className="relative z-10 space-y-8">
+                        <div className="flex items-center gap-3 text-blue-600 font-black uppercase tracking-[0.3em] text-[10px]">
+                            <Sprout size={16} />
+                            <span>AI Quality Inspector</span>
+                        </div>
+
+                        <div>
+                            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mb-2">Crop Quality Analysis</h2>
+                            <p className="text-zinc-600 font-medium">Upload a photo to assess health, grade, and market readiness.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Upload Section */}
+                            <div className="space-y-4">
+                                <label htmlFor="crop-upload" className="cursor-pointer">
+                                    <div className="bg-white p-8 rounded-3xl border-2 border-dashed border-blue-200 hover:border-blue-400 transition-all text-center min-h-[300px] flex flex-col items-center justify-center">
+                                        {cropPreview ? (
+                                            <div className="relative w-full h-64 rounded-2xl overflow-hidden">
+                                                <img src={cropPreview} alt="Crop" className="w-full h-full object-cover" />
+                                                <button
+                                                    onClick={(e) => { e.preventDefault(); setCropPreview(null); setCropImage(null); setAnalysisResult(null); }}
+                                                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <Upload className="text-blue-600" size={32} />
+                                                </div>
+                                                <p className="text-zinc-900 font-bold text-lg mb-1">Upload Crop Photo</p>
+                                                <p className="text-zinc-400 text-sm">Click to browse or drag and drop</p>
+                                            </>
+                                        )}
+                                    </div>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="crop-upload"
+                                    accept="image/*"
+                                    onChange={handleCropImageChange}
+                                    className="hidden"
+                                />
+
+                                {cropImage && !analyzing && (
+                                    <button
+                                        onClick={analyzeCrop}
+                                        className="w-full bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Sprout size={20} />
+                                        Analyze Quality
+                                    </button>
+                                )}
+
+                                {analyzing && (
+                                    <div className="w-full bg-blue-50 px-6 py-4 rounded-2xl flex items-center justify-center gap-3 text-blue-700 font-bold">
+                                        <Loader className="animate-spin" size={20} />
+                                        Analyzing...
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Results Section */}
+                            <div className="bg-white p-6 rounded-3xl border border-blue-100 shadow-lg">
+                                {analysisResult ? (
+                                    <div className="space-y-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+                                                {analysisResult.health === "Healthy" ? <CheckCircle size={24} /> : <AlertCircle size={24} />}
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black uppercase text-zinc-400 tracking-widest">Crop Type</p>
+                                                <p className="text-lg font-black text-zinc-900">{analysisResult.cropType}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-bold text-zinc-600">Health Status</span>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-black ${analysisResult.health === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                                    {analysisResult.health}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-bold text-zinc-600">Quality Grade</span>
+                                                <span className="px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-700">
+                                                    {analysisResult.grade}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {analysisResult.issues && analysisResult.issues.length > 0 && (
+                                            <div className="pt-4 border-t border-zinc-100">
+                                                <p className="text-xs font-black uppercase text-zinc-400 tracking-widest mb-2">Detected Issues</p>
+                                                <ul className="space-y-1">
+                                                    {analysisResult.issues.map((issue: string, i: number) => (
+                                                        <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
+                                                            <span className="text-orange-500 mt-1">⚠</span>
+                                                            <span>{issue}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Sprout className="text-zinc-300" size={28} />
+                                        </div>
+                                        <p className="text-zinc-400 font-medium">Analysis results will appear here</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <FarmerNegotiations farmerId={userData?._id!} />
