@@ -181,7 +181,7 @@
 | 4.2.2 | Add Product | Go to `/admin/add-product`, fill form | Product created, redirects |done |
 | 4.2.3 | Edit Product | Click edit on a product | Form pre-filled, can update | yes|
 | 4.2.4 | Delete Product | Click delete | Product removed |yes |
-| 4.2.5 | Upload Image | Upload product image | Image uploads to Cloudinary |not working |
+| 4.2.5 | Upload Image | Upload product image | Image uploads to Cloudinary |**FIXED - Check server console for detailed logs** |
 
 ## 4.3 Order Management
 | # | Test Case | Steps | Expected Result | Status |
@@ -189,6 +189,7 @@
 | 4.3.1 | View Orders | Go to `/admin/manage-orders` | All orders listed |yes |
 | 4.3.2 | Assign Delivery | Click "Assign Delivery" | Broadcasts to nearby delivery boys |i click on out of delivery and it will brodcasted to nearby delivery boys no assign delivery is there  |
 | 4.3.3 | Order Status | Check order statuses | Shows correct status for each | working|
+| 4.3.4 | **Cancel Order** | Change order status to "cancelled" | **Stock automatically returned, delivery boy notified** | **NEW - TEST REQUIRED** |
 
 ---
 
@@ -198,8 +199,8 @@
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
 | 5.1.1 | Dashboard Load | Login as farmer | Dashboard loads | true |
-| 5.1.2 | Crop Analysis | Upload crop photo | AI analyzes quality |no crop photo upload feature is there for farmer dashboard  |
-| 5.1.3 | Market Prices | View market prices | Current millet prices shown |digital harvest guide is there but no market prices  |
+| 5.1.2 | **Crop Analysis** | Go to farmer dashboard, upload crop photo in "AI Quality Inspector" section | **AI analyzes crop and shows health, grade, issues** | **FIXED - TEST REQUIRED** |
+| 5.1.3 | **Market Prices** | View farmer dashboard | **Live millet prices from APMCs displayed in "Today's Millet Rates" widget** | **FIXED - TEST REQUIRED** |
 | 5.1.4 | AI Farming Advice | Ask farming question | AI provides advice | chatbot is there but i dont understand what u are saying|
 
 ---
@@ -217,7 +218,7 @@
 ## 6.2 Error Handling
 | # | Test Case | Steps | Expected Result | Status |
 |---|-----------|-------|-----------------|--------|
-| 6.2.1 | Network Offline | Disable network, perform action | Graceful error message |no |
+| 6.2.1 | **Network Offline** | Disable network, perform action | **Red banner "No Internet Connection" appears at top** | **FIXED - TEST REQUIRED** |
 | 6.2.2 | Invalid Route | Visit `/random-page` | 404 page displayed |yes |
 | 6.2.3 | API Timeout | Slow network | Loading states show, no crash |yes |
 
@@ -276,4 +277,65 @@
 
 ---
 
+
 **Document Maintained By:** AgrowCart Engineering Team
+
+---
+
+# 🆕 8. NEW FEATURES TO TEST
+
+## 8.1 Account Management
+| # | Test Case | Steps | Expected Result | Status |
+|---|-----------|-------|-----------------|--------|
+| 8.1.1 | **Delete Account** | Open mobile menu → Scroll down → Click "Delete My Account" | Confirmation prompt appears, account deleted on confirm | **NEW - TEST REQUIRED** |
+| 8.1.2 | **Delete Account with Active Orders** | Try to delete account with pending orders | Error: "Cannot delete account with active orders" | **NEW - TEST REQUIRED** |
+
+## 8.2 Crop Doctor Updates
+| # | Test Case | Steps | Expected Result | Status |
+|---|-----------|-------|-----------------|--------|
+| 8.2.1 | **Close Button Fix** | Upload image in Crop Doctor → Click ✕ button | Image preview disappears | **FIXED - TEST REQUIRED** |
+| 8.2.2 | **Verification Label** | Analyze crop | Shows "Analysis Verified By: AgrowCart AI Specialist • Cluster-01-Haryana" at bottom | **FIXED - TEST REQUIRED** |
+
+## 8.3 User Order Cancellation
+| # | Test Case | Steps | Expected Result | Status |
+|---|-----------|-------|-----------------|--------|
+| 8.3.1 | **View Cancelled Order** | Go to My Orders after admin cancels | Order shows red "Order Cancelled" badge | **NEW - TEST REQUIRED** |
+| 8.3.2 | **Cancelled Order Details** | View cancelled order details | Delivery info hidden, red status throughout | **NEW - TEST REQUIRED** |
+
+## 8.4 Delivery Partner Updates
+| # | Test Case | Steps | Expected Result | Status |
+|---|-----------|-------|-----------------|--------|
+| 8.4.1 | **Cancellation Notification** | Admin cancels order assigned to delivery boy | Delivery boy gets toast: "Order #XXXXXX has been cancelled" | **NEW - TEST REQUIRED** |
+| 8.4.2 | **Dashboard Auto-Refresh** | Order cancelled | Dashboard updates automatically without manual refresh | **NEW - TEST REQUIRED** |
+
+---
+
+# ✅ INSTRUCTIONS FOR TESTING NEW FEATURES
+
+## 1. Crop Analysis (Farmer Dashboard)
+- Login as farmer → Scroll to **"Crop Quality Analysis"** section (blue gradient card)
+- Upload crop image → Click **"Analyze Quality"** → Verify results displayed
+
+## 2. Market Prices (Farmer Dashboard)
+- Login as farmer → Look for **"Today's Millet Rates"** green card
+- Click refresh icon → Verify prices update
+
+## 3. Network Offline
+- Turn off Wi-Fi/Mobile data → Observe **red banner at top**
+- Turn back on → Observe success toast **"Back online!"**
+
+## 4. Account Deletion
+- Login → Open hamburger menu (mobile) → Scroll to bottom
+- Click **"Delete My Account"** → Confirm
+
+## 5. Order Cancellation Flow
+- **Admin**: Cancel an order → Check stock increased
+- **User**: Check order page → Should see red "Cancelled" badge
+- **Delivery Boy**: Should receive toast notification
+
+## 6. Cloudinary Upload Debug
+- Admin: Try to add product with image
+- Check server console for detailed Cloudinary logs
+- Look for **"Cloudinary: Upload successful"** or error messages
+
+---
