@@ -372,6 +372,51 @@ function FarmerDashboard() {
                     <MarketPricesWidget />
                 </div>
 
+                {/* Government Support Programs */}
+                <div className="bg-gradient-to-br from-green-600 to-green-700 p-8 md:p-12 rounded-[3.5rem] text-white shadow-2xl shadow-green-900/40 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
+
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 text-white/80 font-black uppercase tracking-[0.3em] text-[10px] mb-6">
+                            <Briefcase size={16} />
+                            <span>Government Initiatives</span>
+                        </div>
+
+                        <h3 className="text-4xl font-black mb-3 leading-tight">Support <br />Programs</h3>
+                        <p className="text-white/80 font-medium mb-8 max-w-2xl">Access government schemes and premium contracts for your millet produce.</p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('PM_POSHAN')}>
+                                <div className="flex items-center justify-between mb-3">
+                                    <h4 className="font-black text-lg">PM POSHAN</h4>
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
+                                <p className="text-sm text-white/80">15% premium for mid-day meal supply programs across India.</p>
+                            </div>
+
+                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('RATIONS')}>
+                                <div className="flex items-center justify-between mb-3">
+                                    <h4 className="font-black text-lg">PDS / Ration</h4>
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
+                                <p className="text-sm text-white/80">Sell directly to government distribution chains nationwide.</p>
+                            </div>
+
+                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('EXPORT')}>
+                                <div className="flex items-center justify-between mb-3">
+                                    <h4 className="font-black text-lg">Export Subsidy</h4>
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </div>
+                                <p className="text-sm text-white/80">Get 20% subsidy on bulk international orders and exports.</p>
+                            </div>
+                        </div>
+
+                        <button className="mt-8 bg-white text-green-700 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-green-50 transition-colors shadow-xl">
+                            View All Schemes
+                        </button>
+                    </div>
+                </div>
+
                 {/* News & Schemes Resource Hub */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[500px] h-auto">
                     <NewsCard />
