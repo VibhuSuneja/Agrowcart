@@ -45,9 +45,36 @@ export const TermsContent = () => (
             </p>
         </section>
 
+        <section className="mb-8 bg-red-50 p-6 rounded-2xl border border-red-100">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">04</span>
+                Intellectual Property & Anti-Cloning
+            </h2>
+            <div className="space-y-3 text-xs text-zinc-700">
+                <p>
+                    <strong>Ownership:</strong> All source code, UI/UX designs, algorithms, datasets, trademarks, and content on AgrowCart are the exclusive intellectual property of <strong>Vibhu Suneja</strong> and are protected under the Indian Copyright Act, 1957 and Information Technology Act, 2000.
+                </p>
+                <p>
+                    <strong>Prohibited Activities:</strong> The following are strictly prohibited without prior written consent:
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                    <li>Copying, cloning, or reverse-engineering any part of this platform</li>
+                    <li>Automated scraping of prices, farmer data, or product listings</li>
+                    <li>Using our branding, logos, or design patterns on derivative works</li>
+                    <li>Redistributing or reselling any part of the platform&apos;s code</li>
+                </ul>
+                <div className="bg-white p-4 rounded-xl border-l-4 border-red-500 mt-4">
+                    <p className="font-bold text-red-700">⚠️ Legal Action Warning</p>
+                    <p className="text-[10px] mt-1">
+                        Violations will result in immediate DMCA takedown requests, criminal complaints under Section 66 of IT Act 2000, and civil suits for damages up to ₹50,00,000 (Fifty Lakhs) per infringement.
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">04</span>
+                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">05</span>
                 Binding Arbitration
             </h2>
             <p className="text-zinc-600 leading-relaxed text-xs mb-3">

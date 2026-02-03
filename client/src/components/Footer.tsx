@@ -84,7 +84,15 @@ function Footer() {
             <Link href="/terms" className="hover:text-green-400 transition-colors">Terms of Service</Link>
             <Link href="/refund-policy" className="hover:text-green-400 transition-colors">Refund Policy</Link>
           </div>
-          <p>© {new Date().getFullYear()} Millet Platform. </p>
+          <div className="text-center">
+            <p className="font-bold text-zinc-400">© {new Date().getFullYear()} AgrowCart. All Rights Reserved.</p>
+            <p className="text-[10px] text-zinc-600 mt-1">
+              Platform code, design & datasets are the exclusive intellectual property of Vibhu Suneja.
+            </p>
+            <p className="text-[9px] text-red-400/70 mt-1">
+              ⚠️ Unauthorized copying, scraping, or cloning is strictly prohibited under IT Act 2000 & Copyright Act 1957.
+            </p>
+          </div>
           <p className="font-medium">
             Made with ❤️ by <Link
               href="https://www.linkedin.com/in/vibhusuneja08"
