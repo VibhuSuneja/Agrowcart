@@ -188,18 +188,25 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   }, [messages])
 
   const getSuggestion = async () => {
-    if (!messages || messages.length === 0) return
-    const lastMessage = messages.filter(m => m.senderId.toString() !== userData?._id)?.at(-1)
-    if (!lastMessage) return
-
     setLoading(true)
     try {
+      // Try to find the last message from the delivery boy
+      let lastMessage = messages?.filter(m => m.senderId.toString() !== userData?._id)?.at(-1)
+
+      // If no message from delivery boy, use the last message from anyone (for context)
+      if (!lastMessage && messages && messages.length > 0) {
+        lastMessage = messages.at(-1)
+      }
+
+      // If still no messages, use a generic prompt
+      const messageText = lastMessage?.text || "Hello, I'm tracking my order"
+
       const result = await axios.post("/api/chat/ai-suggestions", {
-        message: lastMessage.text,
+        message: messageText,
         role: "user"
       })
 
-      if (Array.isArray(result.data)) {
+      if (Array.isArray(result.data) && result.data.length > 0) {
         setSuggestions(result.data)
       }
     } catch (error) {

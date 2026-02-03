@@ -70,18 +70,25 @@ function DeliveryChat({ orderId, deliveryBoyId }: props) {
   }, [orderId])
 
   const getSuggestion = async () => {
-    if (!messages || messages.length === 0) return
-    const lastMessage = messages.filter(m => m.senderId.toString() !== deliveryBoyId)?.at(-1)
-    if (!lastMessage) return
-
     setLoading(true)
     try {
+      // Try to find the last message from the user (not the delivery boy)
+      let lastMessage = messages?.filter(m => m.senderId.toString() !== deliveryBoyId)?.at(-1)
+
+      // If no message from user, use the last message from anyone (for context)
+      if (!lastMessage && messages && messages.length > 0) {
+        lastMessage = messages.at(-1)
+      }
+
+      // If still no messages, use a generic prompt for delivery context
+      const messageText = lastMessage?.text || "I'm on my way with your order"
+
       const result = await axios.post("/api/chat/ai-suggestions", {
-        message: lastMessage.text,
+        message: messageText,
         role: "delivery_boy"
       })
 
-      if (Array.isArray(result.data)) {
+      if (Array.isArray(result.data) && result.data.length > 0) {
         setSuggestions(result.data)
       }
     } catch (error) {
