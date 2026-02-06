@@ -101,73 +101,46 @@ function ProductItemCard({ item }: { item: IProduct }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      whileHover={{ y: -10 }}
+      whileHover={{ y: -5 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       viewport={{ once: true }}
-      className='bg-white rounded-[2.5rem] p-5 shadow-2xl shadow-green-900/5 group relative flex flex-col h-full border border-zinc-100 hover:border-green-200 transition-all'
+      className='group relative flex flex-col overflow-hidden rounded-[2rem] glass-panel hover:bg-white/15 dark:hover:bg-white/5 transition-all duration-300 h-full border border-zinc-200/50 dark:border-white/5'
     >
-      <Link href={`/product/${item._id}`} className='block'>
-        <div className='relative w-full aspect-square bg-zinc-50 rounded-[2rem] overflow-hidden mb-6 group-hover:shadow-inner transition-all'>
+      <Link href={`/product/${item._id}`} className='block p-3'>
+        <div className='relative w-full aspect-square bg-zinc-50 dark:bg-zinc-900/50 rounded-[1.5rem] overflow-hidden group-hover:shadow-inner transition-all'>
           <Image
             src={item.image}
             fill
             alt={item.name}
             sizes='(max-width: 768px) 100vw, 25vw'
-            className='object-contain p-8 transition-transform duration-700 group-hover:scale-110'
+            className='object-cover transition-transform duration-700 group-hover:scale-105'
           />
 
-          {/* Top Actions */}
-          <div className='absolute top-4 right-4 flex flex-col gap-2 z-10'>
+          {/* Traceability Badge */}
+          <div className='absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-black/70 backdrop-blur-md px-3 py-1.5 text-[10px] font-bold text-white border border-white/10 shadow-lg z-10'>
+            <ShieldCheck size={14} className="text-emerald-400" />
+            <span className="uppercase tracking-wider">AI Verified</span>
+          </div>
+
+          {/* Favorite Button */}
+          <div className='absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleWishlist}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-md shadow-sm border transition-all ${isWishlisted
+              className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md shadow-sm border transition-all ${isWishlisted
                 ? 'bg-red-500 border-red-500 text-white'
-                : 'bg-white/80 border-white/50 text-zinc-400 hover:text-red-500'
+                : 'bg-black/40 border-white/20 text-white hover:bg-red-500'
                 }`}
             >
-              <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={handleShare}
-              className='w-10 h-10 rounded-xl bg-white/80 backdrop-blur-md flex items-center justify-center text-zinc-400 hover:text-green-600 shadow-sm border border-white/50 transition-all'
-            >
-              <Share2 size={20} />
+              <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
             </motion.button>
           </div>
-
-          <div className='absolute top-4 left-4 flex flex-col gap-2'>
-            {item.rating && item.rating > 0 ? (
-              <div className='bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-xl shadow-sm border border-white/50'>
-                <StarRating
-                  rating={Number(item.rating) || 0}
-                  reviewCount={Number(item.reviewCount) || 0}
-                  size={12}
-                  showNumber={true}
-                />
-              </div>
-            ) : null}
-          </div>
-          {item.farmId && (
-            <div className='absolute bottom-4 left-4 bg-zinc-900/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20'>
-              <span className='text-[8px] font-black text-zinc-900 uppercase tracking-widest'>Traceable</span>
-            </div>
-          )}
-
-          {item.isCompliant && (
-            <div className='absolute bottom-4 right-4 bg-green-500 backdrop-blur-md px-3 py-1 rounded-full border border-green-400 flex items-center gap-1.5 shadow-lg shadow-green-500/20'>
-              <ShieldCheck size={12} className="text-white" />
-              <span className='text-[8px] font-black text-white uppercase tracking-widest'>Verified Seller</span>
-            </div>
-          )}
 
           {/* Out of Stock Badge */}
           {item.stock === 0 && (
-            <div className='absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center'>
-              <div className='bg-red-500 text-white px-4 py-2 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg'>
+            <div className='absolute inset-0 bg-background-dark/60 backdrop-blur-sm flex items-center justify-center z-20'>
+              <div className='bg-red-500 text-white px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg'>
                 Out of Stock
               </div>
             </div>
@@ -175,65 +148,72 @@ function ProductItemCard({ item }: { item: IProduct }) {
         </div>
       </Link>
 
-      <div className='flex flex-col flex-1 px-1'>
-        <div className='flex items-center justify-between mb-3'>
-          <span className='text-[10px] font-black uppercase tracking-widest text-green-600 bg-green-50 px-2.5 py-1 rounded-lg border border-green-100'>
+      <div className='flex flex-col flex-1 p-5 pt-2'>
+        <div className='flex items-center justify-between mb-2'>
+          <span className='text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20'>
             {item.category}
           </span>
-          <span className='text-[10px] font-bold text-zinc-400 uppercase tracking-widest'>
-            {item.unit}
-          </span>
+          {item.rating && item.rating > 0 && (
+            <div className="flex items-center gap-1 text-gold-harvest text-[10px] font-bold bg-gold-harvest/10 px-2 py-1 rounded-md">
+              <Star size={12} fill="currentColor" />
+              <span>{item.rating}</span>
+            </div>
+          )}
         </div>
 
         <Link href={`/product/${item._id}`}>
-          <h3 className='text-zinc-900 font-extrabold text-xl leading-tight mb-2 group-hover:text-green-600 transition-colors tracking-tight line-clamp-2'>
+          <div className="flex items-center gap-1 text-zinc-400 mb-1">
+            <MapPin size={12} className="text-emerald-500" />
+            <span className="text-[10px] font-bold uppercase tracking-widest">{item.originCity || 'Karnataka'}</span>
+          </div>
+          <h3 className='text-zinc-900 dark:text-white font-extrabold text-lg leading-tight mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors tracking-tight line-clamp-1'>
             {item.name}
           </h3>
-          <div className="flex items-center gap-1.5 text-zinc-400 mb-5">
-            <MapPin size={10} className="text-zinc-300" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">{item.originCity ? `${item.originCity}, ` : ''}{item.originState || 'Haryana'}</span>
-          </div>
         </Link>
 
+        {/* Pricing and Action */}
         <div className='mt-auto flex items-center justify-between gap-4'>
           <div className='flex flex-col'>
-            <span className='text-[10px] text-zinc-400 font-black uppercase tracking-widest'>Price</span>
+            <span className='text-[10px] text-zinc-400 dark:text-zinc-500 font-black uppercase tracking-widest'>Price</span>
             <div className='flex items-baseline gap-1'>
-              <span className='text-zinc-900 font-black text-2xl'>₹{item.price}</span>
+              <span className='text-gold-harvest font-black text-2xl'>₹{item.price}</span>
+              <span className='text-[10px] text-zinc-400 dark:text-zinc-500 font-medium'>/{item.unit || 'kg'}</span>
             </div>
           </div>
 
-          {item.stock === 0 ? (
-            <div className='bg-zinc-100 text-zinc-400 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest'>
-              Sold Out
-            </div>
-          ) : !cartItem ? (
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              suppressHydrationWarning
-              onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
-              className='w-14 h-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-zinc-900/20 group-hover:bg-green-600 group-hover:shadow-green-500/30 transition-all'
-            >
-              <ShoppingCart size={22} />
-            </motion.button>
-          ) : (
-            <div className='flex items-center bg-zinc-100 rounded-2xl p-1 gap-4 border border-zinc-200'>
-              <button
-                className='w-10 h-10 flex items-center justify-center rounded-xl bg-white hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm'
-                onClick={() => dispatch(decreaseQuantity(item._id))}
+          <div className="flex-1 max-w-[120px]">
+            {item.stock === 0 ? (
+              <div className='h-11 w-full bg-zinc-100 dark:bg-white/5 text-zinc-400 flex items-center justify-center rounded-xl font-bold text-[10px] uppercase tracking-widest'>
+                Sold Out
+              </div>
+            ) : !cartItem ? (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
+                className='h-11 w-full bg-primary text-white rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all font-bold text-sm'
               >
-                <Minus size={16} />
-              </button>
-              <span className='text-base font-black text-zinc-900 min-w-[20px] text-center'>{cartItem.quantity}</span>
-              <button
-                className='w-10 h-10 flex items-center justify-center rounded-xl bg-white hover:bg-green-50 hover:text-green-500 transition-colors shadow-sm'
-                onClick={() => dispatch(increaseQuantity(item._id))}
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-          )}
+                <ShoppingCart size={18} />
+                <span>Buy</span>
+              </motion.button>
+            ) : (
+              <div className='flex items-center bg-zinc-100 dark:bg-white/5 rounded-xl p-1 gap-2 border border-zinc-200 dark:border-white/5'>
+                <button
+                  className='w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark text-zinc-600 dark:text-zinc-300 hover:text-red-500 transition-colors shadow-sm'
+                  onClick={() => dispatch(decreaseQuantity(item._id))}
+                >
+                  <Minus size={14} />
+                </button>
+                <span className='text-sm font-black text-zinc-900 dark:text-white min-w-[20px] text-center'>{cartItem.quantity}</span>
+                <button
+                  className='w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark text-zinc-600 dark:text-zinc-300 hover:text-emerald-500 transition-colors shadow-sm'
+                  onClick={() => dispatch(increaseQuantity(item._id))}
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>

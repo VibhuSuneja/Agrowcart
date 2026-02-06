@@ -7,6 +7,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'motion/react'
 import { signOut } from 'next-auth/react'
+import { cn } from '@/lib/utils'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
@@ -207,146 +208,94 @@ function Nav({ user: propUser }: { user: any }) {
 
 
     return (
-        <nav className='w-full absolute top-0 left-0 bg-white/80 backdrop-blur-xl shadow-sm shadow-green-900/5 flex justify-between items-center h-20 px-6 md:px-10 z-50 border-b border-zinc-200 transition-all duration-300'>
+        <nav className='sticky top-0 left-0 w-full bg-white/70 dark:bg-background-dark/80 backdrop-blur-2xl transition-all duration-300 z-[100] border-b border-zinc-200/50 dark:border-white/5 h-20 px-4 md:px-10 flex items-center justify-between'>
 
-            <div className='flex items-center gap-2 lg:gap-0'>
+            <div className='flex items-center gap-4'>
                 <button
                     onClick={() => setMenuOpen(true)}
-                    className='p-2 -ml-2 text-zinc-600 lg:hidden rounded-xl active:bg-zinc-100 transition-colors'
+                    className='p-2.5 text-zinc-600 dark:text-zinc-400 lg:hidden rounded-2xl bg-zinc-100 dark:bg-white/5 active:scale-90 transition-all'
                     aria-label="Open Menu"
                 >
-                    <Menu className="w-6 h-6" />
+                    <Menu className="w-5 h-5" />
                 </button>
 
-                {/* Back Button - visible on all pages except home */}
-                {pathname !== "/" && (
-                    <button
-                        onClick={() => router.back()}
-                        className='mr-2 p-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl transition-all flex items-center justify-center shadow-sm group'
-                        title="Go Back"
-                        aria-label="Navigate to previous page"
-                    >
-                        <ArrowLeft className='w-5 h-5 group-hover:-translate-x-0.5 transition-transform' />
-                    </button>
-                )}
-
-                <Link href={"/"} className='flex items-center gap-3 group hover:-translate-y-0.5 transition-transform duration-300'>
-                    <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:shadow-2xl group-hover:shadow-green-500/50 group-hover:from-green-400 group-hover:to-emerald-500 transition-all duration-500">
-                        <Leaf className="text-white w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
+                {/* Logo Area */}
+                <Link href={"/"} className='flex items-center gap-3 group transition-all duration-500'>
+                    <div className="w-11 h-11 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:shadow-primary/40 group-hover:scale-105 transition-all duration-500">
+                        <Leaf className="text-white w-6 h-6 group-hover:rotate-12 transition-transform" />
                     </div>
                     <div className="flex flex-col">
-                        <span className={`${orbitron.className} text-zinc-800 font-black text-lg md:text-xl sm:text-2xl tracking-tight group-hover:tracking-normal transition-all duration-300`}>
-                            Agro<span className="relative inline-block">
-                                w
-                                <TrendingUp className="absolute -top-3.5 left-0 w-4 h-4 text-green-500 group-hover:text-emerald-400 group-hover:-translate-y-0.5 group-hover:scale-110 transition-all duration-300" />
-                            </span><span className="text-green-600 group-hover:text-emerald-500 transition-colors duration-300">Cart</span>
+                        <span className={`${orbitron.className} text-slate-900 dark:text-white font-black text-xl tracking-tighter leading-none`}>
+                            Agro<span className="text-primary">w</span>Cart
                         </span>
-                        <span className="text-[8px] md:text-[10px] text-zinc-400 font-medium tracking-widest uppercase group-hover:text-green-600 transition-colors duration-300 hidden sm:block">Farm to Fork</span>
+                        <span className="text-[9px] text-zinc-400 dark:text-emerald-400/60 font-black tracking-[0.2em] uppercase leading-none mt-1">AI Precision</span>
                     </div>
                 </Link>
             </div>
 
-            {user.role == "user" && (
-                <form className='hidden lg:flex items-center bg-zinc-100 rounded-2xl px-5 py-2.5 w-1/3 max-w-lg focus-within:bg-white focus-within:ring-2 focus-within:ring-green-500/20 focus-within:shadow-inner transition-all duration-300 border border-transparent focus-within:border-green-100' onSubmit={handleSearch}>
-                    <Search className='text-zinc-400 w-5 h-5 mr-3' />
-                    <input
-                        type="text"
-                        placeholder='Search the marketplace...'
-                        className='w-full outline-none text-zinc-700 placeholder-zinc-400 bg-transparent font-medium text-sm'
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </form>
+            {/* Desktop Center Search */}
+            {user.role === "user" && (
+                <div className="hidden lg:block flex-1 max-w-xl px-10">
+                    <form className='relative group' onSubmit={handleSearch}>
+                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <Search className='text-zinc-400 group-focus-within:text-primary transition-colors w-4 h-4' />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder='Search premium millets & products...'
+                            className='w-full bg-zinc-100 dark:bg-white/5 rounded-2xl pl-12 pr-4 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white dark:focus:bg-white/10 transition-all border border-transparent focus:border-primary/20 text-slate-800 dark:text-white'
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </form>
+                </div>
             )}
 
-            <div className='flex items-center gap-2 md:gap-4 relative'>
-                {/* Community Recipes - visible to everyone */}
-                <Link href={"/recipes"} className='relative bg-zinc-100 rounded-xl w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Community Recipes" aria-label="Explore Community Recipes">
-                    <ChefHat className='text-zinc-600 w-4 h-4 md:w-5 md:h-5 group-hover:text-green-600 transition-colors' aria-hidden="true" />
-                </Link>
-
-                {/* Forum - visible to everyone */}
-                <Link href={"/community/forum"} className='relative bg-zinc-100 rounded-xl w-10 h-10 md:w-11 md:h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' title="Discussion Forum" aria-label="Join Discussion Forum">
-                    <MessageSquare className='text-zinc-600 w-4 h-4 md:w-5 md:h-5 group-hover:text-green-600 transition-colors' aria-hidden="true" />
-                </Link>
-
-                {user.role == "user" && (
-                    <>
-                        <div className='bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition lg:hidden cursor-pointer' onClick={() => setSearchBarOpen((prev) => !prev)}>
-                            {searchBarOpen ? <X className='text-zinc-600 w-5 h-5' /> : <Search className='text-zinc-600 w-5 h-5' />}
-                        </div>
-
-                        {/* Mobile Search Overlay */}
-                        <AnimatePresence>
-                            {searchBarOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="absolute top-24 left-0 w-full px-4 z-40 lg:hidden"
-                                >
-                                    <form onSubmit={handleSearch} className="bg-white p-4 rounded-2xl shadow-2xl border border-zinc-100 flex items-center gap-3">
-                                        <Search className='text-green-500 w-5 h-5' />
-                                        <input
-                                            type="text"
-                                            placeholder='Search organic products...'
-                                            className='w-full outline-none text-zinc-700 font-medium'
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            autoFocus
-                                        />
-                                        <button type="button" onClick={() => setSearchBarOpen(false)}>
-                                            <X className='text-zinc-400 w-5 h-5' />
-                                        </button>
-                                    </form>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <Link href={"/user/cart"} className='relative bg-zinc-100 rounded-xl w-11 h-11 flex items-center justify-center shadow-sm hover:bg-white hover:ring-2 hover:ring-green-500/20 transition group' aria-label={`View Shopping Cart, ${cartData.length} items`}>
-                            <ShoppingCartIcon className='text-zinc-600 w-5 h-5 group-hover:text-green-600 transition-colors' aria-hidden="true" />
-                            {cartData.length > 0 && (
-                                <span className='absolute -top-2 -right-2 bg-green-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-lg border-2 border-white animate-in zoom-in'>
-                                    {cartData.length}
-                                </span>
-                            )}
-                        </Link>
-                    </>
-                )}
-
-                {user.role == "admin" && (
-                    <div className='hidden md:flex items-center gap-3'>
-                        <Link href={"/admin/manage-orders"} className='flex items-center gap-2 bg-zinc-100 text-zinc-700 font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm'>
-                            <ClipboardCheck size={16} /> Orders
-                        </Link>
+            <div className='flex items-center gap-3 md:gap-4'>
+                {/* Desktop Quick Actions */}
+                <div className="hidden lg:flex items-center gap-3">
+                    <Link href="/recipes" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Recipes">
+                        <ChefHat size={22} />
+                    </Link>
+                    <Link href="/community/forum" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Forum">
+                        <MessageSquare size={22} />
+                    </Link>
+                    {/* Google Translate Widget */}
+                    <div className="scale-75 origin-right">
+                        <GoogleTranslator />
                     </div>
+                    {/* Text to Speech Tool */}
+                    <TextToSpeech />
+                </div>
+
+                <div className="h-6 w-px bg-zinc-200 dark:bg-white/10 mx-2 hidden lg:block"></div>
+
+                {user.role === "user" && (
+                    <Link href="/user/cart" className='relative p-3 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 rounded-2xl hover:scale-105 active:scale-95 transition-all'>
+                        <ShoppingCartIcon size={22} />
+                        {cartData.length > 0 && (
+                            <span className='absolute -top-1 -right-1 bg-primary text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-black shadow-lg border-2 border-white dark:border-background-dark'>
+                                {cartData.length}
+                            </span>
+                        )}
+                    </Link>
                 )}
 
-                {/* Google Translate Widget */}
-                <GoogleTranslator />
-
-                {/* Text to Speech Tool */}
-                <TextToSpeech />
-
+                {/* Profile Trigger */}
                 <div className='relative' ref={profileDropDown}>
                     <motion.div
                         whileTap={{ scale: 0.95 }}
-                        className='bg-linear-to-br from-green-500 to-emerald-700 p-[2px] rounded-2xl cursor-pointer shadow-lg shadow-green-500/10 focus-within:ring-2 focus-within:ring-green-500 focus-within:ring-offset-2 outline-none'
+                        className='p-1 bg-white/10 dark:bg-white/5 rounded-2xl cursor-pointer border border-zinc-200/50 dark:border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 pr-4'
                         onClick={() => setOpen(prev => !prev)}
-                        onKeyDown={(e) => e.key === 'Enter' && setOpen(prev => !prev)}
-                        role="button"
-                        aria-expanded={open}
-                        aria-haspopup="true"
-                        aria-label={`User Profile Menu for ${user.name}`}
-                        tabIndex={0}
                     >
-                        <div className='bg-white rounded-[14px] w-10 h-10 relative overflow-hidden flex items-center justify-center'>
-                            {user.image ? (
-                                <Image src={user.image} alt='' fill className='object-cover' />
-                            ) : (
-                                <User className="text-green-600 w-5 h-5" aria-hidden="true" />
-                            )}
+                        <div className='w-10 h-10 relative overflow-hidden rounded-xl border border-white/20 shadow-sm'>
+                            {user.image ? <Image src={user.image} alt='' fill className='object-cover' /> : <div className="w-full h-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center"><User className="text-zinc-400" /></div>}
                         </div>
+                        <div className="hidden xl:block text-left">
+                            <p className="text-xs font-black text-slate-800 dark:text-white line-clamp-1 leading-none mb-1">{user.name}</p>
+                            <p className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">{user.role}</p>
+                        </div>
+                        <Plus size={16} className={cn("text-zinc-400 transition-transform duration-300", open ? "rotate-45" : "")} />
                     </motion.div>
 
                     <AnimatePresence>
@@ -355,104 +304,39 @@ function Nav({ user: propUser }: { user: any }) {
                                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                className='absolute right-0 mt-4 w-64 bg-white rounded-3xl shadow-2xl shadow-green-900/10 border border-zinc-100 p-3 z-999 overflow-hidden'
+                                className='absolute right-0 mt-4 w-72 glass-panel rounded-[2rem] shadow-2xl border border-white/20 p-4 z-[1000] overflow-hidden'
                             >
-                                <div className='flex items-center gap-4 px-4 py-4 mb-2 bg-linear-to-br from-green-50 to-emerald-50 rounded-2xl'>
-                                    <div className='w-12 h-12 relative rounded-xl bg-white shadow-sm flex items-center justify-center overflow-hidden border border-green-100'>
-                                        {user.image ? <Image src={user.image} alt='user' fill className='object-cover' /> : <User className="text-green-600" />}
+                                <div className='flex items-center gap-4 p-4 mb-4 bg-primary/10 dark:bg-white/5 rounded-[1.5rem] border border-primary/10'>
+                                    <div className='w-12 h-12 relative rounded-xl bg-white shadow-lg overflow-hidden flex items-center justify-center ring-2 ring-primary/20'>
+                                        {user.image ? <Image src={user.image} alt='user' fill className='object-cover' /> : <User className="text-primary" />}
                                     </div>
                                     <div className="overflow-hidden">
-                                        <div className='text-zinc-900 font-bold truncate'>{user.name}</div>
-                                        <div className='text-[10px] text-green-600 font-black uppercase tracking-widest'>{user.role}</div>
+                                        <div className='text-zinc-900 dark:text-white font-black truncate text-sm'>{user.name}</div>
+                                        <div className='text-[10px] text-primary font-black uppercase tracking-[0.2em]'>{user.role} Hub</div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-1">
-                                    {user.role === "farmer" && (
-                                        <Link href={"/farmer-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
-                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
+                                <div className="space-y-1.5 px-1">
+                                    {(['farmer', 'shg', 'processor'].includes(user.role)) && (
+                                        <Link href={`/${user.role}-dashboard`} className='flex items-center gap-4 px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all' onClick={() => setOpen(false)}>
+                                            <TrendingUp size={18} className='text-primary' />
                                             Dashboard
                                         </Link>
                                     )}
-                                    {user.role === "shg" && (
-                                        <Link href={"/shg-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
-                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
-                                            SHG Dashboard
-                                        </Link>
-                                    )}
-                                    {user.role === "processor" && (
-                                        <Link href={"/processor-dashboard"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
-                                            <TrendingUp className='w-5 h-5 text-zinc-400' />
-                                            Processor Hub
-                                        </Link>
-                                    )}
-                                    {user.role !== "user" && (
-                                        <Link href={"/marketplace"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
-                                            <Package className='w-5 h-5 text-zinc-400' />
-                                            {t('visitMarketplace')}
-                                        </Link>
-                                    )}
-                                    {user.role == "user" && (
-                                        <Link href={"/user/my-orders"} className='flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors' onClick={() => setOpen(false)}>
-                                            <Package className='w-5 h-5 text-zinc-400' />
-                                            {t('myOrders')}
-                                        </Link>
-                                    )}
+
+                                    <Link href={"/marketplace"} className='flex items-center gap-4 px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all' onClick={() => setOpen(false)}>
+                                        <Package size={18} className='text-primary' />
+                                        Marketplace
+                                    </Link>
+
+                                    <div className="my-2 h-px bg-zinc-100 dark:bg-white/5"></div>
 
                                     <button
-                                        onClick={() => {
-                                            const roleMap: { [key: string]: string } = {
-                                                'farmer': 'farmer_v1',
-                                                'processor': 'processor_v1',
-                                                'shg': 'shg_v1',
-                                                'startup': 'startup_v1',
-                                                'user': 'consumer_v1',
-                                                'buyer': 'buyer_v1',
-                                                'deliveryBoy': 'delivery_v1'
-                                            }
-                                            if (roleMap[user.role]) {
-                                                localStorage.removeItem(`tour_${roleMap[user.role]}`)
-                                                window.location.reload()
-                                            } else {
-                                                alert("This user role does not have a guided tour yet.")
-                                            }
-                                        }}
-                                        className='flex items-center gap-3 w-full text-left px-4 py-3 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold transition-colors'
+                                        onClick={() => signOut({ callbackUrl: "/login" })}
+                                        className='flex items-center gap-4 w-full text-left px-4 py-3 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl text-red-600 font-bold text-xs uppercase tracking-widest transition-all'
                                     >
-                                        <TrendingUp className='w-5 h-5 text-zinc-400' />
-                                        Re-Take Tour
-                                    </button>
-
-                                    <button
-                                        onClick={async () => {
-                                            if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                                                try {
-                                                    const res = await fetch('/api/user/delete-account', { method: 'DELETE' });
-                                                    const data = await res.json();
-                                                    if (res.ok) {
-                                                        toast.success("Account deleted successfully.");
-                                                        setTimeout(() => signOut({ callbackUrl: "/" }), 2000);
-                                                    } else {
-                                                        toast.error(data.message || "Failed to delete account.");
-                                                    }
-                                                } catch (error) {
-                                                    toast.error("An error occurred. Please try again.");
-                                                }
-                                            }
-                                        }}
-                                        className='flex items-center gap-3 w-full text-left px-4 py-3 hover:bg-red-50 rounded-xl text-red-600 font-semibold transition-colors'
-                                    >
-                                        <Trash2 className='w-5 h-5 text-red-400' />
-                                        Delete My Account
-                                    </button>
-
-
-                                    <button className='flex items-center gap-3 w-full text-left px-4 py-3 hover:bg-red-50 rounded-xl text-red-600 font-semibold transition-colors' onClick={() => {
-                                        setOpen(false)
-                                        signOut({ callbackUrl: "/login" })
-                                    }}>
-                                        <LogOut className='w-5 h-5 text-red-400' />
-                                        {t('logout')}
+                                        <LogOut size={18} />
+                                        Sign Out
                                     </button>
                                 </div>
                             </motion.div>
@@ -460,8 +344,35 @@ function Nav({ user: propUser }: { user: any }) {
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Mobile Search Overlay Toggle */}
+            <AnimatePresence>
+                {searchBarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="fixed top-20 left-0 w-full px-4 py-6 bg-white/90 dark:bg-background-dark/90 backdrop-blur-3xl z-40 lg:hidden shadow-2xl"
+                    >
+                        <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={20} />
+                            <input
+                                type="text"
+                                placeholder='Search products...'
+                                className='w-full h-14 bg-zinc-100 dark:bg-white/5 rounded-2xl pl-12 pr-12 text-lg font-bold outline-none border-2 border-transparent focus:border-primary/20 text-slate-900 dark:text-white'
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                autoFocus
+                            />
+                            <button type="button" onClick={() => setSearchBarOpen(false)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400">
+                                <X size={20} />
+                            </button>
+                        </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {sideBar}
-            {/* Real-time Call Listener */}
             {user?._id && <GlobalCallListener userId={user._id} role={user.role} />}
         </nav>
     )

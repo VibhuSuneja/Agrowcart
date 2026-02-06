@@ -42,56 +42,62 @@ function UserDashboard({ productList }: { productList: IProduct[] }) {
   }
 
   return (
-    <div className="bg-white pb-20">
+    <div className="pb-32">
       <div id="home-hero">
         <HeroSection />
       </div>
 
-      <div id="home-categories">
+      <div id="home-categories" className="mt-20">
         <CategorySlider />
       </div>
 
-      <div id='product-grid' className='w-[95%] md:w-[85%] mx-auto mt-32'>
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-green-600 font-bold uppercase tracking-[0.2em] text-xs">
-              <Sparkles size={16} />
-              <span>Curated Selection</span>
+      <div id='product-grid' className='w-[95%] lg:w-[90%] max-w-[1600px] mx-auto mt-32'>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-emerald-500 font-bold uppercase tracking-[0.3em] text-[10px]">
+              <Sparkles size={14} />
+              <span>Premium Marketplace</span>
             </div>
-            <h2 className='text-4xl md:text-5xl font-black text-zinc-900 tracking-tight'>{t('title')}</h2>
-            <p className="text-zinc-500 max-w-lg font-medium">Discover our highest-rated products, handpicked from organic farms across the country for their nutritional excellence.</p>
+            <h2 className='text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter'>
+              {t('title')}
+            </h2>
+            <p className="text-zinc-500 dark:text-emerald-100/60 max-w-xl text-lg font-medium leading-relaxed">
+              Discover our highest-rated products, handpicked from organic farms for their nutritional excellence and full traceability.
+            </p>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Produce</span>
-              <span className="text-xl font-black text-zinc-900">{productList.length}+ Batches</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Inventory Status</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-emerald-400">{productList.length}+ Batches</span>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-xl shadow-zinc-900/20">
-              <ArrowRight size={20} />
+            <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-white shadow-2xl shadow-primary/30 group cursor-pointer hover:scale-110 transition-transform">
+              <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8'>
           {productList.map((item: any, index: number) => (
             <ProductItemCard key={index} item={item} />
           ))}
         </div>
 
         {productList.length === 0 && (
-          <div className="py-20 text-center bg-zinc-50 rounded-[3rem] border-2 border-dashed border-zinc-200">
-            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-              <Sparkles className="text-zinc-300" size={32} />
+          <div className="py-24 text-center glass-panel rounded-[3rem] border border-white/5 shadow-2xl">
+            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner overflow-hidden relative group">
+              <Sparkles className="text-primary group-hover:scale-125 transition-transform" size={40} />
             </div>
-            <h3 className="text-xl font-bold text-zinc-900 mb-2">No products found</h3>
-            <p className="text-zinc-500">We're currently stocking up on the freshest harvests. Check back soon!</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">No products found</h3>
+            <p className="text-zinc-500 dark:text-emerald-100/60 max-w-sm mx-auto">We're currently stocking up on the freshest harvests. Check back in a few moments!</p>
           </div>
         )}
       </div>
 
       <MissionStory />
-      <ReviewMarquee key={reviewsRefreshKey} />
+      <div className="mt-20">
+        <ReviewMarquee key={reviewsRefreshKey} />
+      </div>
       <FeedbackSection onReviewSubmitted={handleFeedbackRefresh} />
       <TutorialGuide steps={CONSUMER_TOUR_STEPS} tourName="consumer_v1" />
     </div>

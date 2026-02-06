@@ -14,6 +14,8 @@ import { Analytics } from "@vercel/analytics/next"
 import { SocketProvider } from "@/context/SocketContext";
 import CookieConsent from "@/components/CookieConsent";
 import NetworkStatus from "@/components/NetworkStatus";
+import BottomNav from "@/components/BottomNav";
+import { orbitron, jakarta } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://agrowcart.vercel.app'), // Replace with actual domain
@@ -68,8 +70,8 @@ export default function RootLayout({
     children: React.ReactNode;
   }>) {
   return (
-    <html lang="en">
-      <body className="w-full min-h-screen bg-linear-to-b from-green-50 to-white" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${jakarta.variable} ${orbitron.variable} w-full min-h-screen bg-white dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300 selection:bg-primary selection:text-white font-sans`} suppressHydrationWarning>
         {/* Google Analytics */}
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
@@ -88,13 +90,14 @@ export default function RootLayout({
                 {/* Skip to Main Content for Accessibility */}
                 <a
                   href="#main-content"
-                  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:bg-green-600 focus:text-white focus:px-6 focus:py-3 focus:rounded-xl focus:shadow-2xl focus:font-bold focus:outline-none"
+                  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-6 focus:py-3 focus:rounded-xl focus:shadow-2xl focus:font-bold focus:outline-none"
                 >
                   Skip to main content
                 </a>
 
                 <Toaster position="top-right" />
                 <GlobalChatBot />
+                <BottomNav />
                 <NetworkStatus />
 
                 <main id="main-content" className="relative outline-none" tabIndex={-1}>
