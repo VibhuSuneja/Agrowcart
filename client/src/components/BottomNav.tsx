@@ -2,51 +2,74 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Search, ShoppingCart, User, MessageSquare } from 'lucide-react'
+import { Home, Search, ShoppingCart, User, MessageSquare, LayoutDashboard, Database, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 
-const navItems = [
-    { label: 'Home', icon: Home, href: '/' },
-    { label: 'Market', icon: Search, href: '/marketplace' },
-    { label: 'Cart', icon: ShoppingCart, href: '/user/cart', badge: true },
-    { label: 'Forum', icon: MessageSquare, href: '/community/forum' },
-    { label: 'Profile', icon: User, href: '/profile' }
-]
-
 export default function BottomNav() {
     const pathname = usePathname()
-    const cartData = useSelector((state: RootState) => state.cart.cartData || [])
+    const { userData } = useSelector((state: RootState) => state.user)
+    const { cartData } = useSelector((state: RootState) => state.cart)
 
+    // Only show on mobile
     return (
-        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm h-16 glass-panel rounded-3xl border border-white/20 shadow-2xl z-[90] flex items-center justify-around px-2 backdrop-blur-3xl bg-white/40 dark:bg-emerald-950/40">
-            {navItems.map((item) => {
-                const isActive = pathname === item.href
-                const Icon = item.icon
-
-                return (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                            "relative flex flex-col items-center justify-center gap-1 w-12 h-12 rounded-2xl transition-all duration-300",
-                            isActive ? "text-primary bg-primary/10" : "text-zinc-500 dark:text-zinc-400"
-                        )}
-                    >
-                        <Icon size={20} className={cn(isActive && "scale-110")} />
-                        <span className="text-[8px] font-black uppercase tracking-widest">{item.label}</span>
-                        {item.badge && cartData.length > 0 && (
-                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white dark:border-background-dark">
-                                {cartData.length}
-                            </span>
-                        )}
-                        {isActive && (
-                            <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full" />
-                        )}
-                    </Link>
-                )
-            })}
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md h-[72px] glass-panel rounded-[2rem] border border-white/10 shadow-2xl z-50 flex items-center justify-around px-2">
+            <NavItem
+                href="/"
+                icon={LayoutDashboard}
+                label="Home"
+                isActive={pathname === '/'}
+            />
+            <NavItem
+                href="/marketplace"
+                icon={Search}
+                label="Market"
+                isActive={pathname === '/marketplace'}
+            />
+            <NavItem
+                href="/user/cart"
+                icon={ShoppingCart}
+                label="Cart"
+                isActive={pathname === '/user/cart'}
+                badge={cartData.length}
+            />
+            <NavItem
+                href="/profile"
+                icon={User}
+                label="Profile"
+                isActive={pathname === '/profile'}
+            />
         </div>
+    )
+}
+
+function NavItem({ href, icon: Icon, label, isActive, badge }: { href: string, icon: any, label: string, isActive: boolean, badge?: number }) {
+    return (
+        <Link href={href} className="flex flex-col items-center justify-center gap-1 w-16 relative group transition-all duration-300">
+            {isActive && (
+                <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full opacity-50 scale-150" />
+            )}
+            <div className={cn(
+                "p-2 rounded-full transition-all duration-300 relative",
+                isActive ? "text-primary scale-110" : "text-zinc-500 dark:text-zinc-400 group-hover:text-white"
+            )}>
+                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                {badge ? (
+                    <span className="absolute -top-1 -right-1 size-4 bg-primary text-background-dark text-[10px] font-black rounded-full flex items-center justify-center border-2 border-background-dark">
+                        {badge}
+                    </span>
+                ) : null}
+            </div>
+            <span className={cn(
+                "text-[10px] font-bold transition-all duration-300",
+                isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"
+            )}>
+                {label}
+            </span>
+            {isActive && (
+                <div className="absolute -bottom-1 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_#11d462]" />
+            )}
+        </Link>
     )
 }

@@ -1,21 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #066046;
-  --color-primary-dark: #044532;
-  --color-primary-light: #329b7b;
-  --color-background-dark: #11221d;
-  --color-surface-dark: #1c322a;
-  --color-accent-warning: #d97706;
-  --color-accent-success: #10b981;
-  --color-gold-harvest: #eab308;
-  --color-fresh-growth: #34d399;
-  
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
+  --color-primary: #16A34A;
+  --color-primary-dark: #066046;
+  --color-accent: #EAB308;
+  --color-gold-harvest: #EAB308;
+  --color-emerald-forest: #064e3b;
+  --color-fresh-growth: #16A34A;
+  --color-background-dark: #0b1613;
+  --color-surface-dark: #1c362f;
+
+  --font-orbitron: var(--font-orbitron);
+  --font-jakarta: var(--font-jakarta);
 }
 
 @layer base {
@@ -24,12 +20,31 @@
   }
 
   body {
-    @apply antialiased text-zinc-900 selection:bg-primary selection:text-white transition-colors duration-300;
+    @apply antialiased text-slate-900 bg-white dark:bg-background-dark dark:text-white transition-colors duration-300;
+    font-family: var(--font-jakarta), sans-serif;
   }
 
   ::selection {
-    @apply bg-green-100 text-green-900;
+    @apply bg-primary text-white;
   }
+}
+
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(22, 163, 74, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #16A34A;
 }
 
 /* Premium Glassmorphism */
@@ -37,51 +52,46 @@
   @apply bg-white/10 dark:bg-emerald-950/40 backdrop-blur-xl border border-white/10 dark:border-white/5;
 }
 
+.glass-header {
+  @apply bg-white/70 dark:bg-background-dark/70 backdrop-blur-2xl border-b border-white/10 dark:border-white/5;
+}
+
+.glass-card {
+  @apply bg-white/5 dark:bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden;
+}
+
 /* Sidebar Gradient */
 .sidebar-gradient {
   background: linear-gradient(180deg, #066046 0%, #022c20 100%);
 }
 
-/* Custom Premium Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-zinc-300/50 dark:bg-white/10 rounded-full border-4 border-transparent bg-clip-content;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
-.scrollbar-hide {
+.no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-@keyframes enter {
-  0% { transform: scale(0.9); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
-@keyframes leave {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0; }
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-.animate-enter {
-  animation: enter 0.3s ease-out forwards;
-}
-
-.animate-leave {
-  animation: leave 0.3s ease-in forwards;
+.agrow-glow {
+  box-shadow: 0 0 20px -5px rgba(22, 163, 74, 0.3);
 }

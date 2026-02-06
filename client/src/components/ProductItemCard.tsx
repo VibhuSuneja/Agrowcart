@@ -39,7 +39,6 @@ function ProductItemCard({ item }: { item: IProduct }) {
   const [isWishlisted, setIsWishlisted] = React.useState(false)
 
   React.useEffect(() => {
-    // Fetch initial wishlist state if needed, or get from centralized state
     const fetchWishlist = async () => {
       try {
         const res = await axios.get('/api/user/wishlist')
@@ -57,20 +56,17 @@ function ProductItemCard({ item }: { item: IProduct }) {
   const toggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
-    // Optimistic UI update
     setIsWishlisted(!isWishlisted)
-
     try {
       const res = await axios.post('/api/user/wishlist', { productId: item._id })
       if (!res.data.success) {
-        setIsWishlisted(isWishlisted) // Fallback
+        setIsWishlisted(isWishlisted)
         toast.error("Failed to update wishlist")
       } else {
         toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist")
       }
     } catch (error: any) {
-      setIsWishlisted(isWishlisted) // Fallback
+      setIsWishlisted(isWishlisted)
       toast.error(error.response?.data?.error || "Login to use wishlist")
     }
   }
@@ -85,7 +81,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
       try {
         await navigator.share({
           title: title,
-          text: `Highly nutritious ${item.name} from Snapcart.`,
+          text: `Highly nutritious ${item.name} from AgrowCart.`,
           url: url
         })
       } catch (err) {
@@ -99,48 +95,67 @@ function ProductItemCard({ item }: { item: IProduct }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.5 }}
       viewport={{ once: true }}
-      className='group relative flex flex-col overflow-hidden rounded-[2rem] glass-panel hover:bg-white/15 dark:hover:bg-white/5 transition-all duration-300 h-full border border-zinc-200/50 dark:border-white/5'
+      className='bg-white dark:bg-zinc-900/40 rounded-[2.5rem] p-4 shadow-2xl shadow-zinc-900/5 group relative flex flex-col h-full border border-zinc-100 dark:border-white/5 hover:border-primary/30 transition-all duration-500'
     >
-      <Link href={`/product/${item._id}`} className='block p-3'>
-        <div className='relative w-full aspect-square bg-zinc-50 dark:bg-zinc-900/50 rounded-[1.5rem] overflow-hidden group-hover:shadow-inner transition-all'>
+      <Link href={`/product/${item._id}`} className='block relative'>
+        <div className='relative w-full aspect-[4/5] bg-zinc-50 dark:bg-white/5 rounded-[2rem] overflow-hidden mb-5 group-hover:shadow-inner transition-all'>
           <Image
             src={item.image}
             fill
             alt={item.name}
             sizes='(max-width: 768px) 100vw, 25vw'
-            className='object-cover transition-transform duration-700 group-hover:scale-105'
+            className='object-cover transition-transform duration-700 group-hover:scale-110'
           />
 
-          {/* Traceability Badge */}
-          <div className='absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-black/70 backdrop-blur-md px-3 py-1.5 text-[10px] font-bold text-white border border-white/10 shadow-lg z-10'>
-            <ShieldCheck size={14} className="text-emerald-400" />
-            <span className="uppercase tracking-wider">AI Verified</span>
-          </div>
+          <div className='absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
 
-          {/* Favorite Button */}
-          <div className='absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+          {/* Action Overlay */}
+          <div className='absolute top-4 right-4 flex flex-col gap-2 z-10 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300'>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleWishlist}
-              className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md shadow-sm border transition-all ${isWishlisted
-                ? 'bg-red-500 border-red-500 text-white'
-                : 'bg-black/40 border-white/20 text-white hover:bg-red-500'
+              className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-xl shadow-lg border transition-all ${isWishlisted
+                ? 'bg-red-500 border-red-400 text-white'
+                : 'bg-white/90 dark:bg-zinc-900/90 border-white/20 text-zinc-400 hover:text-red-500'
                 }`}
             >
-              <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
+              <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleShare}
+              className='w-10 h-10 rounded-xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl flex items-center justify-center text-zinc-400 hover:text-primary shadow-lg border border-white/20 transition-all'
+            >
+              <Share2 size={18} />
             </motion.button>
           </div>
 
-          {/* Out of Stock Badge */}
+          <div className='absolute top-4 left-4 flex flex-col gap-2'>
+            {item.rating && item.rating > 0 ? (
+              <div className='bg-primary/90 dark:bg-emerald-500/90 backdrop-blur-md px-2.5 py-1 rounded-xl shadow-lg border border-white/20 flex items-center gap-1.5'>
+                <Star size={12} fill="white" className="text-white" />
+                <span className="text-[10px] font-black text-white">{item.rating}</span>
+              </div>
+            ) : null}
+          </div>
+
+          {item.farmId && (
+            <div className='absolute bottom-4 left-4 bg-zinc-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2'>
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+              <span className='text-[8px] font-black text-white uppercase tracking-[0.2em]'>Traceable Hub</span>
+            </div>
+          )}
+
           {item.stock === 0 && (
-            <div className='absolute inset-0 bg-background-dark/60 backdrop-blur-sm flex items-center justify-center z-20'>
-              <div className='bg-red-500 text-white px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg'>
+            <div className='absolute inset-0 bg-zinc-900/60 backdrop-blur-sm flex items-center justify-center'>
+              <div className='bg-white/10 border border-white/20 text-white px-6 py-2 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl backdrop-blur-xl'>
                 Out of Stock
               </div>
             </div>
@@ -148,72 +163,62 @@ function ProductItemCard({ item }: { item: IProduct }) {
         </div>
       </Link>
 
-      <div className='flex flex-col flex-1 p-5 pt-2'>
-        <div className='flex items-center justify-between mb-2'>
-          <span className='text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20'>
+      <div className='flex flex-col flex-1 px-1'>
+        <div className='flex items-center justify-between mb-3'>
+          <span className='text-[9px] font-black uppercase tracking-[0.2em] text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/10'>
             {item.category}
           </span>
-          {item.rating && item.rating > 0 && (
-            <div className="flex items-center gap-1 text-gold-harvest text-[10px] font-bold bg-gold-harvest/10 px-2 py-1 rounded-md">
-              <Star size={12} fill="currentColor" />
-              <span>{item.rating}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
+            <MapPin size={10} />
+            <span className="text-[10px] font-bold uppercase tracking-widest">{item.originCity || 'Haryana'}</span>
+          </div>
         </div>
 
         <Link href={`/product/${item._id}`}>
-          <div className="flex items-center gap-1 text-zinc-400 mb-1">
-            <MapPin size={12} className="text-emerald-500" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">{item.originCity || 'Karnataka'}</span>
-          </div>
-          <h3 className='text-zinc-900 dark:text-white font-extrabold text-lg leading-tight mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors tracking-tight line-clamp-1'>
+          <h3 className='text-slate-900 dark:text-white font-black text-lg leading-[1.2] mb-3 group-hover:text-primary transition-colors tracking-tight line-clamp-2'>
             {item.name}
           </h3>
         </Link>
 
-        {/* Pricing and Action */}
-        <div className='mt-auto flex items-center justify-between gap-4'>
+        <div className='mt-auto flex items-center justify-between pt-4 border-t border-zinc-50 dark:border-white/5'>
           <div className='flex flex-col'>
-            <span className='text-[10px] text-zinc-400 dark:text-zinc-500 font-black uppercase tracking-widest'>Price</span>
+            <span className='text-[9px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-widest mb-0.5'>Market Rate</span>
             <div className='flex items-baseline gap-1'>
-              <span className='text-gold-harvest font-black text-2xl'>₹{item.price}</span>
-              <span className='text-[10px] text-zinc-400 dark:text-zinc-500 font-medium'>/{item.unit || 'kg'}</span>
+              <span className='text-zinc-900 dark:text-white font-black text-2xl tracking-tighter'>₹{item.price}</span>
+              <span className='text-[10px] text-zinc-400 font-bold'>/{item.unit || 'kg'}</span>
             </div>
           </div>
 
-          <div className="flex-1 max-w-[120px]">
-            {item.stock === 0 ? (
-              <div className='h-11 w-full bg-zinc-100 dark:bg-white/5 text-zinc-400 flex items-center justify-center rounded-xl font-bold text-[10px] uppercase tracking-widest'>
-                Sold Out
-              </div>
-            ) : !cartItem ? (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
-                className='h-11 w-full bg-primary text-white rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all font-bold text-sm'
+          {item.stock === 0 ? (
+            <div className='bg-zinc-100 dark:bg-white/5 text-zinc-400 px-4 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-widest border border-zinc-200 dark:border-white/10'>
+              Sold Out
+            </div>
+          ) : !cartItem ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
+              className='w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-xl agrow-glow group-hover:scale-110 transition-all'
+            >
+              <ShoppingCart size={20} />
+            </motion.button>
+          ) : (
+            <div className='flex items-center bg-zinc-100 dark:bg-white/5 rounded-2xl p-1 gap-3 border border-zinc-200 dark:border-white/10'>
+              <button
+                className='w-8 h-8 flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-red-500 transition-colors shadow-sm'
+                onClick={() => dispatch(decreaseQuantity(item._id))}
               >
-                <ShoppingCart size={18} />
-                <span>Buy</span>
-              </motion.button>
-            ) : (
-              <div className='flex items-center bg-zinc-100 dark:bg-white/5 rounded-xl p-1 gap-2 border border-zinc-200 dark:border-white/5'>
-                <button
-                  className='w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark text-zinc-600 dark:text-zinc-300 hover:text-red-500 transition-colors shadow-sm'
-                  onClick={() => dispatch(decreaseQuantity(item._id))}
-                >
-                  <Minus size={14} />
-                </button>
-                <span className='text-sm font-black text-zinc-900 dark:text-white min-w-[20px] text-center'>{cartItem.quantity}</span>
-                <button
-                  className='w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark text-zinc-600 dark:text-zinc-300 hover:text-emerald-500 transition-colors shadow-sm'
-                  onClick={() => dispatch(increaseQuantity(item._id))}
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-            )}
-          </div>
+                <Minus size={14} />
+              </button>
+              <span className='text-sm font-black text-slate-900 dark:text-white min-w-[20px] text-center'>{cartItem.quantity}</span>
+              <button
+                className='w-8 h-8 flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-primary transition-colors shadow-sm'
+                onClick={() => dispatch(increaseQuantity(item._id))}
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

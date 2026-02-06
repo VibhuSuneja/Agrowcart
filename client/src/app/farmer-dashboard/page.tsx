@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
     Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
-    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle
+    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle, AlertTriangle
 } from 'lucide-react'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -181,53 +181,51 @@ function FarmerDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 pb-20 pt-[110px] md:pt-[120px] selection:bg-green-100 selection:text-green-900">
+        <div className="min-h-screen bg-white dark:bg-background-dark pb-32 pt-[110px] md:pt-[140px] selection:bg-primary/10 selection:text-primary">
             <Nav user={userData as any} />
             <VoiceAssistant onCommand={handleVoiceCommand} />
-            {/* tour-voice target is inside VoiceAssistant component usually, but we can wrap it or add id inside */}
             <div id="tour-voice" className="fixed bottom-10 right-10 w-1 h-1 pointer-events-none" />
             <TutorialGuide steps={FARMER_TOUR_STEPS} tourName="farmer_v1" />
-            <div className="w-[95%] md:w-[90%] xl:w-[85%] 2xl:max-w-[1400px] mx-auto space-y-8 md:space-y-12">
+
+            <div className="w-[95%] lg:w-[90%] max-w-[1600px] mx-auto space-y-12 md:space-y-20">
 
                 {/* Header Section */}
-                <div id="tour-header" className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
-                    <div className="space-y-3 md:space-y-4">
+                <div id="tour-header" className="flex flex-col xl:flex-row xl:items-end justify-between gap-10">
+                    <div className="space-y-6">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center gap-2 text-green-600 font-black uppercase tracking-[0.3em] text-[10px] bg-green-50 w-fit px-3 py-1 rounded-lg border border-green-100"
+                            className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.4em] text-[10px] bg-primary/10 dark:bg-emerald-500/10 w-fit px-4 py-1.5 rounded-full border border-primary/20"
                         >
-                            <Sprout size={14} className="animate-pulse" />
-                            <span>Farmer Empowerment Hub</span>
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                            <span>Mission Control Hub</span>
                         </motion.div>
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-[0.9] sm:leading-none'
+                            className='text-5xl sm:text-6xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.85]'
                         >
-                            Grow. <span className="text-zinc-400">Predict.</span> <br />Scale.
+                            Grow. <span className="text-zinc-300 dark:text-zinc-700">Predict.</span> <br />Scale.
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your produce with AI-driven market intelligence and SIH-standard traceability.</p>
+                        <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg leading-relaxed">
+                            Empowering organic farmers with AI-driven market intelligence,SIH standard traceability, and direct access to global marketplaces.
+                        </p>
                     </div>
 
-                    <div className="flex gap-4 items-end">
-                        <div className="w-[300px] hidden lg:block">
+                    <div className="flex flex-wrap items-center gap-6">
+                        <div className="w-full sm:w-[350px] glass-panel p-2 rounded-[2.5rem] shadow-2xl">
                             <WeatherCard />
                         </div>
-                        <div className="bg-white p-4 rounded-3xl shadow-xl shadow-green-900/5 border border-zinc-100 flex items-center gap-4 h-fit">
-                            <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">
-                                <Activity size={24} />
+                        <div className="glass-panel p-6 rounded-[2.5rem] shadow-2xl flex items-center gap-6 h-fit border border-white/20">
+                            <div className="w-16 h-16 bg-primary/10 rounded-[1.5rem] flex items-center justify-center text-primary shadow-inner">
+                                <Activity size={32} />
                             </div>
                             <div>
-                                <div className="text-[10px] font-black uppercase text-zinc-400">Success Rate</div>
-                                <div className="text-xl font-black text-zinc-900">98.4%</div>
+                                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Yield Integrity</div>
+                                <div className="text-3xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">98.4%</div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="block lg:hidden mb-8">
-                    <WeatherCard />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -235,53 +233,51 @@ function FarmerDashboard() {
                     <motion.div
                         id="tour-analytics"
                         initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="lg:col-span-2 bg-white p-8 md:p-12 rounded-[3.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative overflow-hidden group"
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="lg:col-span-2 glass-panel p-8 md:p-12 rounded-[4rem] shadow-2xl relative overflow-hidden group border border-white/20"
                     >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 transition-all group-hover:scale-110" />
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 opacity-50" />
 
                         <div className="relative">
-                            <div className="flex items-center justify-between mb-10">
-                                <div className="flex items-center gap-5">
-                                    <div className="w-14 h-14 bg-zinc-900 rounded-[1.5rem] flex items-center justify-center shadow-2xl shadow-zinc-900/40">
-                                        <Zap className="text-green-400 fill-green-400" size={28} />
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-6">
+                                <div className="flex items-center gap-6">
+                                    <div className="w-16 h-16 bg-slate-900 dark:bg-primary rounded-[1.8rem] flex items-center justify-center shadow-2xl agrow-glow">
+                                        <Zap className="text-primary dark:text-white" size={32} fill="currentColor" />
                                     </div>
                                     <div>
-                                        <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Digital Harvest Guide</h2>
-                                        <p className="text-zinc-500 text-sm font-medium italic">Neural prediction model v2.1</p>
+                                        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Intelligence Ledger</h2>
+                                        <p className="text-zinc-500 font-bold text-xs uppercase tracking-[0.2em] mt-1">Blockchain Analysis v3.4</p>
                                     </div>
                                 </div>
-                                <div className="hidden sm:block">
-                                    <div className="bg-green-50 text-green-700 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-green-100 flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                        Live Processing
-                                    </div>
+                                <div className="bg-primary/10 text-primary px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-primary/20 flex items-center gap-2 w-fit">
+                                    <div className="w-2 h-2 bg-primary rounded-full animate-ping" />
+                                    Live Processing
                                 </div>
                             </div>
 
-                            <form onSubmit={handlePredict} className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-                                <div className="relative group">
-                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
+                            <form onSubmit={handlePredict} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                                <div className="relative group/input">
+                                    <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/input:text-primary transition-colors" size={20} />
                                     <input
                                         placeholder="Target Region"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                        className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={region} onChange={e => setRegion(e.target.value)}
                                     />
                                 </div>
-                                <div className="relative group">
-                                    <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
+                                <div className="relative group/input">
+                                    <Sprout className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/input:text-primary transition-colors" size={20} />
                                     <input
                                         placeholder="Crop Variety"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                        className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={crop} onChange={e => setCrop(e.target.value)}
                                     />
                                 </div>
-                                <div className="relative group">
-                                    <TrendingUp className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
+                                <div className="relative group/input">
+                                    <TrendingUp className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/input:text-primary transition-colors" size={20} />
                                     <input
                                         placeholder="Volume (kg)"
                                         type="number"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                        className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={quantity} onChange={e => setQuantity(e.target.value)}
                                     />
                                 </div>
@@ -290,7 +286,7 @@ function FarmerDashboard() {
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
                                     disabled={loading}
-                                    className="bg-zinc-900 text-white py-5 rounded-[1.5rem] md:col-span-3 font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-600 shadow-2xl shadow-zinc-900/20 transition-all"
+                                    className="bg-slate-900 dark:bg-primary text-white py-6 rounded-[1.8rem] md:col-span-3 font-black uppercase tracking-[0.3em] text-sm flex items-center justify-center gap-4 hover:shadow-2xl agrow-glow transition-all disabled:opacity-50"
                                 >
                                     {loading ? <Loader className="animate-spin" /> : (
                                         <>
@@ -306,55 +302,55 @@ function FarmerDashboard() {
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 bg-zinc-900 rounded-[2.5rem] border border-white/5 shadow-2xl"
+                                        className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center p-10 bg-slate-950 rounded-[3rem] border border-white/10 shadow-3xl"
                                     >
-                                        <div className="space-y-6">
-                                            <div className="inline-flex items-center gap-3 px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
+                                        <div className="space-y-8">
+                                            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-primary/20">
                                                 <ChartIcon size={12} />
-                                                <span>Prediction Outcome</span>
+                                                <span>Simulation Outcome</span>
                                             </div>
-                                            <div className="space-y-1">
-                                                <div className="text-sm text-zinc-400 font-bold uppercase tracking-widest">Expected Rate</div>
-                                                <div className="text-6xl font-black text-white tracking-tighter">₹{prediction.estimatedPrice}<span className="text-2xl text-green-400">/kg</span></div>
+                                            <div className="space-y-2">
+                                                <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.3em]">Estimated Market Rate</div>
+                                                <div className="text-7xl font-black text-white tracking-tighter leading-none">₹{prediction.estimatedPrice}<span className="text-xl text-primary font-bold ml-1">/kg</span></div>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <div className="bg-white/5 p-4 rounded-2xl flex-1">
-                                                    <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Sentiment</div>
-                                                    <div className="text-green-400 font-black uppercase tracking-widest mt-1">Bullish</div>
+                                            <div className="flex items-center gap-5">
+                                                <div className="bg-white/5 p-5 rounded-[1.5rem] flex-1 border border-white/5">
+                                                    <div className="text-[9px] text-zinc-500 font-black uppercase tracking-[0.3em] mb-1">Price Sentiment</div>
+                                                    <div className="text-primary font-black uppercase tracking-[0.1em] text-sm">Bullish Trend</div>
                                                 </div>
-                                                <div className="bg-white/5 p-4 rounded-2xl flex-1">
-                                                    <div className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Confidence</div>
-                                                    <div className="text-white font-black uppercase tracking-widest mt-1">92%</div>
+                                                <div className="bg-white/5 p-5 rounded-[1.5rem] flex-1 border border-white/5">
+                                                    <div className="text-[9px] text-zinc-500 font-black uppercase tracking-[0.3em] mb-1">AI Confidence</div>
+                                                    <div className="text-white font-black uppercase tracking-[0.1em] text-sm">92.8% Verified</div>
                                                 </div>
                                             </div>
-                                            <p className="text-zinc-400 font-medium leading-relaxed italic border-l-2 border-green-500/50 pl-4">
+                                            <p className="text-zinc-400 font-medium leading-relaxed italic border-l-4 border-primary/40 pl-6 text-sm">
                                                 {prediction.advice}
                                             </p>
                                         </div>
-                                        <div className="h-[250px] min-h-[250px] w-full relative">
-                                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                                                <AreaChart data={MOCK_TRENDS || []}>
+                                        <div className="h-[280px] w-full relative">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <AreaChart data={MOCK_TRENDS}>
                                                     <defs>
                                                         <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="5%" stopColor="#4ade80" stopOpacity={0.3} />
-                                                            <stop offset="95%" stopColor="#4ade80" stopOpacity={0} />
+                                                            <stop offset="5%" stopColor="#11d462" stopOpacity={0.4} />
+                                                            <stop offset="95%" stopColor="#11d462" stopOpacity={0} />
                                                         </linearGradient>
                                                     </defs>
                                                     <Tooltip
-                                                        contentStyle={{ backgroundColor: '#18181b', border: 'none', borderRadius: '16px', color: '#fff' }}
-                                                        itemStyle={{ color: '#4ade80', fontWeight: 'bold' }}
+                                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '12px' }}
+                                                        itemStyle={{ color: '#11d462', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
                                                     />
-                                                    <Area type="monotone" dataKey="price" stroke="#4ade80" strokeWidth={4} fillOpacity={1} fill="url(#colorPrice)" />
+                                                    <Area type="monotone" dataKey="price" stroke="#11d462" strokeWidth={5} fillOpacity={1} fill="url(#colorPrice)" />
                                                 </AreaChart>
                                             </ResponsiveContainer>
                                         </div>
                                     </motion.div>
                                 ) : (
-                                    <div className="h-64 flex flex-col items-center justify-center bg-zinc-50 rounded-[2.5rem] border-2 border-dashed border-zinc-200">
-                                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg mb-4 text-zinc-300">
-                                            <ChartIcon size={32} />
+                                    <div className="h-72 flex flex-col items-center justify-center bg-zinc-50/50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-zinc-200 dark:border-white/10">
+                                        <div className="w-20 h-20 bg-white dark:bg-zinc-800 rounded-full flex items-center justify-center shadow-xl mb-6 text-zinc-300 dark:text-zinc-600 transition-transform hover:rotate-12">
+                                            <ChartIcon size={36} />
                                         </div>
-                                        <p className="text-zinc-400 font-black uppercase tracking-widest text-[10px]">Await Simulation</p>
+                                        <p className="text-zinc-400 font-black uppercase tracking-[0.3em] text-[10px]">Await Neural Simulation</p>
                                     </div>
                                 )}
                             </AnimatePresence>
@@ -367,7 +363,7 @@ function FarmerDashboard() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <DemandHeatmap />
                     <MarketPricesWidget />
                 </div>
@@ -382,38 +378,65 @@ function FarmerDashboard() {
                             <span>Government Initiatives</span>
                         </div>
 
-                        <h3 className="text-4xl font-black mb-3 leading-tight">Support <br />Programs</h3>
-                        <p className="text-white/80 font-medium mb-8 max-w-2xl">Access government schemes and premium contracts for your millet produce.</p>
+                        {/* Support Programs Section */}
+                        <div className="lg:col-span-3 glass-panel p-10 md:p-16 rounded-[4rem] border border-white/20 shadow-3xl relative overflow-hidden group">
+                            <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/20 rounded-full blur-[100px] opacity-20" />
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('PM_POSHAN')}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <h4 className="font-black text-lg">PM POSHAN</h4>
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                                </div>
-                                <p className="text-sm text-white/80">15% premium for mid-day meal supply programs across India.</p>
-                            </div>
+                            <div className="relative z-10 space-y-12">
+                                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-[0.4em] text-[10px]">
+                                            <Briefcase size={14} />
+                                            <span>Economic Empowerment</span>
+                                        </div>
+                                        <h3 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.85]">
+                                            Direct Support <br /><span className="text-zinc-300 dark:text-zinc-700">Protocols</span>
+                                        </h3>
+                                        <p className="text-zinc-500 dark:text-zinc-400 font-medium text-lg max-w-xl">
+                                            Access exclusive government mandates and premium institutional contracts tailored for organic millet production.
+                                        </p>
+                                    </div>
 
-                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('RATIONS')}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <h4 className="font-black text-lg">PDS / Ration</h4>
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit"
+                                    >
+                                        View Global Directory
+                                    </motion.button>
                                 </div>
-                                <p className="text-sm text-white/80">Sell directly to government distribution chains nationwide.</p>
-                            </div>
 
-                            <div className="p-6 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md transition-all" onClick={() => setSelectedScheme('EXPORT')}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <h4 className="font-black text-lg">Export Subsidy</h4>
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    {[
+                                        { id: 'PM_POSHAN', title: 'PM POSHAN', premium: '15% Premium', desc: 'Secure high-value contracts for national nutritional program logistics.' },
+                                        { id: 'RATIONS', title: 'PDS / Ration', premium: 'Guaranteed Buy', desc: 'Join the direct procurement pipeline for nationwide grain distribution.' },
+                                        { id: 'EXPORT', title: 'Export Subsidy', premium: '20% Incentive', desc: 'Financial support for high-volume international shipments and certifications.' }
+                                    ].map((scheme) => (
+                                        <motion.div
+                                            key={scheme.id}
+                                            whileHover={{ y: -5, borderColor: 'rgba(16, 185, 129, 0.4)' }}
+                                            className="p-8 bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[2.5rem] cursor-pointer group backdrop-blur-md transition-all flex flex-col justify-between h-full"
+                                            onClick={() => setSelectedScheme(scheme.id)}
+                                        >
+                                            <div className="space-y-6">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/20">
+                                                        {scheme.premium}
+                                                    </div>
+                                                    <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                                                        <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-0.5 transition-transform" />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <h4 className="font-black text-2xl text-slate-900 dark:text-white tracking-tight">{scheme.title}</h4>
+                                                    <p className="text-sm text-zinc-500 font-medium leading-relaxed">{scheme.desc}</p>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
                                 </div>
-                                <p className="text-sm text-white/80">Get 20% subsidy on bulk international orders and exports.</p>
                             </div>
                         </div>
-
-                        <button className="mt-8 bg-white text-green-700 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-green-50 transition-colors shadow-xl">
-                            View All Schemes
-                        </button>
                     </div>
                 </div>
 
@@ -424,124 +447,147 @@ function FarmerDashboard() {
                 </div>
 
                 {/* Crop Quality Analysis */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 md:p-12 rounded-[3.5rem] border border-blue-100 shadow-2xl shadow-blue-900/10 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32" />
+                <div className="glass-panel p-10 md:p-16 rounded-[4rem] border border-white/20 shadow-3xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-40 -mt-40 opacity-50" />
 
-                    <div className="relative z-10 space-y-8">
-                        <div className="flex items-center gap-3 text-blue-600 font-black uppercase tracking-[0.3em] text-[10px]">
-                            <Sprout size={16} />
-                            <span>AI Quality Inspector</span>
+                    <div className="relative z-10 space-y-12">
+                        <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.4em] text-[10px] bg-primary/10 w-fit px-4 py-1.5 rounded-full border border-primary/20">
+                            <Sparkles size={14} className="animate-pulse" />
+                            <span>Neural Quality Inspector</span>
                         </div>
 
-                        <div>
-                            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mb-2">Crop Quality Analysis</h2>
-                            <p className="text-zinc-600 font-medium">Upload a photo to assess health, grade, and market readiness.</p>
-                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                            <div className="space-y-6">
+                                <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight">Harvest Quality <br />AI Validation</h2>
+                                <p className="text-zinc-500 dark:text-zinc-400 font-medium text-lg leading-relaxed max-w-md">
+                                    Our proprietary computer vision model assesses crop health, color grade, and ripeness to ensure legal compliance and marketplace premium.
+                                </p>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/* Upload Section */}
-                            <div className="space-y-4">
-                                <label htmlFor="crop-upload" className="cursor-pointer">
-                                    <div className="bg-white p-8 rounded-3xl border-2 border-dashed border-blue-200 hover:border-blue-400 transition-all text-center min-h-[300px] flex flex-col items-center justify-center">
-                                        {cropPreview ? (
-                                            <div className="relative w-full h-64 rounded-2xl overflow-hidden">
-                                                <img src={cropPreview} alt="Crop" className="w-full h-full object-cover" />
-                                                <button
-                                                    onClick={(e) => { e.preventDefault(); setCropPreview(null); setCropImage(null); setAnalysisResult(null); }}
-                                                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
-                                                >
-                                                    ✕
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <Upload className="text-blue-600" size={32} />
-                                                </div>
-                                                <p className="text-zinc-900 font-bold text-lg mb-1">Upload Crop Photo</p>
-                                                <p className="text-zinc-400 text-sm">Click to browse or drag and drop</p>
-                                            </>
-                                        )}
+                                <div className="flex items-center gap-8 group/stats">
+                                    <div className="space-y-1">
+                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">Dataset</div>
+                                        <div className="text-xl font-black text-slate-800 dark:text-zinc-300">12M+ Data points</div>
                                     </div>
-                                </label>
-                                <input
-                                    type="file"
-                                    id="crop-upload"
-                                    accept="image/*"
-                                    onChange={handleCropImageChange}
-                                    className="hidden"
-                                />
-
-                                {cropImage && !analyzing && (
-                                    <button
-                                        onClick={analyzeCrop}
-                                        className="w-full bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        <Sprout size={20} />
-                                        Analyze Quality
-                                    </button>
-                                )}
-
-                                {analyzing && (
-                                    <div className="w-full bg-blue-50 px-6 py-4 rounded-2xl flex items-center justify-center gap-3 text-blue-700 font-bold">
-                                        <Loader className="animate-spin" size={20} />
-                                        Analyzing...
+                                    <div className="w-px h-8 bg-zinc-200 dark:bg-white/10" />
+                                    <div className="space-y-1">
+                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">Accuracy</div>
+                                        <div className="text-xl font-black text-primary">99.2% Validated</div>
                                     </div>
-                                )}
+                                </div>
                             </div>
 
-                            {/* Results Section */}
-                            <div className="bg-white p-6 rounded-3xl border border-blue-100 shadow-lg">
-                                {analysisResult ? (
-                                    <div className="space-y-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
-                                                {analysisResult.health === "Healthy" ? <CheckCircle size={24} /> : <AlertCircle size={24} />}
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-black uppercase text-zinc-400 tracking-widest">Crop Type</p>
-                                                <p className="text-lg font-black text-zinc-900">{analysisResult.cropType}</p>
-                                            </div>
+                            <div className="grid grid-cols-1 gap-8">
+                                {/* Upload Section */}
+                                <div className="space-y-6">
+                                    <label htmlFor="crop-upload" className="cursor-pointer block">
+                                        <div className="bg-white/5 dark:bg-white/5 border-2 border-dashed border-zinc-200 dark:border-white/10 hover:border-primary/50 hover:bg-white/10 transition-all rounded-[3rem] p-10 text-center min-h-[350px] flex flex-col items-center justify-center group/upload relative overflow-hidden shadow-inner">
+                                            {cropPreview ? (
+                                                <div className="absolute inset-2 rounded-[2.5rem] overflow-hidden">
+                                                    <img src={cropPreview} alt="Crop" className="w-full h-full object-cover group-hover/upload:scale-110 transition-transform duration-700" />
+                                                    <div className="absolute inset-0 bg-black/20 group-hover/upload:bg-black/40 transition-colors" />
+                                                    <button
+                                                        onClick={(e) => { e.preventDefault(); setCropPreview(null); setCropImage(null); setAnalysisResult(null); }}
+                                                        className="absolute top-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-red-500 p-2.5 rounded-full hover:scale-110 transition-transform shadow-2xl z-20"
+                                                    >
+                                                        <X size={20} />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border border-primary/20 group-hover/upload:scale-110 transition-transform">
+                                                        <Upload className="text-primary" size={40} />
+                                                    </div>
+                                                    <p className="text-slate-900 dark:text-white font-black text-xl mb-2 tracking-tight">Upload Visual Evidence</p>
+                                                    <p className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">Lossless RAW / JPEG / PNG supported</p>
+                                                </>
+                                            )}
                                         </div>
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="crop-upload"
+                                        accept="image/*"
+                                        onChange={handleCropImageChange}
+                                        className="hidden"
+                                    />
 
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm font-bold text-zinc-600">Health Status</span>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-black ${analysisResult.health === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                    {analysisResult.health}
-                                                </span>
-                                            </div>
+                                    {cropImage && !analyzing && (
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={analyzeCrop}
+                                            className="w-full bg-slate-900 dark:bg-primary text-white px-8 py-6 rounded-[2rem] font-black uppercase tracking-[0.3em] text-sm hover:shadow-2xl agrow-glow transition-all flex items-center justify-center gap-4 border border-white/10"
+                                        >
+                                            <span>Run Neural Diagnosis</span>
+                                            <Zap size={20} className="fill-current" />
+                                        </motion.button>
+                                    )}
 
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm font-bold text-zinc-600">Quality Grade</span>
-                                                <span className="px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-700">
-                                                    {analysisResult.grade}
-                                                </span>
-                                            </div>
+                                    {analyzing && (
+                                        <div className="w-full bg-slate-900/5 dark:bg-white/5 px-8 py-6 rounded-[2rem] flex items-center justify-center gap-4 text-primary font-black uppercase tracking-[0.3em] text-sm border border-primary/20">
+                                            <Loader className="animate-spin" size={24} />
+                                            <span>Analyzing Tissues...</span>
                                         </div>
+                                    )}
+                                </div>
 
-                                        {analysisResult.issues && analysisResult.issues.length > 0 && (
-                                            <div className="pt-4 border-t border-zinc-100">
-                                                <p className="text-xs font-black uppercase text-zinc-400 tracking-widest mb-2">Detected Issues</p>
-                                                <ul className="space-y-1">
-                                                    {analysisResult.issues.map((issue: string, i: number) => (
-                                                        <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
-                                                            <span className="text-orange-500 mt-1">⚠</span>
-                                                            <span>{issue}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                {/* Results Section */}
+                                <AnimatePresence mode="wait">
+                                    {analysisResult && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 30 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="bg-slate-950 p-8 rounded-[3rem] border border-white/10 shadow-3xl space-y-8"
+                                        >
+                                            <div className="flex items-center justify-between border-b border-white/5 pb-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-xl">
+                                                        {analysisResult.health === "Healthy" ? <CheckCircle size={28} /> : <AlertCircle size={28} />}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Detected Strain</p>
+                                                        <p className="text-xl font-black text-white tracking-tight">{analysisResult.cropType}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-white/5 px-4 py-2 rounded-xl text-primary font-black text-xs uppercase tracking-widest border border-primary/20">
+                                                    SIH #260 Compliant
+                                                </div>
                                             </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-12">
-                                        <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Sprout className="text-zinc-300" size={28} />
-                                        </div>
-                                        <p className="text-zinc-400 font-medium">Analysis results will appear here</p>
-                                    </div>
-                                )}
+
+                                            <div className="grid grid-cols-2 gap-8">
+                                                <div className="space-y-2">
+                                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Biological Status</span>
+                                                    <div className={`text-lg font-black ${analysisResult.health === 'Healthy' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                                        {analysisResult.health}
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2 text-right">
+                                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Market Grade</span>
+                                                    <div className="text-lg font-black text-primary">
+                                                        {analysisResult.grade} (A+)
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {analysisResult.issues && analysisResult.issues.length > 0 && (
+                                                <div className="pt-6 border-t border-white/5 bg-red-500/5 -mx-8 -mb-8 p-8 rounded-b-[3rem]">
+                                                    <p className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2">
+                                                        <AlertTriangle size={14} /> Critical Observations
+                                                    </p>
+                                                    <ul className="space-y-3">
+                                                        {analysisResult.issues.map((issue: string, i: number) => (
+                                                            <li key={i} className="text-sm text-zinc-300 font-medium flex items-start gap-4 p-3 bg-white/5 rounded-xl border border-white/5">
+                                                                <span className="text-red-500 font-bold">•</span>
+                                                                <span>{issue}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
                     </div>
@@ -549,87 +595,100 @@ function FarmerDashboard() {
 
                 <FarmerNegotiations farmerId={userData?._id!} />
 
-                {/* Listings Section */}
-                <div className="space-y-10">
-                    <div className="flex items-end justify-between">
-                        <div className="space-y-3">
-                            <h2 className='text-4xl font-black text-zinc-900 tracking-tight'>Digital Harvest Log</h2>
-                            <p className="text-zinc-500 font-medium text-lg">Traceable produce active in the global marketplace.</p>
+                {/* Digital Ledger Section */}
+                <div className="space-y-12">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-[0.3em] text-[10px]">
+                                <ShieldCheck size={14} className="animate-pulse" />
+                                <span>Blockchain Verified Inventory</span>
+                            </div>
+                            <h2 className='text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter'>Digital Ledger</h2>
+                            <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg">Manage your traceable inventory active in the global premium marketplace.</p>
                         </div>
                         <motion.button
                             id="tour-add"
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
-                            className="bg-green-600 text-white px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm flex items-center gap-3 shadow-2xl shadow-green-900/20"
+                            className="bg-slate-900 dark:bg-primary text-white px-10 py-6 rounded-[2.5rem] font-black uppercase tracking-[0.3em] text-sm flex items-center gap-4 shadow-3xl agrow-glow w-fit"
                             onClick={() => setShowAddCrop(true)}
                         >
-                            <Plus size={20} />
-                            <span>List Harvest</span>
+                            <Plus size={20} strokeWidth={3} />
+                            <span>List New Harvest</span>
                         </motion.button>
                     </div>
 
                     {crops.length === 0 ? (
-                        <div className="py-32 text-center bg-white rounded-[3.5rem] border-2 border-dashed border-zinc-200 shadow-sm">
-                            <div className="w-24 h-24 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                <History className="text-zinc-200" size={40} />
+                        <div className="py-32 text-center glass-panel rounded-[4rem] border-2 border-dashed border-zinc-200 dark:border-white/10 shadow-sm">
+                            <div className="w-24 h-24 bg-zinc-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                                <History className="text-zinc-200 dark:text-zinc-700" size={40} />
                             </div>
-                            <h3 className="text-2xl font-black text-zinc-800 mb-2 tracking-tight">Empty Granary</h3>
-                            <p className="text-zinc-400 font-medium">Broadcast your produce to secure bulk buyer orders.</p>
+                            <h3 className="text-2xl font-black text-zinc-800 dark:text-zinc-300 mb-2 tracking-tight uppercase tracking-widest">Empty Granary</h3>
+                            <p className="text-zinc-400 font-medium">Broadcast your produce to secure premium bulk buyer orders.</p>
                         </div>
                     ) : (
-                        <div id="tour-ledger" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div id="tour-ledger" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
                             {Array.isArray(crops) && crops.map((crop, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
                                     whileHover={{ y: -10 }}
-                                    className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl shadow-green-900/5 group relative flex flex-col"
+                                    viewport={{ once: true }}
+                                    className="glass-panel p-6 rounded-[3rem] border border-white/20 dark:border-white/5 shadow-2xl shadow-zinc-900/5 group relative flex flex-col h-full hover:border-primary/40 transition-all duration-500"
                                 >
-                                    <div className="flex justify-between items-start mb-8">
-                                        <div className="w-16 h-16 bg-green-50 rounded-[1.5rem] flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all duration-500 shadow-sm overflow-hidden">
-                                            {crop.image ? (
-                                                <img src={crop.image} alt={crop.name} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <Sprout size={32} />
-                                            )}
+                                    <div className="relative w-full aspect-square rounded-[2rem] overflow-hidden mb-6 bg-zinc-50 dark:bg-white/5">
+                                        {crop.image ? (
+                                            <img src={crop.image} alt={crop.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-zinc-200 dark:text-zinc-800">
+                                                <Sprout size={64} />
+                                            </div>
+                                        )}
+                                        <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">SIH Verified</span>
                                         </div>
-                                        <div className="text-right">
-                                            <div className="text-[10px] font-black uppercase text-zinc-300 tracking-widest leading-none">ID</div>
-                                            <div className="text-xs font-black text-zinc-900 mt-1">{crop.farmId}</div>
-                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteCrop(crop._id)
+                                            }}
+                                            className="absolute top-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-2.5 rounded-full text-zinc-400 hover:text-red-500 transition-all shadow-lg border border-white/20 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
                                     </div>
 
-                                    <h3 className="text-2xl font-black text-zinc-900 mb-6 tracking-tight group-hover:text-green-600 transition-colors uppercase">{crop.name}</h3>
-
-                                    <div className="space-y-4 mt-auto">
-                                        <div className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                                            <Calendar size={12} />
-                                            <span>Harvested: {crop.harvestDate}</span>
+                                    <div className="flex-1 flex flex-col">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <span className="text-[9px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/10 uppercase tracking-widest">
+                                                {crop.category || 'Millet'}
+                                            </span>
+                                            <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                                                {crop.farmId}
+                                            </span>
                                         </div>
-                                        <div className="flex items-center justify-between pt-6 border-t border-zinc-50">
+
+                                        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-6 tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
+                                            {crop.name}
+                                        </h3>
+
+                                        <div className="mt-auto pt-6 border-t border-zinc-100 dark:border-white/5 grid grid-cols-2 gap-4">
                                             <div>
-                                                <div className="text-[10px] font-black uppercase text-zinc-400">Available</div>
-                                                <div className="text-xl font-black text-zinc-900 leading-none mt-1">{crop.quantity} {crop.unit}</div>
+                                                <div className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Inventory</div>
+                                                <div className="text-lg font-black text-slate-900 dark:text-white leading-none tracking-tighter">
+                                                    {crop.quantity}<span className="text-[10px] ml-0.5">{crop.unit}</span>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-[10px] font-black uppercase text-zinc-400">Fixed Rate</div>
-                                                <div className="text-xl font-black text-green-600 leading-none mt-1">₹{crop.price}</div>
+                                                <div className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Fixed Rate</div>
+                                                <div className="text-lg font-black text-primary leading-none tracking-tighter">
+                                                    ₹{crop.price}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            deleteCrop(crop._id)
-                                        }}
-                                        className="absolute top-4 right-4 bg-white p-2 rounded-full text-red-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm z-10"
-                                        title="Remove Listing"
-                                    >
-                                        <Trash2 size={20} />
-                                    </button>
                                 </motion.div>
                             ))}
                         </div>
