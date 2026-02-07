@@ -3,9 +3,6 @@ import { generateAuthenticationOptions } from '@simplewebauthn/server'
 import connectDb from '@/lib/db'
 import User from '@/models/user.model'
 
-// RpID must be the same as registration. Using agrowcart.com as default for production.
-const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
-
 export async function POST(req: NextRequest) {
     try {
         await connectDb()
@@ -24,30 +21,36 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No passkeys registered for this account' }, { status: 400 })
         }
 
-        // Get user's registered credentials - we MUST decode them to binary for the library
-        const allowCredentials = (user.passkeys || [])
+        // Log passkeys for debugging
+        console.log('User passkeys:', JSON.stringify(user.passkeys, null, 2))
+
+        // Get user's registered credentials - IDs are Base64URLString per docs
+        const allowCredentials = user.passkeys
             .filter((cred: any) => cred.credentialID)
             .map((cred: any) => ({
-                id: Buffer.from(cred.credentialID, 'base64url'),
+                id: cred.credentialID,
                 transports: cred.transports || []
             }))
 
-        // Normalize rpID: remove www. and use hostname for maximum compatibility
+        console.log('allowCredentials:', JSON.stringify(allowCredentials, null, 2))
+
+        // Normalize rpID
         const hostname = req.nextUrl.hostname;
-        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname);
+        const rpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
+
+        console.log('Using rpID:', rpID)
 
         const options = await generateAuthenticationOptions({
-            rpID: currentRpID,
+            rpID,
             allowCredentials,
             userVerification: 'preferred',
         })
 
-        // Store challenge for verification (already base64url string in v10+)
+        // Store challenge for verification
         await User.findByIdAndUpdate(user._id, {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        // Return options directly - simplewebauthn v10+ returns JSON-safe values
         return NextResponse.json({
             ...options,
             userId: user._id.toString()
@@ -56,7 +59,7 @@ export async function POST(req: NextRequest) {
         console.error('Passkey authentication options error:', error)
         return NextResponse.json({
             error: error.message || 'Failed to generate options',
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            details: error.toString()
         }, { status: 500 })
     }
 }
