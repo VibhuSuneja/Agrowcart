@@ -13,15 +13,18 @@ import nodemailer from 'nodemailer';
 
 // Create reusable transporter
 const createTransporter = () => {
+    const user = process.env.EMAIL_USER || process.env.EMAIL;
+    const pass = process.env.EMAIL_PASS || process.env.PASS;
+
     // Priority: use service 'gmail' if user is gmail
     const config: any = {
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
+            user: user,
+            pass: pass,
         },
     };
 
-    if (process.env.EMAIL_USER?.includes('gmail.com')) {
+    if (user?.includes('gmail.com')) {
         config.service = 'gmail';
     } else {
         config.host = process.env.EMAIL_HOST || 'smtp.gmail.com';
