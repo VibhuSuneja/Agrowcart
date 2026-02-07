@@ -1,6 +1,6 @@
 'use client'
 import { ArrowLeft, EyeIcon, EyeOff, Fingerprint, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, X } from 'lucide-react'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from "motion/react"
 import Image from 'next/image'
 import googleImage from "@/assets/google.png"
@@ -22,7 +22,12 @@ function Login() {
   const [forgotEmail, setForgotEmail] = useState("")
   const [forgotLoading, setForgotLoading] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleForgotSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -75,7 +80,8 @@ function Login() {
     } catch (error: any) {
       console.error("Passkey login error:", error)
       if (error.name === 'NotAllowedError') {
-        toast.error("Biometric authentication was cancelled or denied.")
+        // This is often just a user cancellation, so we show a subtle message
+        toast.error("Authentication cancelled. Please try again or use your password.")
       } else if (error.response?.data?.error) {
         toast.error(error.response.data.error)
       } else {
@@ -97,10 +103,7 @@ function Login() {
       })
 
       if (result?.error) {
-        // NextAuth v5 returns specific error codes
         const errorCode = result.error.toLowerCase()
-
-        // Handle NextAuth specific error codes
         if (errorCode === "credentialssignin" || errorCode === "configuration") {
           toast.error("Wrong email or password. Please try again.")
         } else if (errorCode.includes("incorrect password") || errorCode.includes("wrong password")) {
@@ -114,7 +117,6 @@ function Login() {
         return
       }
 
-      // Record agreement via lightweight request
       try {
         await axios.post("/api/user/record-terms")
       } catch (err) { console.error("Failed to record terms", err) }
@@ -127,6 +129,8 @@ function Login() {
       setLoading(false)
     }
   }
+
+  if (!mounted) return null;
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-zinc-50 relative overflow-hidden'>
@@ -145,7 +149,7 @@ function Login() {
 
       <div className="w-full max-w-md bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10">
         <div className="flex flex-col items-center mb-10 text-center">
-          <div className="w-16 h-16 bg-linear-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-6">
             <Lock className="text-white" size={32} />
           </div>
           <h1 className='text-3xl font-black text-zinc-900 tracking-tight mb-2'>Welcome Back</h1>
@@ -195,7 +199,7 @@ function Login() {
             <button
               type="button"
               onClick={() => {
-                setForgotEmail(email) // Pre-fill with login email if present
+                setForgotEmail(email)
                 setShowForgotModal(true)
               }}
               className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors"
@@ -268,7 +272,7 @@ function Login() {
           )}
         </motion.form>
 
-        <p className='text-zinc-500 mt-10 text-sm text-center font-medium'>
+        <div className='text-zinc-500 mt-10 text-sm text-center font-medium'>
           New to the platform?
           <button
             onClick={() => router.push("/register")}
@@ -276,7 +280,7 @@ function Login() {
           >
             Create Account
           </button>
-        </p>
+        </div>
       </div>
 
       <AnimatePresence>
