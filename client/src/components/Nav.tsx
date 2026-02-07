@@ -297,6 +297,11 @@ function Nav({ user: propUser }: { user: any }) {
                             <ShoppingCartIcon size={22} />
                         </Link>
                     )}
+                    {user.role === 'user' && (
+                        <Link href="/user/my-orders" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="My Orders">
+                            <Package size={22} />
+                        </Link>
+                    )}
                     <Link href="/recipes" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Recipes">
                         <ChefHat size={22} />
                     </Link>
