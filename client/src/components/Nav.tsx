@@ -375,10 +375,18 @@ function Nav({ user: propUser }: { user: any }) {
                                         }}
                                         className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left'
                                     >
+                                        <div className='w-5 flex justify-center'><TrendingUp size={18} className='text-primary' /></div>
                                         Re-Take Tour
                                     </button>
 
-                                    <Link href="/settings" className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left'>
+                                    {user.role === 'user' && (
+                                        <Link href="/user/my-orders" className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left' onClick={() => setOpen(false)}>
+                                            <div className='w-5 flex justify-center'><Package size={18} className='text-primary' /></div>
+                                            My Orders
+                                        </Link>
+                                    )}
+
+                                    <Link href="/settings" className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left' onClick={() => setOpen(false)}>
                                         <Settings size={18} className='text-primary' />
                                         Settings
                                     </Link>
