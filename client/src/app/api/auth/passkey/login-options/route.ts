@@ -21,19 +21,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No passkeys registered for this account' }, { status: 400 })
         }
 
-        // Get user's registered credentials
-        const allowCredentials = user.passkeys
-            .filter((cred: any) => cred.credentialID)
-            .map((cred: any) => ({
-                id: cred.credentialID,
-                transports: cred.transports || []
-            }))
-
-        // ALWAYS lock to base domain for cross-subdomain compatibility
+        // Standardize rpID to base domain
         const hostname = req.nextUrl.hostname;
         const rpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
-        console.log('Login Options - User:', user.email, 'RPID:', rpID)
+        // CRITICAL FIX: Convert string IDs back to Buffers
+        // If we pass strings, the library double-encodes them and the browser/Windows won't find the match.
+        const allowCredentials = user.passkeys
+            .filter((cred: any) => cred.credentialID)
+            .map((cred: any) => ({
+                id: Buffer.from(cred.credentialID, 'base64url'),
+                transports: cred.transports || []
+            }))
+
+        console.log('Login Options - User:', user.email, 'RPID:', rpID, 'CredCount:', allowCredentials.length)
 
         const options = await generateAuthenticationOptions({
             rpID,
