@@ -10,6 +10,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // Turbopack compatibility for next-pwa
+  // @ts-ignore
+  turbopack: {},
   images: {
     unoptimized: true,
     remotePatterns: [
