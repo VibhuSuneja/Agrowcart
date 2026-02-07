@@ -173,7 +173,21 @@ function ProcessorDashboard() {
                         <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your value-added products and track production batches with SIH traceability.</p>
                     </div>
 
-                    <div className="flex gap-4 items-end">
+
+                    <div className="flex gap-4 items-end flex-wrap">
+                        <a
+                            href="/buyer-marketplace"
+                            className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-3xl shadow-xl shadow-green-900/20 flex items-center gap-4 h-fit group hover:scale-105 transition-transform cursor-pointer"
+                        >
+                            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white">
+                                <Sprout size={24} />
+                            </div>
+                            <div>
+                                <div className="text-[10px] font-black uppercase text-white/80">B2B Sourcing</div>
+                                <div className="text-lg font-black text-white">Source Raw Materials</div>
+                            </div>
+                            <ArrowRight className="text-white/60 group-hover:translate-x-1 transition-transform" size={20} />
+                        </a>
                         <div className="bg-white p-4 rounded-3xl shadow-xl shadow-blue-900/5 border border-zinc-100 flex items-center gap-4 h-fit">
                             <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
                                 <Settings size={24} />

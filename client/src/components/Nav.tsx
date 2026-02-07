@@ -174,6 +174,17 @@ function Nav({ user: propUser }: { user: any }) {
                             </Link>
                         </>
                     )}
+
+                    {user.role === 'deliveryBoy' && (
+                        <>
+                            <div className='my-4 border-t border-zinc-100'></div>
+                            <p className='px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2'>Logistics Hub</p>
+                            <Link href="/delivery-dashboard" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center'><Package size={18} /></div>
+                                Delivery Dashboard
+                            </Link>
+                        </>
+                    )}
                 </div>
 
                 {/* Footer */}

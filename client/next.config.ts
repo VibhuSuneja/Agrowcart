@@ -1,4 +1,13 @@
 import type { NextConfig } from "next";
+// @ts-ignore - next-pwa types may lag behind Next.js versions
+import withPWAInit from 'next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true
+});
 
 const nextConfig: NextConfig = {
   images: {
@@ -40,7 +49,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(self), geolocation=(self), payment=(self)'  // Restricts browser APIs
+            value: 'camera=(self), microphone=(self), geolocation=(self), payment=(self)'  // Restricts browser APIs
           },
           {
             key: 'X-DNS-Prefetch-Control',
@@ -52,6 +61,7 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+// @ts-ignore - Type mismatch between next-pwa and Next.js 15
+export default withPWA(nextConfig);
 
-// Trigger rebuild timestamp: 2026-01-24 v2
+// Trigger rebuild timestamp: 2026-02-07 v3 - PWA Enabled
