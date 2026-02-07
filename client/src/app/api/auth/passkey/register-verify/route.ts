@@ -27,14 +27,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Detect expected origin from request if not set
+        // Detect expected origin and rpID from request for maximum compatibility
         const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || req.nextUrl.hostname
 
         const verification = await verifyRegistrationResponse({
             response: body,
             expectedChallenge,
             expectedOrigin,
-            expectedRPID: rpID,
+            expectedRPID: currentRpID,
             requireUserVerification: false // More compatible for registration
         })
 

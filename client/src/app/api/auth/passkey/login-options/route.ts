@@ -25,30 +25,41 @@ export async function POST(req: NextRequest) {
         }
 
         // Get user's registered credentials, filtering out any corrupt entries
-        const allowCredentials = user.passkeys
+        const allowCredentials = (user.passkeys || [])
             .filter((cred: any) => cred.credentialID)
             .map((cred: any) => ({
-                id: cred.credentialID, // Already base64url in DB
+                id: Buffer.from(cred.credentialID, 'base64url'),
                 transports: cred.transports || []
             }))
 
+        // Normalize rpID: remove www. and use hostname for maximum compatibility
+        const hostname = req.nextUrl.hostname;
+        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname);
+
         const options = await generateAuthenticationOptions({
-            rpID,
+            rpID: currentRpID,
             allowCredentials,
             userVerification: 'preferred',
         })
 
-        // Store challenge for verification
+        // Store challenge for verification as string
+        const challengeStr = Buffer.from(options.challenge).toString('base64url');
         await User.findByIdAndUpdate(user._id, {
-            $set: { 'passkeyChallenge': options.challenge }
+            $set: { 'passkeyChallenge': challengeStr }
         })
 
-        // SimpleWebAuthn v10+ returns JSON-safe options if configured correctly, 
-        // but let's be absolutely sure everything is a string
-        return NextResponse.json({
+        // WebAuthn requires binary data to be Base64URL encoded for transport via JSON
+        const JSONOptions = {
             ...options,
+            challenge: challengeStr,
+            allowCredentials: options.allowCredentials?.map((cred) => ({
+                ...cred,
+                id: Buffer.from(cred.id).toString('base64url'),
+            })),
             userId: user._id.toString()
-        })
+        };
+
+        return NextResponse.json(JSONOptions)
     } catch (error: any) {
         console.error('Passkey authentication options error:', error)
         return NextResponse.json({
