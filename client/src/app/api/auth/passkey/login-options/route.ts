@@ -42,7 +42,17 @@ export async function POST(req: NextRequest) {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        return NextResponse.json({ ...options, userId: user._id.toString() })
+        // Ensure allowCredentials IDs are strings (base64url) for the client
+        // Next.js/JSON serializes Buffers as objects, which breaks the client
+        const sanitizedOptions = {
+            ...options,
+            allowCredentials: options.allowCredentials?.map((c: any) => ({
+                ...c,
+                id: Buffer.from(c.id).toString('base64url')
+            }))
+        }
+
+        return NextResponse.json({ ...sanitizedOptions, userId: user._id.toString() })
     } catch (error: any) {
         console.error('Passkey authentication options error:', error)
         return NextResponse.json({ error: error.message || 'Failed to generate options' }, { status: 500 })

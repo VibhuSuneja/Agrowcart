@@ -50,7 +50,15 @@ export async function POST(req: NextRequest) {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        return NextResponse.json(options)
+        const sanitizedOptions = {
+            ...options,
+            excludeCredentials: options.excludeCredentials?.map((c: any) => ({
+                ...c,
+                id: Buffer.from(c.id).toString('base64url')
+            }))
+        }
+
+        return NextResponse.json(sanitizedOptions)
     } catch (error: any) {
         console.error('Passkey registration options error:', error)
         return NextResponse.json({ error: error.message || 'Failed to generate options' }, { status: 500 })
