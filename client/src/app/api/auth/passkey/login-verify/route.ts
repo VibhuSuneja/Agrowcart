@@ -27,10 +27,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Detect expected origin and rpID - MUST match login-options exactly
-        const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+        // Normalize rpID and origin logic
         const hostname = req.nextUrl.hostname
-        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname)
+        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname
+
+        const protocol = req.nextUrl.protocol
+        const expectedOrigin = [
+            `${protocol}//${currentRpID}`,
+            `${protocol}//www.${currentRpID}`
+        ]
 
         // Find the matching credential
         const credentialID = authResponse.id
@@ -40,7 +45,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Credential not found' }, { status: 400 })
         }
 
-        // Convert Buffer to Uint8Array for simplewebauthn compatibility
         const pubKeyUint8 = new Uint8Array(Buffer.from(credential.credentialPublicKey, 'base64url'))
 
         const verification = await verifyAuthenticationResponse({
@@ -54,7 +58,7 @@ export async function POST(req: NextRequest) {
                 counter: credential.counter,
                 transports: credential.transports || []
             },
-            requireUserVerification: false // More compatible
+            requireUserVerification: false
         })
 
         if (!verification.verified) {

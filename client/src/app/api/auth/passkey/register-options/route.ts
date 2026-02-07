@@ -22,32 +22,35 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Get existing credentials to exclude - SIMPLEWEBAUTHN v13 wants binary Buffers here
+        // Normalize rpID
+        const hostname = req.nextUrl.hostname;
+        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
+
+        // Get existing credentials to exclude
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
             id: Buffer.from(cred.credentialID, 'base64url'),
             transports: cred.transports || []
         }))
 
-        // Normalize rpID: remove www. and use hostname for maximum compatibility
-        const hostname = req.nextUrl.hostname;
-        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname);
-
-        console.log('Register Options - currentRpID:', currentRpID, 'userID:', user._id.toString());
+        // userID MUST be a small unique binary value (16-32 bytes)
+        // We'll hash the user's DB ID to get a stable binary ID
+        const crypto = require('crypto');
+        const userIDSha256 = crypto.createHash('sha256').update(user._id.toString()).digest();
+        const userID = new Uint8Array(userIDSha256).slice(0, 16);
 
         const options = await generateRegistrationOptions({
             rpName,
             rpID: currentRpID,
-            userID: Buffer.from(user._id.toString()), // Binary unique user ID
+            userID,
             userName: user.email,
             userDisplayName: user.name || user.email,
             attestationType: 'none',
             excludeCredentials,
             authenticatorSelection: {
-                residentKey: 'required', // Essential for persistent passkeys
+                residentKey: 'preferred',
                 userVerification: 'preferred',
-                authenticatorAttachment: 'platform', // Force "This Device" storage
             },
-            supportedAlgorithmIDs: [-7, -257] // ES256 and RS256
+            supportedAlgorithmIDs: [-7, -257]
         })
 
         // Store challenge for verification (already base64url string in v10+)

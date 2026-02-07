@@ -27,19 +27,25 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Detect expected origin and rpID - MUST match register-options exactly
-        const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+        // Normalize rpID and origin logic
         const hostname = req.nextUrl.hostname
-        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname)
+        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname
 
-        console.log('Registration verify - expectedOrigin:', expectedOrigin, 'currentRpID:', currentRpID)
+        // Origins can be both with and without www
+        const protocol = req.nextUrl.protocol
+        const expectedOrigin = [
+            `${protocol}//${currentRpID}`,
+            `${protocol}//www.${currentRpID}`
+        ]
+
+        console.log('Registration verify - Origins:', expectedOrigin, 'RPID:', currentRpID)
 
         const verification = await verifyRegistrationResponse({
             response: body,
             expectedChallenge,
             expectedOrigin,
             expectedRPID: currentRpID,
-            requireUserVerification: false // More compatible for registration
+            requireUserVerification: false
         })
 
         if (!verification.verified || !verification.registrationInfo) {
