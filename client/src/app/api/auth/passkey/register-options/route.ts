@@ -4,7 +4,6 @@ import { auth } from '@/auth'
 import connectDb from '@/lib/db'
 import User from '@/models/user.model'
 
-// Relying Party configuration
 const rpName = 'AgrowCart'
 
 export async function POST(req: NextRequest) {
@@ -21,11 +20,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Normalize rpID - MUST be the base domain (e.g., agrowcart.com)
-        const hostname = req.nextUrl.hostname;
-        const rpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
+        // Use EXACT hostname to force the browser to accept the passkey
+        const rpID = req.nextUrl.hostname;
 
-        // Get existing credentials to exclude
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
             id: Buffer.from(cred.credentialID, 'base64url'),
             transports: cred.transports || []
@@ -43,14 +40,13 @@ export async function POST(req: NextRequest) {
             attestationType: 'none',
             excludeCredentials,
             authenticatorSelection: {
-                residentKey: 'required', // Save in browser store
+                residentKey: 'required', // Essential for saving to browser store
                 userVerification: 'preferred',
-                authenticatorAttachment: 'platform' // Force "This Device"
+                authenticatorAttachment: 'platform' // Force "This Device" storage
             },
             supportedAlgorithmIDs: [-7, -257]
         })
 
-        // Store challenge for verification
         await User.findByIdAndUpdate(session.user.id, {
             $set: { 'passkeyChallenge': options.challenge }
         })

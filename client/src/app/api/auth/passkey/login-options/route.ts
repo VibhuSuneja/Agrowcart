@@ -21,10 +21,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No passkeys registered for this account' }, { status: 400 })
         }
 
-        // Log passkeys for debugging
-        console.log('User passkeys:', JSON.stringify(user.passkeys, null, 2))
-
-        // Get user's registered credentials - IDs are Base64URLString per docs
+        // Get user's registered credentials
         const allowCredentials = user.passkeys
             .filter((cred: any) => cred.credentialID)
             .map((cred: any) => ({
@@ -32,13 +29,10 @@ export async function POST(req: NextRequest) {
                 transports: cred.transports || []
             }))
 
-        console.log('allowCredentials:', JSON.stringify(allowCredentials, null, 2))
+        // Use EXACT hostname to ensure browser finds the passkey
+        const rpID = req.nextUrl.hostname;
 
-        // Normalize rpID
-        const hostname = req.nextUrl.hostname;
-        const rpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
-
-        console.log('Using rpID:', rpID)
+        console.log('Login Options - User:', user.email, 'RPID:', rpID)
 
         const options = await generateAuthenticationOptions({
             rpID,

@@ -4,8 +4,6 @@ import { auth } from '@/auth'
 import connectDb from '@/lib/db'
 import User from '@/models/user.model'
 
-const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
-
 export async function POST(req: NextRequest) {
     try {
         await connectDb()
@@ -27,23 +25,22 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Normalize rpID and origin logic
-        const hostname = req.nextUrl.hostname
-        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname
+        // Use EXACT hostname and allow multi-origin fallback
+        const currentRpID = req.nextUrl.hostname
+        const expectedOrigin = req.nextUrl.origin
 
-        // Origins can be both with and without www
+        const baseDomain = currentRpID.startsWith('www.') ? currentRpID.slice(4) : currentRpID
         const protocol = req.nextUrl.protocol
-        const expectedOrigin = [
-            `${protocol}//${currentRpID}`,
-            `${protocol}//www.${currentRpID}`
+        const allPossibleOrigins = [
+            expectedOrigin,
+            `${protocol}//${baseDomain}`,
+            `${protocol}//www.${baseDomain}`
         ]
-
-        console.log('Registration verify - Origins:', expectedOrigin, 'RPID:', currentRpID)
 
         const verification = await verifyRegistrationResponse({
             response: body,
             expectedChallenge,
-            expectedOrigin,
+            expectedOrigin: allPossibleOrigins,
             expectedRPID: currentRpID,
             requireUserVerification: false
         })
@@ -54,7 +51,6 @@ export async function POST(req: NextRequest) {
 
         const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo
 
-        // Store the credential
         const newCredential = {
             credentialID: Buffer.from(credential.id).toString('base64url'),
             credentialPublicKey: Buffer.from(credential.publicKey).toString('base64url'),

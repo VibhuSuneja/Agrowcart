@@ -5,8 +5,6 @@ import User from '@/models/user.model'
 import { cookies } from 'next/headers'
 import { encode } from 'next-auth/jwt'
 
-const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
-
 export async function POST(req: NextRequest) {
     try {
         await connectDb()
@@ -27,14 +25,17 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Normalize rpID and origin logic
-        const hostname = req.nextUrl.hostname
-        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname
+        // Use EXACT hostname and allow multi-origin fallback
+        const currentRpID = req.nextUrl.hostname
+        const expectedOrigin = req.nextUrl.origin
 
+        // Define fallback origins (with/without www) for maximum compatibility
+        const baseDomain = currentRpID.startsWith('www.') ? currentRpID.slice(4) : currentRpID
         const protocol = req.nextUrl.protocol
-        const expectedOrigin = [
-            `${protocol}//${currentRpID}`,
-            `${protocol}//www.${currentRpID}`
+        const allPossibleOrigins = [
+            expectedOrigin,
+            `${protocol}//${baseDomain}`,
+            `${protocol}//www.${baseDomain}`
         ]
 
         // Find the matching credential
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
         const verification = await verifyAuthenticationResponse({
             response: authResponse,
             expectedChallenge,
-            expectedOrigin,
+            expectedOrigin: allPossibleOrigins,
             expectedRPID: currentRpID,
             credential: {
                 id: credential.credentialID,
@@ -65,18 +66,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Authentication failed' }, { status: 400 })
         }
 
-        // Update counter to prevent replay attacks
+        // Update counter
         await User.updateOne(
             { _id: userId, 'passkeys.credentialID': credentialID },
             {
-                $set: {
-                    'passkeys.$.counter': verification.authenticationInfo.newCounter
-                },
+                $set: { 'passkeys.$.counter': verification.authenticationInfo.newCounter },
                 $unset: { passkeyChallenge: '' }
             }
         )
 
-        // Create a session token for NextAuth v5
+        // Create session token
         const secret = process.env.AUTH_SECRET!
         const token = await encode({
             token: {
@@ -88,10 +87,9 @@ export async function POST(req: NextRequest) {
             },
             secret,
             salt: 'authjs.session-token',
-            maxAge: 10 * 24 * 60 * 60 // 10 days
+            maxAge: 10 * 24 * 60 * 60
         })
 
-        // Set the session cookie
         const cookieStore = await cookies()
         const cookieName = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token'
 
@@ -103,10 +101,7 @@ export async function POST(req: NextRequest) {
             path: '/'
         })
 
-        return NextResponse.json({
-            success: true,
-            message: 'Authentication successful'
-        })
+        return NextResponse.json({ success: true })
     } catch (error: any) {
         console.error('Passkey authentication verification error:', error)
         return NextResponse.json({ error: error.message || 'Authentication failed' }, { status: 500 })
