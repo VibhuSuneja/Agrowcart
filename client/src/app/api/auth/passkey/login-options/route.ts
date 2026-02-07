@@ -42,24 +42,16 @@ export async function POST(req: NextRequest) {
             userVerification: 'preferred',
         })
 
-        // Store challenge for verification as string
-        const challengeStr = Buffer.from(options.challenge).toString('base64url');
+        // Store challenge for verification (already base64url string in v10+)
         await User.findByIdAndUpdate(user._id, {
-            $set: { 'passkeyChallenge': challengeStr }
+            $set: { 'passkeyChallenge': options.challenge }
         })
 
-        // WebAuthn requires binary data to be Base64URL encoded for transport via JSON
-        const JSONOptions = {
+        // Return options directly - simplewebauthn v10+ returns JSON-safe values
+        return NextResponse.json({
             ...options,
-            challenge: challengeStr,
-            allowCredentials: options.allowCredentials?.map((cred) => ({
-                ...cred,
-                id: Buffer.from(cred.id).toString('base64url'),
-            })),
             userId: user._id.toString()
-        };
-
-        return NextResponse.json(JSONOptions)
+        })
     } catch (error: any) {
         console.error('Passkey authentication options error:', error)
         return NextResponse.json({
