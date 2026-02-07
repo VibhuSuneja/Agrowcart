@@ -6,7 +6,6 @@ import User from '@/models/user.model'
 
 // Relying Party configuration
 const rpName = 'AgrowCart'
-const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,9 +21,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Normalize rpID
+        // Normalize rpID - MUST be the base domain (e.g., agrowcart.com)
         const hostname = req.nextUrl.hostname;
-        const currentRpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
+        const rpID = hostname.startsWith('www.') ? hostname.slice(4) : hostname;
 
         // Get existing credentials to exclude
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
@@ -32,33 +31,30 @@ export async function POST(req: NextRequest) {
             transports: cred.transports || []
         }))
 
-        // userID MUST be a small unique binary value (16-32 bytes)
-        // We'll hash the user's DB ID to get a stable binary ID
-        const crypto = require('crypto');
-        const userIDSha256 = crypto.createHash('sha256').update(user._id.toString()).digest();
-        const userID = new Uint8Array(userIDSha256).slice(0, 16);
+        // userID: Simple binary of the MongoDB ID string
+        const userID = new TextEncoder().encode(user._id.toString());
 
         const options = await generateRegistrationOptions({
             rpName,
-            rpID: currentRpID,
+            rpID,
             userID,
             userName: user.email,
             userDisplayName: user.name || user.email,
             attestationType: 'none',
             excludeCredentials,
             authenticatorSelection: {
-                residentKey: 'preferred',
+                residentKey: 'required', // Save in browser store
                 userVerification: 'preferred',
+                authenticatorAttachment: 'platform' // Force "This Device"
             },
             supportedAlgorithmIDs: [-7, -257]
         })
 
-        // Store challenge for verification (already base64url string in v10+)
+        // Store challenge for verification
         await User.findByIdAndUpdate(session.user.id, {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        // Return options directly - simplewebauthn v10+ returns JSON-safe values
         return NextResponse.json(options)
     } catch (error: any) {
         console.error('Passkey registration options error:', error)
