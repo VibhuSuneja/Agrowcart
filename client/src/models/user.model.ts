@@ -33,6 +33,7 @@ export interface IUser {
     wishlist?: mongoose.Types.ObjectId[]
     agreedToTerms?: Date
     passkeys?: IPasskeyCredential[]
+    passkeyChallenge?: string
 }
 
 const passkeyCredentialSchema = new mongoose.Schema({
@@ -99,6 +100,9 @@ const userSchema = new mongoose.Schema<IUser>({
     passkeys: {
         type: [passkeyCredentialSchema],
         default: []
+    },
+    passkeyChallenge: {
+        type: String
     }
 }, { timestamps: true })
 
