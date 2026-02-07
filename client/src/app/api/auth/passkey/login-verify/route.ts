@@ -1,4 +1,3 @@
-'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAuthenticationResponse } from '@simplewebauthn/server'
 import connectDb from '@/lib/db'
@@ -6,8 +5,7 @@ import User from '@/models/user.model'
 import { cookies } from 'next/headers'
 import { encode } from 'next-auth/jwt'
 
-const rpID = process.env.NEXT_PUBLIC_RP_ID || 'localhost'
-const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,8 +27,11 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
+        // Detect expected origin from request if not set
+        const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+
         // Find the matching credential
-        const credentialID = Buffer.from(authResponse.id, 'base64url').toString('base64url')
+        const credentialID = authResponse.id
         const credential = user.passkeys?.find((c: any) => c.credentialID === credentialID)
 
         if (!credential) {
@@ -43,15 +44,15 @@ export async function POST(req: NextRequest) {
         const verification = await verifyAuthenticationResponse({
             response: authResponse,
             expectedChallenge,
-            expectedOrigin: origin,
+            expectedOrigin,
             expectedRPID: rpID,
             credential: {
-                id: credential.credentialID, // Keep as base64url string
+                id: credential.credentialID,
                 publicKey: pubKeyUint8,
                 counter: credential.counter,
                 transports: credential.transports || []
             },
-            requireUserVerification: true
+            requireUserVerification: false // More compatible
         })
 
         if (!verification.verified) {
@@ -86,7 +87,9 @@ export async function POST(req: NextRequest) {
 
         // Set the session cookie
         const cookieStore = await cookies()
-        cookieStore.set('authjs.session-token', token, {
+        const cookieName = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token'
+
+        cookieStore.set(cookieName, token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
@@ -96,13 +99,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            message: 'Authentication successful',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            message: 'Authentication successful'
         })
     } catch (error: any) {
         console.error('Passkey authentication verification error:', error)

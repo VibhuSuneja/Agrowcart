@@ -1,4 +1,3 @@
-'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { generateRegistrationOptions } from '@simplewebauthn/server'
 import { auth } from '@/auth'
@@ -7,7 +6,7 @@ import User from '@/models/user.model'
 
 // Relying Party configuration
 const rpName = 'AgrowCart'
-const rpID = process.env.NEXT_PUBLIC_RP_ID || 'localhost'
+const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
 
 export async function POST(req: NextRequest) {
     try {
@@ -24,8 +23,8 @@ export async function POST(req: NextRequest) {
         }
 
         // Get existing credentials to exclude them
-        const existingCredentials = (user.passkeys || []).map((cred: any) => ({
-            id: Buffer.from(cred.credentialID, 'base64url'),
+        const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
+            id: cred.credentialID, // Already base64url in DB
             transports: cred.transports || []
         }))
 
@@ -35,7 +34,7 @@ export async function POST(req: NextRequest) {
             userName: user.email,
             userDisplayName: user.name || user.email,
             attestationType: 'none',
-            excludeCredentials: existingCredentials,
+            excludeCredentials,
             authenticatorSelection: {
                 residentKey: 'preferred',
                 userVerification: 'preferred',
@@ -44,33 +43,12 @@ export async function POST(req: NextRequest) {
             supportedAlgorithmIDs: [-7, -257] // ES256 and RS256
         })
 
-        // Store challenge in session or database for verification
-        // For simplicity, we'll store it temporarily in the user document
+        // Store challenge for verification
         await User.findByIdAndUpdate(session.user.id, {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        const sanitizedOptions = { ...options };
-
-        if (Array.isArray(options.excludeCredentials)) {
-            try {
-                sanitizedOptions.excludeCredentials = options.excludeCredentials.map((c: any) => {
-                    let newId = c.id;
-                    if (Buffer.isBuffer(c.id)) {
-                        newId = c.id.toString('base64url');
-                    } else if (c.id instanceof Uint8Array) {
-                        newId = Buffer.from(c.id).toString('base64url');
-                    } else if (typeof c.id !== 'string') {
-                        newId = String(c.id);
-                    }
-                    return { ...c, id: newId };
-                });
-            } catch (mapError) {
-                console.error("Error sanitizing excludeCredentials:", mapError);
-            }
-        }
-
-        return NextResponse.json(sanitizedOptions)
+        return NextResponse.json(options)
     } catch (error: any) {
         console.error('Passkey registration options error:', error)
         return NextResponse.json({ error: error.message || 'Failed to generate options' }, { status: 500 })

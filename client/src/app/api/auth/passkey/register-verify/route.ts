@@ -1,12 +1,10 @@
-'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyRegistrationResponse } from '@simplewebauthn/server'
 import { auth } from '@/auth'
 import connectDb from '@/lib/db'
 import User from '@/models/user.model'
 
-const rpID = process.env.NEXT_PUBLIC_RP_ID || 'localhost'
-const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,12 +27,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
+        // Detect expected origin from request if not set
+        const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
+
         const verification = await verifyRegistrationResponse({
             response: body,
             expectedChallenge,
-            expectedOrigin: origin,
+            expectedOrigin,
             expectedRPID: rpID,
-            requireUserVerification: true
+            requireUserVerification: false // More compatible for registration
         })
 
         if (!verification.verified || !verification.registrationInfo) {

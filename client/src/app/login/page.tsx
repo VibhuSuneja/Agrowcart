@@ -56,28 +56,6 @@ function Login() {
         return
       }
 
-      // Step 2: Trigger the browser's biometric prompt
-
-      // Sanitization helper to prevent "e.replace is not a function" errors
-      // caused by server sending Buffer objects or standard Base64
-      const ensureBase64URL = (str: any) => {
-        if (typeof str !== 'string') return str;
-        return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-      }
-
-      if (options.challenge && typeof options.challenge === 'string') {
-        options.challenge = ensureBase64URL(options.challenge)
-      }
-
-      if (options.allowCredentials) {
-        options.allowCredentials = options.allowCredentials.map((c: any) => {
-          if (c.id && typeof c.id === 'string') {
-            c.id = ensureBase64URL(c.id)
-          }
-          return c;
-        })
-      }
-
       console.log("Starting Passkey Auth with options:", options)
 
       const authResponse = await startAuthentication({ optionsJSON: options })

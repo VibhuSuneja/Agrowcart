@@ -1,10 +1,10 @@
-'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { generateAuthenticationOptions } from '@simplewebauthn/server'
 import connectDb from '@/lib/db'
 import User from '@/models/user.model'
 
-const rpID = process.env.NEXT_PUBLIC_RP_ID || 'localhost'
+// RpID must be the same as registration. Using agrowcart.com as default for production.
+const rpID = process.env.NEXT_PUBLIC_RP_ID || (process.env.NODE_ENV === 'production' ? 'agrowcart.com' : 'localhost')
 
 export async function POST(req: NextRequest) {
     try {
@@ -24,28 +24,18 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No passkeys registered for this account' }, { status: 400 })
         }
 
-        // Get user's registered credentials
         // Get user's registered credentials, filtering out any corrupt entries
         const allowCredentials = user.passkeys
             .filter((cred: any) => cred.credentialID)
-            .map((cred: any) => {
-                try {
-                    return {
-                        id: Buffer.from(cred.credentialID, 'base64url'),
-                        transports: cred.transports || []
-                    }
-                } catch (err) {
-                    console.error("Skipping invalid credential:", cred, err);
-                    return null;
-                }
-            })
-            .filter((cred: any) => cred !== null); // Remove failed conversions
+            .map((cred: any) => ({
+                id: cred.credentialID, // Already base64url in DB
+                transports: cred.transports || []
+            }))
 
         const options = await generateAuthenticationOptions({
             rpID,
             allowCredentials,
             userVerification: 'preferred',
-            timeout: 60000
         })
 
         // Store challenge for verification
@@ -53,36 +43,17 @@ export async function POST(req: NextRequest) {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        // Ensure allowCredentials IDs are strings (base64url) for the client
-        // Next.js/JSON serializes Buffers as objects, which breaks the client
-        const sanitizedOptions = { ...options };
-
-        if (Array.isArray(options.allowCredentials)) {
-            try {
-                sanitizedOptions.allowCredentials = options.allowCredentials.map((c: any) => {
-                    let newId = c.id;
-                    if (Buffer.isBuffer(c.id)) {
-                        newId = c.id.toString('base64url');
-                    } else if (c.id instanceof Uint8Array) {
-                        newId = Buffer.from(c.id).toString('base64url');
-                    } else if (typeof c.id !== 'string') {
-                        // Fallback: try to convert whatever it is to string, then to base64url if needed
-                        // But mostly likely it's already a string if not buffer/uint8
-                        // If it's an object with 'data' (JSONified Buffer), handle it?
-                        // For now trust simplewebauthn output or existing string
-                        newId = String(c.id);
-                    }
-                    return { ...c, id: newId };
-                });
-            } catch (mapError) {
-                console.error("Error sanitizing credentials:", mapError);
-                // Fallback to original options if sanitization fails
-            }
-        }
-
-        return NextResponse.json({ ...sanitizedOptions, userId: user._id.toString() })
+        // SimpleWebAuthn v10+ returns JSON-safe options if configured correctly, 
+        // but let's be absolutely sure everything is a string
+        return NextResponse.json({
+            ...options,
+            userId: user._id.toString()
+        })
     } catch (error: any) {
         console.error('Passkey authentication options error:', error)
-        return NextResponse.json({ error: error.message || 'Failed to generate options' }, { status: 500 })
+        return NextResponse.json({
+            error: error.message || 'Failed to generate options',
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 })
     }
 }
