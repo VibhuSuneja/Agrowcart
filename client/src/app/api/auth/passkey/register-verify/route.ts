@@ -25,22 +25,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Use EXACT hostname and allow multi-origin fallback
-        const currentRpID = req.nextUrl.hostname
-        const expectedOrigin = req.nextUrl.origin
+        // Standardize currentRpID to base domain
+        const hostname = req.nextUrl.hostname;
+        const currentRpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
-        const baseDomain = currentRpID.startsWith('www.') ? currentRpID.slice(4) : currentRpID
-        const protocol = req.nextUrl.protocol
-        const allPossibleOrigins = [
-            expectedOrigin,
-            `${protocol}//${baseDomain}`,
-            `${protocol}//www.${baseDomain}`
+        const possibleOrigins = [
+            'https://agrowcart.com',
+            'https://www.agrowcart.com',
+            'http://localhost:3000'
         ]
 
         const verification = await verifyRegistrationResponse({
             response: body,
             expectedChallenge,
-            expectedOrigin: allPossibleOrigins,
+            expectedOrigin: possibleOrigins,
             expectedRPID: currentRpID,
             requireUserVerification: false
         })

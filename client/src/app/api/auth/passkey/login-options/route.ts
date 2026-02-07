@@ -29,8 +29,9 @@ export async function POST(req: NextRequest) {
                 transports: cred.transports || []
             }))
 
-        // Use EXACT hostname to ensure browser finds the passkey
-        const rpID = req.nextUrl.hostname;
+        // ALWAYS lock to base domain for cross-subdomain compatibility
+        const hostname = req.nextUrl.hostname;
+        const rpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
         console.log('Login Options - User:', user.email, 'RPID:', rpID)
 
