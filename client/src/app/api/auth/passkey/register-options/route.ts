@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Get existing credentials to exclude - IDs should be strings per docs
+        // Get existing credentials to exclude - SIMPLEWEBAUTHN v13 wants binary Buffers here
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
-            id: cred.credentialID,
+            id: Buffer.from(cred.credentialID, 'base64url'),
             transports: cred.transports || []
         }))
 
@@ -32,17 +32,20 @@ export async function POST(req: NextRequest) {
         const hostname = req.nextUrl.hostname;
         const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname);
 
+        console.log('Register Options - currentRpID:', currentRpID, 'userID:', user._id.toString());
+
         const options = await generateRegistrationOptions({
             rpName,
             rpID: currentRpID,
-            userID: new Uint8Array(Buffer.from(user._id.toString())), // Convert to proper Uint8Array
+            userID: Buffer.from(user._id.toString()), // Binary unique user ID
             userName: user.email,
             userDisplayName: user.name || user.email,
             attestationType: 'none',
             excludeCredentials,
             authenticatorSelection: {
-                residentKey: 'required', // Force discoverable credential
+                residentKey: 'required', // Essential for persistent passkeys
                 userVerification: 'preferred',
+                authenticatorAttachment: 'platform', // Force "This Device" storage
             },
             supportedAlgorithmIDs: [-7, -257] // ES256 and RS256
         })
