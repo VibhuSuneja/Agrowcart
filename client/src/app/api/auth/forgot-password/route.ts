@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
         user.resetTokenExpiry = resetTokenExpiry;
         await user.save();
 
-        const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://agrowcart.com'}/reset-password/${resetToken}`;
+        const origin = req.nextUrl.origin;
+        const resetUrl = `${origin}/reset-password/${resetToken}`;
 
         const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
