@@ -49,15 +49,18 @@ export async function POST(req: NextRequest) {
             </div>
         `;
 
-        const emailSent = await sendEmail({
+        const result = await sendEmail({
             to: email,
             subject: "Reset Your AgrowCart Password",
             html: emailHtml,
             text: `Reset your password by following this link: ${resetUrl}`
         });
 
-        if (!emailSent) {
-            return NextResponse.json({ error: "Failed to send reset email" }, { status: 500 });
+        if (!result.success) {
+            return NextResponse.json({
+                error: "Failed to send reset email",
+                details: result.error
+            }, { status: 500 });
         }
 
         return NextResponse.json({ message: "Reset link sent to your email" });

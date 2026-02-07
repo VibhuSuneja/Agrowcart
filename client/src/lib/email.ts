@@ -42,14 +42,14 @@ interface EmailOptions {
 /**
  * Send email using configured transporter
  */
-export async function sendEmail(options: EmailOptions): Promise<boolean> {
+export async function sendEmail(options: EmailOptions): Promise<{ success: boolean; error?: string }> {
     const transporter = createTransporter();
 
     try {
         // Verify connection configuration
         await transporter.verify();
 
-        const fromEmail = process.env.EMAIL_USER; // Use the authenticated email to avoid spam filters
+        const fromEmail = process.env.EMAIL_USER;
         const fromName = "AgrowCart";
 
         await transporter.sendMail({
@@ -61,10 +61,10 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
         });
 
         console.log(`✅ Email sent to ${options.to}`);
-        return true;
-    } catch (error) {
+        return { success: true };
+    } catch (error: any) {
         console.error('❌ Email error:', error);
-        return false;
+        return { success: false, error: error.message };
     }
 }
 
@@ -166,7 +166,7 @@ export function orderConfirmationEmail(data: {
 export async function sendOrderConfirmation(
     email: string,
     data: Parameters<typeof orderConfirmationEmail>[0]
-): Promise<boolean> {
+): Promise<{ success: boolean; error?: string }> {
     return sendEmail({
         to: email,
         subject: `🌾 Order Confirmed! #${data.orderId.slice(-8).toUpperCase()}`,
@@ -183,7 +183,7 @@ export async function sendOrderDispatchedEmail(
     customerName: string,
     orderId: string,
     deliveryPartner: string
-): Promise<boolean> {
+): Promise<{ success: boolean; error?: string }> {
     const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #16a34a;">🚚 Your Order is On the Way!</h2>
