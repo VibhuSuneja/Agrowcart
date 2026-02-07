@@ -27,9 +27,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No pending challenge found' }, { status: 400 })
         }
 
-        // Detect expected origin and rpID from request for maximum compatibility
+        // Detect expected origin and rpID - MUST match login-options exactly
         const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin
-        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || req.nextUrl.hostname
+        const hostname = req.nextUrl.hostname
+        const currentRpID = process.env.NEXT_PUBLIC_RP_ID || (hostname.startsWith('www.') ? hostname.slice(4) : hostname)
 
         // Find the matching credential
         const credentialID = authResponse.id
