@@ -13,18 +13,23 @@ import nodemailer from 'nodemailer';
 
 // Create reusable transporter
 const createTransporter = () => {
-    return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-        port: parseInt(process.env.EMAIL_PORT || '587'),
-        secure: false, // true for 465, false for other ports
+    // Priority: use service 'gmail' if user is gmail
+    const config: any = {
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
         },
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
+    };
+
+    if (process.env.EMAIL_USER?.includes('gmail.com')) {
+        config.service = 'gmail';
+    } else {
+        config.host = process.env.EMAIL_HOST || 'smtp.gmail.com';
+        config.port = parseInt(process.env.EMAIL_PORT || '587');
+        config.secure = config.port === 465;
+    }
+
+    return nodemailer.createTransport(config);
 };
 
 interface EmailOptions {
