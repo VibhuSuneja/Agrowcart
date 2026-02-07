@@ -411,6 +411,29 @@ function Nav({ user: propUser }: { user: any }) {
                                         <LogOut size={18} />
                                         Sign Out
                                     </button>
+
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm("CRITICAL: Are you sure you want to delete your account? This action cannot be undone and you will lose all order history.")) {
+                                                try {
+                                                    const res = await fetch('/api/user/delete-account', { method: 'DELETE' });
+                                                    const data = await res.json();
+                                                    if (res.ok) {
+                                                        toast.success("Account deleted successfully.");
+                                                        setTimeout(() => signOut({ callbackUrl: "/" }), 2000);
+                                                    } else {
+                                                        toast.error(data.message || "Failed to delete account.");
+                                                    }
+                                                } catch (error) {
+                                                    toast.error("An error occurred. Please try again.");
+                                                }
+                                            }
+                                        }}
+                                        className='flex items-center gap-4 w-full px-4 py-3 hover:bg-red-500/10 group rounded-xl text-red-500 font-bold text-xs uppercase tracking-widest transition-all text-left mt-1'
+                                    >
+                                        <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
+                                        Delete Account
+                                    </button>
                                 </div>
                             </motion.div>
                         )}
