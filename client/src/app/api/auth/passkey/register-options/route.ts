@@ -50,12 +50,24 @@ export async function POST(req: NextRequest) {
             $set: { 'passkeyChallenge': options.challenge }
         })
 
-        const sanitizedOptions = {
-            ...options,
-            excludeCredentials: options.excludeCredentials?.map((c: any) => ({
-                ...c,
-                id: Buffer.from(c.id).toString('base64url')
-            }))
+        const sanitizedOptions = { ...options };
+
+        if (Array.isArray(options.excludeCredentials)) {
+            try {
+                sanitizedOptions.excludeCredentials = options.excludeCredentials.map((c: any) => {
+                    let newId = c.id;
+                    if (Buffer.isBuffer(c.id)) {
+                        newId = c.id.toString('base64url');
+                    } else if (c.id instanceof Uint8Array) {
+                        newId = Buffer.from(c.id).toString('base64url');
+                    } else if (typeof c.id !== 'string') {
+                        newId = String(c.id);
+                    }
+                    return { ...c, id: newId };
+                });
+            } catch (mapError) {
+                console.error("Error sanitizing excludeCredentials:", mapError);
+            }
         }
 
         return NextResponse.json(sanitizedOptions)

@@ -44,12 +44,29 @@ export async function POST(req: NextRequest) {
 
         // Ensure allowCredentials IDs are strings (base64url) for the client
         // Next.js/JSON serializes Buffers as objects, which breaks the client
-        const sanitizedOptions = {
-            ...options,
-            allowCredentials: options.allowCredentials?.map((c: any) => ({
-                ...c,
-                id: Buffer.from(c.id).toString('base64url')
-            }))
+        const sanitizedOptions = { ...options };
+
+        if (Array.isArray(options.allowCredentials)) {
+            try {
+                sanitizedOptions.allowCredentials = options.allowCredentials.map((c: any) => {
+                    let newId = c.id;
+                    if (Buffer.isBuffer(c.id)) {
+                        newId = c.id.toString('base64url');
+                    } else if (c.id instanceof Uint8Array) {
+                        newId = Buffer.from(c.id).toString('base64url');
+                    } else if (typeof c.id !== 'string') {
+                        // Fallback: try to convert whatever it is to string, then to base64url if needed
+                        // But mostly likely it's already a string if not buffer/uint8
+                        // If it's an object with 'data' (JSONified Buffer), handle it?
+                        // For now trust simplewebauthn output or existing string
+                        newId = String(c.id);
+                    }
+                    return { ...c, id: newId };
+                });
+            } catch (mapError) {
+                console.error("Error sanitizing credentials:", mapError);
+                // Fallback to original options if sanitization fails
+            }
         }
 
         return NextResponse.json({ ...sanitizedOptions, userId: user._id.toString() })
