@@ -185,13 +185,27 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                                 Live Track
                                             </button>
                                         </div>
+                                        <button
+                                            onClick={() => router.push(`/traceability/${order._id}`)}
+                                            className="w-full mt-4 bg-zinc-800 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all border border-white/5"
+                                        >
+                                            <Sparkles size={14} className="text-amber-400" />
+                                            View Batch Traceability
+                                        </button>
                                     </>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
                                         <div className="w-16 h-16 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
                                         <div>
                                             <h4 className="font-bold text-lg mb-1">Assigning Partner</h4>
-                                            <p className="text-zinc-500 text-xs max-w-[200px] mx-auto">We're finding the best delivery partner for your batch...</p>
+                                            <p className="text-zinc-500 text-xs max-w-[200px] mx-auto mb-4">We're finding the best delivery partner for your batch...</p>
+                                            <button
+                                                onClick={() => router.push(`/traceability/${order._id}`)}
+                                                className="bg-white/10 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
+                                            >
+                                                <Sparkles size={14} className="text-amber-400" />
+                                                View Batch Traceability
+                                            </button>
                                         </div>
                                     </div>
                                 )}
@@ -243,7 +257,14 @@ function UserOrderCard({ order }: { order: IOrder }) {
                             </div>
                             <div>
                                 <h4 className="font-black text-green-700 tracking-tight">Order Fulfilled</h4>
-                                <p className="text-xs text-green-600/70 font-medium">Thank you for supporting sustainable agriculture.</p>
+                                <p className="text-xs text-green-600/70 font-medium mb-3">Thank you for supporting sustainable agriculture.</p>
+                                <button
+                                    onClick={() => router.push(`/traceability/${order._id}`)}
+                                    className="bg-green-600 text-white px-4 py-2 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
+                                >
+                                    <Sparkles size={12} className="text-amber-400" />
+                                    Trace Farm-to-Fork
+                                </button>
                             </div>
                         </div>
                     )}
