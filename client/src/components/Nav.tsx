@@ -264,23 +264,39 @@ function Nav({ user: propUser }: { user: any }) {
             </div>
 
             {/* Desktop Navigation Tools */}
-            <div className='hidden lg:flex items-center gap-2 flex-1 justify-center max-w-2xl px-8'>
+            <div className='hidden lg:flex items-center gap-2 flex-1 justify-center max-w-2xl px-6'>
                 {user.role === "user" && (
-                    <form className='relative w-full' onSubmit={handleSearch}>
-                        <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4' />
-                        <input
-                            type="text"
-                            placeholder='Search organic harvests...'
-                            className='w-full bg-zinc-100 dark:bg-white/5 rounded-2xl pl-11 pr-4 py-2.5 text-sm font-medium outline-none border border-transparent focus:border-primary/20 transition-all'
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
+                    <form className='relative w-full flex items-center' onSubmit={handleSearch}>
+                        <div className="relative w-full">
+                            <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4' />
+                            <input
+                                type="text"
+                                placeholder='Search organic harvests...'
+                                className='w-full bg-zinc-100 dark:bg-white/5 rounded-2xl pl-11 pr-14 py-2.5 text-sm font-medium outline-none border border-transparent focus:border-primary/20 focus:bg-white dark:focus:bg-zinc-800 transition-all shadow-sm'
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-primary text-white rounded-xl hover:bg-emerald-600 transition-colors shadow-md agrow-glow"
+                            >
+                                <Search size={14} />
+                            </button>
+                        </div>
                     </form>
                 )}
             </div>
 
-            <div className='flex items-center gap-3 md:gap-4'>
-                <div className="hidden lg:flex items-center gap-2">
+            <div className='flex items-center gap-2 md:gap-4'>
+                <div className="hidden lg:flex items-center gap-1">
+                    {user.role === 'user' && (
+                        <Link href="/user/cart" className="relative p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-all group" title="My Cart">
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-900 group-hover:scale-110 transition-transform">
+                                {cartData.length}
+                            </div>
+                            <ShoppingCartIcon size={22} />
+                        </Link>
+                    )}
                     <Link href="/recipes" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Recipes">
                         <ChefHat size={22} />
                     </Link>
@@ -293,7 +309,7 @@ function Nav({ user: propUser }: { user: any }) {
                     <TextToSpeech />
                 </div>
 
-                <div className="h-6 w-px bg-zinc-200 dark:bg-white/10 mx-2 hidden lg:block"></div>
+                <div className="h-6 w-px bg-zinc-200 dark:bg-white/10 mx-1 hidden lg:block"></div>
 
                 <div className='relative' ref={profileDropDown}>
                     <motion.div

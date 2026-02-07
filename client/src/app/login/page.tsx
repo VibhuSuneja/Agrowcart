@@ -1,5 +1,5 @@
 'use client'
-import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, X } from 'lucide-react'
+import { ArrowLeft, EyeIcon, EyeOff, Fingerprint, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, X } from 'lucide-react'
 import React, { FormEvent, useState } from 'react'
 import { motion, AnimatePresence } from "motion/react"
 import Image from 'next/image'
@@ -8,15 +8,65 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 import { TermsContent, PrivacyContent } from '@/components/LegalContent'
+import { startAuthentication } from '@simplewebauthn/browser'
+import axios from 'axios'
 
 function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [passkeyLoading, setPasskeyLoading] = useState(false)
   const [showLegalModal, setShowLegalModal] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
   const router = useRouter()
+
+  const handlePasskeyLogin = async () => {
+    if (!email) {
+      toast.error("Please enter your email first to use passkey login.")
+      return
+    }
+
+    setPasskeyLoading(true)
+    try {
+      // Step 1: Get authentication options from server
+      const optionsRes = await axios.post('/api/auth/passkey/login-options', { email })
+      const options = optionsRes.data
+
+      if (!options || options.error) {
+        toast.error(options?.error || "Failed to get passkey options")
+        setPasskeyLoading(false)
+        return
+      }
+
+      // Step 2: Trigger the browser's biometric prompt
+      const authResponse = await startAuthentication({ optionsJSON: options })
+
+      // Step 3: Send the response to the server for verification
+      const verifyRes = await axios.post('/api/auth/passkey/login-verify', {
+        userId: options.userId,
+        response: authResponse
+      })
+
+      if (verifyRes.data.success) {
+        toast.success("Biometric authentication successful!")
+        window.location.href = "/"
+      } else {
+        toast.error(verifyRes.data.error || "Passkey verification failed")
+      }
+    } catch (error: any) {
+      console.error("Passkey login error:", error)
+      if (error.name === 'NotAllowedError') {
+        toast.error("Biometric authentication was cancelled or denied.")
+      } else if (error.response?.data?.error) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error("Passkey login failed. Try password login instead.")
+      }
+    } finally {
+      setPasskeyLoading(false)
+    }
+  }
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault()
@@ -48,7 +98,7 @@ function Login() {
 
       // Record agreement via lightweight request
       try {
-        await import('axios').then(a => a.default.post("/api/user/record-terms"))
+        await axios.post("/api/user/record-terms")
       } catch (err) { console.error("Failed to record terms", err) }
 
       toast.success("Welcome back to the Platform!")
@@ -160,6 +210,37 @@ function Login() {
             <Image src={googleImage} width={20} height={20} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
             <span>Continue with Google</span>
           </button>
+
+          <div className='flex items-center gap-4 py-2 mt-2'>
+            <div className='flex-1 h-px bg-zinc-100' />
+            <span className='text-[10px] font-black tracking-widest text-zinc-400 uppercase'>Biometric Security</span>
+            <div className='flex-1 h-px bg-zinc-100' />
+          </div>
+
+          <button
+            type="button"
+            disabled={passkeyLoading || !email}
+            className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95 ${passkeyLoading || !email
+                ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
+                : 'bg-zinc-900 border border-zinc-900 hover:bg-zinc-800 text-white'
+              }`}
+            onClick={handlePasskeyLogin}
+          >
+            {passkeyLoading ? (
+              <Loader2 className='w-5 h-5 animate-spin' />
+            ) : (
+              <>
+                <Fingerprint size={18} className='text-emerald-400' />
+                <span>Sign in with Passkey</span>
+              </>
+            )}
+          </button>
+
+          {!email && (
+            <p className="text-[10px] text-center text-zinc-400 -mt-1">
+              Enter your email above to enable passkey login
+            </p>
+          )}
         </motion.form>
 
         <p className='text-zinc-500 mt-10 text-sm text-center font-medium'>

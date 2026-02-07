@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+// Passkey credential structure for WebAuthn
+export interface IPasskeyCredential {
+    credentialID: string; // Base64URL encoded
+    credentialPublicKey: string; // Base64URL encoded
+    counter: number;
+    transports?: string[];
+    createdAt: Date;
+}
+
 export interface IUser {
     _id?: mongoose.Types.ObjectId
     name: string
@@ -23,7 +32,16 @@ export interface IUser {
     isOnline: Boolean
     wishlist?: mongoose.Types.ObjectId[]
     agreedToTerms?: Date
+    passkeys?: IPasskeyCredential[]
 }
+
+const passkeyCredentialSchema = new mongoose.Schema({
+    credentialID: { type: String, required: true },
+    credentialPublicKey: { type: String, required: true },
+    counter: { type: Number, required: true, default: 0 },
+    transports: [{ type: String }],
+    createdAt: { type: Date, default: Date.now }
+}, { _id: false })
 
 const userSchema = new mongoose.Schema<IUser>({
     name: {
@@ -77,6 +95,10 @@ const userSchema = new mongoose.Schema<IUser>({
     }],
     agreedToTerms: {
         type: Date
+    },
+    passkeys: {
+        type: [passkeyCredentialSchema],
+        default: []
     }
 }, { timestamps: true })
 

@@ -18,11 +18,11 @@ Thumbs.db
 
 # Environment files (Sensitive)
 .env
-.env.local
-.env.*.local
-**/.env
-**/.env.local
-**/.env.*.local
+..local
+..*.local
+**/.
+**/..local
+**/..*.local
 
 # IDEs
 .vscode/
