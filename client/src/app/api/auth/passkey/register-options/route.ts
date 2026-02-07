@@ -20,9 +20,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Use EXACT hostname to force the browser to accept the passkey
-        const rpID = req.nextUrl.hostname;
+        // ALWAYS use the base domain in production for maximum compatibility
+        // This allows passkeys to work on both agrowcart.com and www.agrowcart.com
+        const hostname = req.nextUrl.hostname;
+        const rpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
+        // Get existing credentials to exclude
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
             id: Buffer.from(cred.credentialID, 'base64url'),
             transports: cred.transports || []
