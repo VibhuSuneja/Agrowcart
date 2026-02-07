@@ -18,26 +18,30 @@ interface ICartSlice {
    finalTotal: number
 }
 
-
 const isClient = typeof window !== "undefined"
 
-const loadCart = () => {
+const loadCartData = (): IProduct[] => {
    if (!isClient) return []
    const saved = localStorage.getItem("agrowcart_cart")
    return saved ? JSON.parse(saved) : []
 }
 
-const saveCart = (data: IProduct[]) => {
+const saveCartData = (data: IProduct[]) => {
    if (isClient) {
       localStorage.setItem("agrowcart_cart", JSON.stringify(data))
    }
 }
 
+const initialCartData = loadCartData()
+const initialSubTotal = initialCartData.reduce((sum, item) => sum + Number(item.price) * (item.quantity || 1), 0)
+const initialDeliveryFee = initialSubTotal === 0 ? 0 : (initialSubTotal > 1000 ? 0 : 40)
+const initialFinalTotal = initialSubTotal + initialDeliveryFee
+
 const initialState: ICartSlice = {
-   cartData: loadCart(),
-   subTotal: 0,
-   deliveryFee: 40,
-   finalTotal: 40
+   cartData: initialCartData,
+   subTotal: initialSubTotal,
+   deliveryFee: initialDeliveryFee,
+   finalTotal: initialFinalTotal
 }
 
 const cartSlice = createSlice({
@@ -52,7 +56,7 @@ const cartSlice = createSlice({
             state.cartData.push({ ...action.payload, quantity: action.payload.quantity || 1 })
          }
          cartSlice.caseReducers.calculateTotals(state)
-         saveCart(state.cartData)
+         saveCartData(state.cartData)
       },
       increaseQuantity: (state, action: PayloadAction<string>) => {
          const item = state.cartData.find(i => i._id == action.payload)
@@ -60,7 +64,7 @@ const cartSlice = createSlice({
             item.quantity = item.quantity + 1
          }
          cartSlice.caseReducers.calculateTotals(state)
-         saveCart(state.cartData)
+         saveCartData(state.cartData)
       },
       decreaseQuantity: (state, action: PayloadAction<string>) => {
          const item = state.cartData.find(i => i._id == action.payload)
@@ -70,12 +74,12 @@ const cartSlice = createSlice({
             state.cartData = state.cartData.filter(i => i._id !== action.payload)
          }
          cartSlice.caseReducers.calculateTotals(state)
-         saveCart(state.cartData)
+         saveCartData(state.cartData)
       },
       removeFromCart: (state, action: PayloadAction<string>) => {
          state.cartData = state.cartData.filter(i => i._id !== action.payload)
          cartSlice.caseReducers.calculateTotals(state)
-         saveCart(state.cartData)
+         saveCartData(state.cartData)
       },
       calculateTotals: (state) => {
          state.subTotal = state.cartData.reduce((sum, item) => sum + Number(item.price) * (item.quantity || 1), 0)
