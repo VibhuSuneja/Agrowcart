@@ -24,11 +24,11 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No passkeys registered for this account' }, { status: 400 })
         }
 
-        // Get user's registered credentials, filtering out any corrupt entries
+        // Get user's registered credentials - IDs are already base64url strings
         const allowCredentials = (user.passkeys || [])
             .filter((cred: any) => cred.credentialID)
             .map((cred: any) => ({
-                id: Buffer.from(cred.credentialID, 'base64url'),
+                id: cred.credentialID,
                 transports: cred.transports || []
             }))
 
