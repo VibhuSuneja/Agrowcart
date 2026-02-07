@@ -25,10 +25,21 @@ export async function POST(req: NextRequest) {
         }
 
         // Get user's registered credentials
-        const allowCredentials = user.passkeys.map((cred: any) => ({
-            id: Buffer.from(cred.credentialID, 'base64url'),
-            transports: cred.transports || []
-        }))
+        // Get user's registered credentials, filtering out any corrupt entries
+        const allowCredentials = user.passkeys
+            .filter((cred: any) => cred.credentialID)
+            .map((cred: any) => {
+                try {
+                    return {
+                        id: Buffer.from(cred.credentialID, 'base64url'),
+                        transports: cred.transports || []
+                    }
+                } catch (err) {
+                    console.error("Skipping invalid credential:", cred, err);
+                    return null;
+                }
+            })
+            .filter((cred: any) => cred !== null); // Remove failed conversions
 
         const options = await generateAuthenticationOptions({
             rpID,
