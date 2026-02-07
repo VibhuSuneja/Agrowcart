@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -370,9 +370,13 @@ function Nav({ user: propUser }: { user: any }) {
                                         }}
                                         className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left'
                                     >
-                                        <Cross size={18} className='text-primary' />
                                         Re-Take Tour
                                     </button>
+
+                                    <Link href="/settings" className='flex items-center gap-4 w-full px-4 py-3 hover:bg-primary/10 rounded-xl text-zinc-600 dark:text-zinc-300 font-bold text-xs uppercase tracking-widest transition-all text-left'>
+                                        <Settings size={18} className='text-primary' />
+                                        Settings
+                                    </Link>
 
                                     <div className="h-px bg-zinc-100 dark:bg-white/5 my-2"></div>
 
