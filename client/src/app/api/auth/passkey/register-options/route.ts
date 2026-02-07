@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Get existing credentials to exclude - IDs are already base64url strings
+        // Get existing credentials to exclude - MUST be binary Buffers
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
-            id: cred.credentialID,
+            id: Buffer.from(cred.credentialID, 'base64url'),
             transports: cred.transports || []
         }))
 
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
         const options = await generateRegistrationOptions({
             rpName,
             rpID: currentRpID,
+            userID: Buffer.from(user._id.toString()), // Required unique user ID
             userName: user.email,
             userDisplayName: user.name || user.email,
             attestationType: 'none',
