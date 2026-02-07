@@ -18,8 +18,25 @@ function Login() {
   const [loading, setLoading] = useState(false)
   const [passkeyLoading, setPasskeyLoading] = useState(false)
   const [showLegalModal, setShowLegalModal] = useState(false)
+  const [showForgotModal, setShowForgotModal] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState("")
+  const [forgotLoading, setForgotLoading] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
   const router = useRouter()
+
+  const handleForgotSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setForgotLoading(true)
+    try {
+      const res = await axios.post('/api/auth/forgot-password', { email: forgotEmail })
+      toast.success(res.data.message || "Reset link sent!")
+      setShowForgotModal(false)
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Failed to send reset link")
+    } finally {
+      setForgotLoading(false)
+    }
+  }
 
   const handlePasskeyLogin = async () => {
     if (!email) {
@@ -197,7 +214,14 @@ function Login() {
           </div>
 
           <div className="flex justify-end px-1">
-            <button type="button" className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
+            <button
+              type="button"
+              onClick={() => {
+                setForgotEmail(email) // Pre-fill with login email if present
+                setShowForgotModal(true)
+              }}
+              className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors"
+            >
               Forgot Password?
             </button>
           </div>
@@ -278,6 +302,65 @@ function Login() {
       </div>
 
       <AnimatePresence>
+        {showForgotModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowForgotModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white w-full max-w-md p-10 rounded-[2.5rem] shadow-2xl relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowForgotModal(false)}
+                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-all z-10"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="flex flex-col items-center mb-8 text-center">
+                <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-4 text-green-600">
+                  <Key size={28} />
+                </div>
+                <h2 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Password Recovery</h2>
+                <p className="text-zinc-500 text-sm">Enter your email address and we'll send you a link to reset your password.</p>
+              </div>
+
+              <form onSubmit={handleForgotSubmit} className="space-y-4">
+                <div className='relative group'>
+                  <Mail className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
+                  <input
+                    type="email"
+                    placeholder='Email address'
+                    required
+                    className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all font-medium text-sm'
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  disabled={forgotLoading || !forgotEmail}
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-zinc-100 disabled:text-zinc-400 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-green-900/10 flex items-center justify-center gap-2"
+                >
+                  {forgotLoading ? <Loader2 className="animate-spin" size={20} /> : (
+                    <>
+                      <span>Send reset link</span>
+                      <Sparkles size={18} />
+                    </>
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+
         {showLegalModal && (
           <motion.div
             initial={{ opacity: 0 }}

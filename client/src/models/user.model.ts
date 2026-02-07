@@ -34,6 +34,8 @@ export interface IUser {
     agreedToTerms?: Date
     passkeys?: IPasskeyCredential[]
     passkeyChallenge?: string
+    resetToken?: string
+    resetTokenExpiry?: Date
 }
 
 const passkeyCredentialSchema = new mongoose.Schema({
@@ -103,6 +105,12 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     passkeyChallenge: {
         type: String
+    },
+    resetToken: {
+        type: String
+    },
+    resetTokenExpiry: {
+        type: Date
     }
 }, { timestamps: true })
 
