@@ -126,10 +126,16 @@ export default function CertificateModal({ analysis, buyerName, onClose }: Certi
                                 </div>
 
                                 <div className="p-4 bg-zinc-50 rounded-3xl border border-zinc-100 flex items-center gap-4">
-                                    <QrCode size={48} className="text-zinc-900" />
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-zinc-200 overflow-hidden">
+                                        <img
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://agrowcart.com`)}`}
+                                            alt="Verify QR"
+                                            className="w-10 h-10 object-contain"
+                                        />
+                                    </div>
                                     <div className="text-left">
                                         <p className="text-[8px] font-black uppercase text-zinc-400 tracking-widest mb-0.5">Scan to Verify</p>
-                                        <p className="text-[10px] font-bold text-blue-600 hover:underline cursor-pointer">agrowcart.ai/verify/{certificateId}</p>
+                                        <p className="text-[10px] font-bold text-blue-600 hover:underline cursor-pointer">agrowcart.com/verify/{certificateId}</p>
                                     </div>
                                 </div>
                             </div>

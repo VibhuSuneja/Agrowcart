@@ -110,8 +110,12 @@ function TraceabilityPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-white p-6 rounded-[2.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 flex items-center gap-6"
                     >
-                        <div className="w-16 h-16 bg-zinc-900 rounded-[1.5rem] flex items-center justify-center text-white">
-                            <QrCode size={32} />
+                        <div className="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center text-zinc-900 overflow-hidden border border-zinc-100">
+                            <img
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://agrowcart.com/traceability/${orderId}`)}`}
+                                alt="Scan QR"
+                                className="w-12 h-12 object-contain"
+                            />
                         </div>
                         <div>
                             <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Verification ID</div>
