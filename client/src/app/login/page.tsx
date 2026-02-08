@@ -133,43 +133,43 @@ function Login() {
   if (!mounted) return null;
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-zinc-50 relative overflow-hidden'>
-      {/* Decorative background elements */}
-      <div className='absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-100 rounded-full blur-[100px] opacity-50' />
-      <div className='absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-[100px] opacity-50' />
+    <div className='flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-zinc-50 relative overflow-x-hidden overflow-y-auto custom-scrollbar'>
+      {/* Decorative background elements - optimized for smaller viewports */}
+      <div className='absolute top-[-5%] right-[-5%] w-[30%] h-[30%] bg-green-100 rounded-full blur-[80px] opacity-40 pointer-events-none' />
+      <div className='absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-emerald-100 rounded-full blur-[80px] opacity-40 pointer-events-none' />
 
-      <div className='absolute top-8 left-8 flex items-center gap-2 text-zinc-500 hover:text-green-600 transition-all cursor-pointer group'
+      <div className='absolute top-4 left-4 flex items-center gap-2 text-zinc-500 hover:text-green-600 transition-all cursor-pointer group'
         onClick={() => router.push("/")}
       >
-        <div className='w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform'>
-          <ArrowLeft size={18} />
+        <div className='w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform'>
+          <ArrowLeft size={16} />
         </div>
-        <span className='font-bold text-sm tracking-tight'>Back to Home</span>
+        <span className='font-bold text-xs tracking-tight'>Back to Home</span>
       </div>
 
-      <div className="w-full max-w-md bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10">
-        <div className="flex flex-col items-center mb-10 text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-6">
-            <Lock className="text-white" size={32} />
+      <div className="w-full max-w-md bg-white p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10 mt-6 lg:mt-0">
+        <div className="flex flex-col items-center mb-6 text-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-700 rounded-xl shadow-lg shadow-green-500/20 flex items-center justify-center mb-4">
+            <Lock className="text-white" size={24} />
           </div>
-          <h1 className='text-3xl font-black text-zinc-900 tracking-tight mb-2'>Welcome Back</h1>
-          <p className='text-zinc-500 text-sm font-medium flex items-center gap-2'>
-            Continue your Millet Journey <Sparkles size={14} className='text-green-500' />
+          <h1 className='text-2xl font-black text-zinc-900 tracking-tight mb-1'>Welcome Back</h1>
+          <p className='text-zinc-500 text-xs font-medium flex items-center gap-2'>
+            Continue your Millet Journey <Sparkles size={12} className='text-green-500' />
           </p>
         </div>
 
         <motion.form
           onSubmit={handleLogin}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className='flex flex-col gap-4'
+          className='flex flex-col gap-3'
         >
           <div className='relative group'>
-            <Mail className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
+            <Mail className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
             <input
               type="email"
               placeholder='Email Address'
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-sm'
+              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               required
@@ -177,11 +177,11 @@ function Login() {
           </div>
 
           <div className='relative group'>
-            <Lock className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
+            <Lock className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors' />
             <input
               type={showPassword ? "text" : "password"}
               placeholder='Account Password'
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-12 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-sm'
+              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-10 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               required
@@ -191,7 +191,7 @@ function Login() {
               className='absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-green-500 transition-colors'
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff size={18} /> : <EyeIcon size={18} />}
+              {showPassword ? <EyeOff size={16} /> : <EyeIcon size={16} />}
             </button>
           </div>
 
@@ -202,7 +202,7 @@ function Login() {
                 setForgotEmail(email)
                 setShowForgotModal(true)
               }}
-              className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors"
+              className="text-[10px] font-bold text-green-600 hover:text-green-700 transition-colors"
             >
               Forgot Password?
             </button>
@@ -210,69 +210,69 @@ function Login() {
 
           <button
             disabled={!email || !password || loading}
-            className={`w-full font-bold py-4 rounded-2xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-2 ${(!email || !password || loading)
+            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!email || !password || loading)
               ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}
           >
-            {loading ? <Loader2 className='w-5 h-5 animate-spin' /> : (
+            {loading ? <Loader2 className='w-4 h-4 animate-spin' /> : (
               <>
-                <span>Secure Sign In</span>
-                <LogIn size={18} />
+                <span className="text-sm">Secure Sign In</span>
+                <LogIn size={16} />
               </>
             )}
           </button>
 
-          <div className='flex items-center gap-4 py-2'>
+          <div className='flex items-center gap-4 py-1'>
             <div className='flex-1 h-px bg-zinc-100' />
-            <span className='text-[10px] font-black tracking-widest text-zinc-400 uppercase'>OAuth Access</span>
+            <span className='text-[9px] font-black tracking-widest text-zinc-400 uppercase'>OAuth</span>
             <div className='flex-1 h-px bg-zinc-100' />
           </div>
 
           <button
             type="button"
-            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-4 rounded-2xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed'
+            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-3 rounded-xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-xs'
             onClick={() => {
               signIn("google", { callbackUrl: "/" })
             }}
           >
-            <Image src={googleImage} width={20} height={20} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
+            <Image src={googleImage} width={18} height={18} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
             <span>Continue with Google</span>
           </button>
 
-          <div className='flex items-center gap-4 py-2 mt-2'>
+          <div className='flex items-center gap-4 py-1 mt-1'>
             <div className='flex-1 h-px bg-zinc-100' />
-            <span className='text-[10px] font-black tracking-widest text-zinc-400 uppercase'>Biometric Security</span>
+            <span className='text-[9px] font-black tracking-widest text-zinc-400 uppercase'>Biometric</span>
             <div className='flex-1 h-px bg-zinc-100' />
           </div>
 
           <button
             type="button"
             disabled={passkeyLoading || !email}
-            className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all shadow-lg active:scale-95 ${passkeyLoading || !email
+            className={`w-full flex items-center justify-center gap-3 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 text-xs ${passkeyLoading || !email
               ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
               : 'bg-zinc-900 border border-zinc-900 hover:bg-zinc-800 text-white'
               }`}
             onClick={handlePasskeyLogin}
           >
             {passkeyLoading ? (
-              <Loader2 className='w-5 h-5 animate-spin' />
+              <Loader2 className='w-4 h-4 animate-spin' />
             ) : (
               <>
-                <Fingerprint size={18} className='text-emerald-400' />
+                <Fingerprint size={16} className='text-emerald-400' />
                 <span>Sign in with Passkey</span>
               </>
             )}
           </button>
 
           {!email && (
-            <p className="text-[10px] text-center text-zinc-400 -mt-1">
-              Enter your email above to enable passkey login
+            <p className="text-[9px] text-center text-zinc-400 -mt-1">
+              Enter email above for passkey access
             </p>
           )}
         </motion.form>
 
-        <div className='text-zinc-500 mt-10 text-sm text-center font-medium'>
+        <div className='text-zinc-500 mt-6 text-xs text-center font-medium'>
           New to the platform?
           <button
             onClick={() => router.push("/register")}
@@ -283,6 +283,23 @@ function Login() {
         </div>
       </div>
 
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2 max-w-4xl w-full px-2 text-center relative z-10">
+        {[
+          { role: "Farmer", email: "farmer@test.com" },
+          { role: "Consumer", email: "consumer@test.com" },
+          { role: "Corporate", email: "corporate@test.com" },
+          { role: "SHG", email: "shg@test.com" },
+          { role: "Processor", email: "processor@test.com" },
+          { role: "Startup", email: "startup@test.com" },
+          { role: "Delivery", email: "delivery@test.com" },
+        ].map(creds => (
+          <div key={creds.role} className="bg-white/40 hover:bg-white/90 backdrop-blur-sm p-2 rounded-xl border border-zinc-200 text-[9px] transition-colors cursor-pointer" onClick={() => { setEmail(creds.email); setPassword('123123') }}>
+            <div className="font-black uppercase tracking-widest text-green-600 mb-0.5">{creds.role}</div>
+            <div className="font-bold text-zinc-800 truncate">{creds.email}</div>
+            <div className="text-zinc-500 font-mono text-[8px]">Pass: 123123</div>
+          </div>
+        ))}
+      </div>
       <AnimatePresence>
         {showForgotModal && (
           <motion.div
@@ -381,25 +398,7 @@ function Login() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl w-full px-4 text-center relative z-10">
-        {[
-          { role: "Farmer", email: "farmer@test.com" },
-          { role: "Consumer", email: "consumer@test.com" },
-          { role: "Corporate", email: "corporate@test.com" },
-          { role: "SHG", email: "shg@test.com" },
-          { role: "Processor", email: "processor@test.com" },
-          { role: "Startup", email: "startup@test.com" },
-          { role: "Delivery", email: "delivery@test.com" },
-        ].map(creds => (
-          <div key={creds.role} className="bg-white/50 hover:bg-white/90 backdrop-blur-sm p-3 rounded-2xl border border-zinc-200 text-[10px] transition-colors cursor-pointer" onClick={() => { setEmail(creds.email); setPassword('123123') }}>
-            <div className="font-black uppercase tracking-widest text-green-600 mb-1">{creds.role}</div>
-            <div className="font-bold text-zinc-800">{creds.email}</div>
-            <div className="text-zinc-500 font-mono mt-1">Pass: 123123</div>
-          </div>
-        ))}
-      </div>
-    </div >
+    </div>
   )
 }
 
