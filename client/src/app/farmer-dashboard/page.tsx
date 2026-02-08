@@ -700,7 +700,7 @@ function FarmerDashboard() {
             {/* Premium Modal */}
             <AnimatePresence>
                 {showAddCrop && (
-                    <div className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden">
+                    <div className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden px-4">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -712,41 +712,41 @@ function FarmerDashboard() {
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 30 }}
-                            className="bg-white p-12 rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-110 overflow-hidden"
+                            className="bg-white p-6 md:p-8 rounded-[2.5rem] max-w-lg w-full shadow-3xl relative z-110 max-h-[90vh] overflow-y-auto custom-scrollbar"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-green-400 to-emerald-600" />
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-green-400 to-emerald-600" />
 
                             <button
                                 onClick={() => setShowAddCrop(false)}
-                                className="absolute top-10 right-10 text-zinc-400 hover:text-red-500 transition-colors bg-zinc-50 p-2 rounded-full"
+                                className="absolute top-6 right-6 text-zinc-400 hover:text-red-500 transition-colors bg-zinc-50 p-2 rounded-full z-20"
                             >
-                                <X size={24} />
+                                <X size={20} />
                             </button>
 
-                            <div className="mb-12">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
-                                    <Fingerprint size={12} />
+                            <div className="mb-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-widest mb-3">
+                                    <Fingerprint size={10} />
                                     <span>SIH #260 Traceability Protocol</span>
                                 </div>
-                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">New Produce Log</h3>
-                                <p className="text-zinc-500 font-medium">Register your harvest on the blockchain-ready ledger.</p>
+                                <h3 className="text-2xl font-black text-zinc-900 tracking-tighter mb-1">New Produce Log</h3>
+                                <p className="text-zinc-500 text-xs font-medium">Register your harvest on the blockchain-ready ledger.</p>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 gap-6">
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 gap-4">
                                     {/* Image Upload */}
-                                    <div className="mb-4 flex flex-col items-center justify-center">
-                                        <label htmlFor="cropImage" className="cursor-pointer w-full h-40 bg-zinc-50 border-2 border-dashed border-zinc-300 rounded-[1.5rem] flex flex-col items-center justify-center hover:bg-zinc-100 transition-all overflow-hidden group relative">
+                                    <div className="flex flex-col items-center justify-center">
+                                        <label htmlFor="cropImage" className="cursor-pointer w-full h-32 bg-zinc-50 border-2 border-dashed border-zinc-300 rounded-2xl flex flex-col items-center justify-center hover:bg-zinc-100 transition-all overflow-hidden group relative">
                                             {newCrop.imagePreview ? (
                                                 <img src={newCrop.imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                             ) : (
                                                 <>
-                                                    <Upload className="text-zinc-400 group-hover:text-green-500 mb-2" size={32} />
-                                                    <span className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Upload Photo</span>
+                                                    <Upload className="text-zinc-400 group-hover:text-green-500 mb-2" size={24} />
+                                                    <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Upload Photo</span>
                                                 </>
                                             )}
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white font-bold text-xs uppercase tracking-widest">Change Image</div>
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white font-bold text-[10px] uppercase tracking-widest">Change Image</div>
                                         </label>
                                         <input
                                             type="file"
@@ -766,50 +766,50 @@ function FarmerDashboard() {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="relative group">
-                                            <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={20} />
+                                            <Sprout className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={16} />
                                             <input
                                                 type="text"
                                                 placeholder="Crop e.g. Foxtail Millet"
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-bold text-sm"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/5 focus:border-green-500 outline-none transition-all font-bold text-xs"
                                                 value={newCrop.name}
                                                 onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
                                             />
                                         </div>
                                         <div className="relative group">
-                                            <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                                            <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                                             <select
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-10 text-zinc-800 outline-none font-bold text-sm appearance-none focus:bg-white focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all cursor-pointer"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-10 text-zinc-800 outline-none font-bold text-xs appearance-none focus:bg-white focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all cursor-pointer"
                                                 value={newCrop.category}
                                                 onChange={(e) => setNewCrop({ ...newCrop, category: e.target.value })}
                                             >
                                                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                             </select>
                                             <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                                <svg className="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div className="relative group">
-                                        <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                                        <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                                         <input
                                             type="number"
                                             placeholder="Volume"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 outline-none font-bold text-sm"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 outline-none font-bold text-xs"
                                             value={newCrop.quantity}
                                             onChange={(e) => setNewCrop({ ...newCrop, quantity: e.target.value })}
                                         />
                                     </div>
                                     <div className="relative group">
-                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-zinc-400 text-xs">₹</div>
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-zinc-400 text-[10px]">₹</div>
                                         <input
                                             type="number"
                                             placeholder="Rate/kg"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 outline-none font-bold text-sm"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-10 pr-4 text-zinc-800 outline-none font-bold text-xs"
                                             value={newCrop.price}
                                             onChange={(e) => setNewCrop({ ...newCrop, price: e.target.value })}
                                         />
@@ -817,42 +817,42 @@ function FarmerDashboard() {
                                     <div className="grid grid-cols-2 gap-4 md:col-span-2">
                                         <input
                                             placeholder="State"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 px-5 text-zinc-800 outline-none font-bold text-sm"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 px-5 text-zinc-800 outline-none font-bold text-xs"
                                             value={newCrop.originState}
                                             onChange={(e) => setNewCrop({ ...newCrop, originState: e.target.value })}
                                         />
                                         <input
                                             placeholder="City/Village"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 px-5 text-zinc-800 outline-none font-bold text-sm"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 px-5 text-zinc-800 outline-none font-bold text-xs"
                                             value={newCrop.originCity}
                                             onChange={(e) => setNewCrop({ ...newCrop, originCity: e.target.value })}
                                         />
                                     </div>
                                     <div className="relative group md:col-span-2">
-                                        <ShieldCheck className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                                        <ShieldCheck className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                                         <input
                                             placeholder="FSSAI License (Optional for Farmers)"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] py-5 pl-14 pr-5 text-zinc-800 outline-none font-bold text-sm"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 outline-none font-bold text-xs"
                                             value={newCrop.fssaiLicense}
                                             onChange={(e) => setNewCrop({ ...newCrop, fssaiLicense: e.target.value })}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div className="relative group">
-                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Farm ID</div>
+                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest">Farm ID</div>
                                         <input
                                             readOnly
-                                            className="w-full bg-zinc-100 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-500 font-black text-xs cursor-default"
+                                            className="w-full bg-zinc-100 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-500 font-black text-[10px] cursor-default"
                                             value={newCrop.farmId}
                                         />
                                     </div>
                                     <div className="relative group">
-                                        <div className="absolute top-4 left-5 text-[10px] font-black text-zinc-400 uppercase tracking-widest">Harvested</div>
+                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest">Harvested</div>
                                         <input
                                             type="date"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] pt-8 pb-4 px-5 text-zinc-800 font-bold text-xs outline-none"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-800 font-bold text-[10px] outline-none"
                                             value={newCrop.harvestDate}
                                             onChange={(e) => setNewCrop({ ...newCrop, harvestDate: e.target.value })}
                                         />
@@ -860,9 +860,9 @@ function FarmerDashboard() {
                                 </div>
 
                                 <motion.button
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-6 rounded-[1.5rem] shadow-2xl shadow-zinc-900/30 flex items-center justify-center gap-4 mt-8 transition-all hover:bg-green-600 border border-white/10"
+                                    whileHover={{ scale: 1.01 }}
+                                    whileTap={{ scale: 0.99 }}
+                                    className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-4 rounded-2xl shadow-xl shadow-zinc-900/20 flex items-center justify-center gap-3 mt-4 transition-all hover:bg-green-600 border border-white/10 text-xs"
                                     disabled={loading}
                                     onClick={async () => {
                                         if (newCrop.name && newCrop.quantity && newCrop.price) {
@@ -905,7 +905,7 @@ function FarmerDashboard() {
                                     {loading ? <Loader className="animate-spin" /> : (
                                         <>
                                             <span>Broadcast to Network</span>
-                                            <Send className="w-5 h-5 text-green-400" />
+                                            <Send className="w-4 h-4 text-green-400" />
                                         </>
                                     )}
                                 </motion.button>
