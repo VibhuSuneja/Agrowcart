@@ -62,7 +62,7 @@ async function getMarketAnalysis(crop: string, district: string) {
     }
 }
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
 export default async function MarketPricePage({ params }: Props) {
     const { crop, district } = params;
@@ -126,10 +126,19 @@ export default async function MarketPricePage({ params }: Props) {
                     <p className="text-green-100 mb-6 max-w-2xl mx-auto">
                         Join the community to get SMS alerts when prices in {decodedDistrict} go up!
                     </p>
-                    <div className="flex justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
                         <Link href="/register" className="bg-white text-green-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition shadow-md">
                             Join Marketplace
                         </Link>
+                        <a
+                            href="https://agmarknet.gov.in"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-transparent border-2 border-white/30 hover:border-white text-white px-6 py-3 rounded-lg font-bold transition flex items-center justify-center gap-2"
+                        >
+                            <ExternalLink size={18} />
+                            Check Official APMC Gov Portal
+                        </a>
                     </div>
                 </div>
             </div>

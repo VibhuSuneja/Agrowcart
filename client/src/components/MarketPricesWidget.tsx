@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { TrendingUp, RefreshCcw, Loader } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -21,6 +22,15 @@ export default function MarketPricesWidget() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const router = useRouter()
+
+    const handlePriceClick = (item: any) => {
+        const cropSlug = item.crop.toLowerCase().replace(/ /g, '-').replace(/\(/g, '').replace(/\)/g, '').replace(/---/g, '-')
+        const districtSlug = item.market.split(' ').pop()?.toLowerCase() || 'hub'
+        router.push(`/market-prices/${cropSlug}/${districtSlug}`)
+        toast.success(`Opening detailed analysis for ${item.crop} in ${districtSlug}`)
     }
 
     useEffect(() => {
@@ -66,21 +76,39 @@ export default function MarketPricesWidget() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="p-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl cursor-pointer group backdrop-blur-md transition-all"
+                            onClick={() => handlePriceClick(item)}
+                            className="p-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl cursor-pointer group backdrop-blur-md transition-all active:scale-95"
                         >
                             <div className="flex items-center justify-between mb-1">
-                                <h4 className="font-bold text-sm">{item.crop}</h4>
+                                <h4 className="font-bold text-sm tracking-tight">{item.crop}</h4>
                                 <div className="text-right">
-                                    <div className="text-lg font-black">₹{item.price}</div>
+                                    <div className="text-lg font-black tracking-tight">₹{item.price}</div>
                                     <div className="text-[10px] text-white/60">/{item.unit}</div>
                                 </div>
                             </div>
-                            <p className="text-[10px] text-white/80 font-medium">
-                                {item.market}
-                            </p>
+                            <div className="flex items-center justify-between gap-2">
+                                <p className="text-[10px] text-white/80 font-medium">
+                                    {item.market}
+                                </p>
+                                <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <TrendingUp size={10} className="text-white" />
+                                </div>
+                            </div>
                         </motion.div>
                     ))
                 )}
+            </div>
+
+            {/* GOV LINK - For compliance and scalability */}
+            <div className="relative z-10 mt-6 pt-4 border-t border-white/10">
+                <a
+                    href="https://agmarknet.gov.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors"
+                >
+                    Official APMC Portal <RefreshCcw size={10} />
+                </a>
             </div>
         </div>
     )

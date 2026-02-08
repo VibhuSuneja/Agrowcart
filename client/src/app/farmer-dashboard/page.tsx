@@ -400,6 +400,7 @@ function FarmerDashboard() {
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
+                                        onClick={() => window.open('https://enam.gov.in/web/dashboard/historical-data', '_blank')}
                                         className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit"
                                     >
                                         View Global Directory
