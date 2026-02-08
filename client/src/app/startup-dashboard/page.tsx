@@ -324,7 +324,10 @@ function StartupDashboard() {
                 </div>
 
                 <FarmerNegotiations farmerId={userData?._id!} />
-                <NewsCard />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <NewsCard />
+                    <SchemesCard />
+                </div>
 
                 {/* AI Quality Inspector */}
                 <div className="bg-white p-10 md:p-16 rounded-[4rem] border border-purple-100 shadow-2xl relative overflow-hidden group">

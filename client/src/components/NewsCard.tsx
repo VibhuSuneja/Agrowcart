@@ -83,18 +83,20 @@ export default function NewsCard() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
                             className="group cursor-pointer"
+                            onClick={() => item.url && window.open(item.url, '_blank')}
                         >
-                            <div className="flex items-start gap-3 p-4 rounded-2xl hover:bg-zinc-50 transition-colors border border-transparent hover:border-zinc-100">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-zinc-50 transition-all border border-transparent hover:border-zinc-100 group relative">
                                 <span className={`shrink-0 w-2 h-2 mt-2 rounded-full ${item.tag === 'Policy' ? 'bg-blue-500' :
                                     item.tag === 'Market' ? 'bg-green-500' : 'bg-orange-500'
                                     }`} />
-                                <div>
-                                    <div className="flex items-center gap-2 mb-1">
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between gap-2 mb-1">
                                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${item.tag === 'Policy' ? 'bg-blue-50 text-blue-600' :
                                             item.tag === 'Market' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'
                                             }`}>
                                             {item.tag}
                                         </span>
+                                        <ExternalLink size={12} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
                                     <h4 className="font-bold text-zinc-800 leading-tight mb-1 group-hover:text-red-600 transition-colors">
                                         {item.headline}

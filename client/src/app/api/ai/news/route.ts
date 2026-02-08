@@ -17,9 +17,16 @@ export async function POST(req: NextRequest) {
             {
                 "headline": "Brief Headline",
                 "summary": "2 sentence summary",
-                "tag": "Policy" | "Market" | "Weather" | "Tech"
+                "tag": "Policy" | "Market" | "Weather" | " Tech",
+                "url": "https://..."
             }
         ]
+
+        Provide realistic and related clickable links for each news item.
+        - Policy: https://pib.gov.in/
+        - Market: https://enam.gov.in/
+        - Tech: https://krishijagran.com/
+        - Weather: https://mausam.imd.gov.in/
 
         Do not generate markdown code blocks. Just valid JSON.
         `;
@@ -44,17 +51,20 @@ export async function POST(req: NextRequest) {
                 {
                     headline: "MSP for Millets Increased in Major Markets",
                     summary: "Government announces revised Minimum Support Price for Ragi and Jowar to boost millet cultivation.",
-                    tag: "Market"
+                    tag: "Market",
+                    url: "https://enam.gov.in/"
                 },
                 {
                     headline: "New Smart Irrigation Subsidy Under PM-Kusum",
                     summary: "Farmers can now apply for 60% subsidy on solar-powered smart irrigation systems through the portal.",
-                    tag: "Policy"
+                    tag: "Policy",
+                    url: "https://pmkusum.mnre.gov.in/"
                 },
                 {
                     headline: "Pre-Monsoon Humidity Alerts for Central India",
                     summary: "Vigilance advised for fungal infestations as humidity levels expected to rise by 15% next week.",
-                    tag: "Weather"
+                    tag: "Weather",
+                    url: "https://mausam.imd.gov.in/"
                 }
             ];
             return NextResponse.json({ news: fallbackNews }, { status: 200 });

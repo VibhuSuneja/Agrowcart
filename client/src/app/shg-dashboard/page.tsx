@@ -89,7 +89,6 @@ function SHGDashboard() {
         name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'SHG-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null
     })
     const [crops, setCrops] = useState<Array<any>>([])
-    const [selectedScheme, setSelectedScheme] = useState<string | null>(null)
     const [cropImage, setCropImage] = useState<File | null>(null)
     const [cropPreview, setCropPreview] = useState<string | null>(null)
     const [analysisResult, setAnalysisResult] = useState<any>(null)
@@ -358,17 +357,39 @@ function SHGDashboard() {
                     <DemandHeatmap />
                     <MarketPricesWidget />
                 </div>
-                <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center">
+                {/* Support Programs Section */}
+                <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center min-h-[400px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
-                    <h3 className="text-3xl font-black mb-4 relative z-10 leading-tight">SHG Support <br />Programs</h3>
-                    <div className="space-y-4 relative z-10 w-full mb-6">
-                        <div className="p-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl cursor-pointer group backdrop-blur-md" onClick={() => setSelectedScheme('SHG_LIVELIHOOD')}>
-                            <div className="flex items-center justify-between mb-1">
-                                <h4 className="font-bold">Livelihood Mission</h4>
-                                <ArrowRight size={16} />
-                            </div>
-                            <p className="text-[10px] text-white/70">Support for community aggregation centers.</p>
+
+                    <div className="relative z-10 mb-8">
+                        <div className="flex items-center gap-2 text-white/70 font-black uppercase tracking-[0.3em] text-[10px] mb-2">
+                            <Briefcase size={14} />
+                            <span>Community Mandates</span>
                         </div>
+                        <h3 className="text-3xl font-black leading-tight tracking-tight">SHG Support <br />Programs</h3>
+                    </div>
+
+                    <div className="space-y-4 relative z-10 w-full mb-6">
+                        {[
+                            { title: 'Livelihood Mission', desc: 'Support for collective aggregation centers.', url: 'https://nrlm.gov.in/' },
+                            { title: 'Mahila Kisan Mission', desc: 'Empowering women in the millet value chain.', url: 'https://mksp.dac.gov.in/' },
+                            { title: 'Village Entrepreneurship', desc: 'Grants for local millet processing units.', url: 'https://nrlm.gov.in/svepAction.do?method=showIndex' }
+                        ].map((scheme, i) => (
+                            <div
+                                key={i}
+                                className="p-5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-[2rem] cursor-pointer group backdrop-blur-md transition-all flex items-center justify-between"
+                                onClick={() => {
+                                    toast.success(`Opening ${scheme.title} Portal...`);
+                                    window.open(scheme.url, '_blank');
+                                }}
+                            >
+                                <div>
+                                    <h4 className="font-bold text-lg">{scheme.title}</h4>
+                                    <p className="text-xs text-white/70">{scheme.desc}</p>
+                                </div>
+                                <ArrowRight size={20} className="opacity-50 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
