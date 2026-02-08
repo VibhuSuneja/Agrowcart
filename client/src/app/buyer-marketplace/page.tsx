@@ -56,6 +56,9 @@ function BuyerMarketplace() {
     const [analyzing, setAnalyzing] = useState(false)
     const [imagePreview, setImagePreview] = useState<string | null>(null)
 
+    const [searchTerm, setSearchTerm] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState('All')
+
     const fetchData = async () => {
         setLoadingProducts(true)
         try {
@@ -72,6 +75,13 @@ function BuyerMarketplace() {
             setLoadingProducts(false)
         }
     }
+
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory
+        return matchesSearch && matchesCategory
+    })
 
     useEffect(() => {
         fetchData()
@@ -161,13 +171,28 @@ function BuyerMarketplace() {
                                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             </h2>
                             <div className="flex items-center gap-3 md:gap-4">
-                                <button className="p-3 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 shadow-sm">
-                                    <Filter size={20} className="text-zinc-600" />
-                                </button>
+                                <div className="relative">
+                                    <Filter size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                    <select
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        className="bg-white border border-zinc-200 pl-11 pr-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm appearance-none cursor-pointer"
+                                    >
+                                        <option value="All">All Categories</option>
+                                        <option value="Raw Millets">Raw Millets</option>
+                                        <option value="Millet Rice">Millet Rice</option>
+                                        <option value="Millet Flour">Millet Flour</option>
+                                        <option value="Millet Snacks">Millet Snacks</option>
+                                        <option value="Value-Added">Value-Added</option>
+                                        <option value="Organic Mix">Organic Mix</option>
+                                    </select>
+                                </div>
                                 <div className="relative flex-1 md:flex-initial">
                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                                     <input
                                         placeholder="Search harvest type..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                         className="w-full md:w-64 bg-white border border-zinc-200 pl-12 pr-6 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm"
                                     />
                                 </div>
@@ -180,15 +205,19 @@ function BuyerMarketplace() {
                                     <div key={i} className="h-[300px] bg-white rounded-[2.5rem] animate-pulse border border-zinc-100" />
                                 ))}
                             </div>
-                        ) : products.length === 0 ? (
+                        ) : filteredProducts.length === 0 ? (
                             <div className="bg-white p-20 rounded-[3rem] text-center border-2 border-dashed border-zinc-200">
                                 <ShoppingBag className="mx-auto text-zinc-200 mb-6" size={64} />
-                                <h3 className="text-2xl font-black text-zinc-800">No active listings</h3>
-                                <p className="text-zinc-500">Wait for farmers to list their next harvest or refresh the feed.</p>
+                                <h3 className="text-2xl font-black text-zinc-800">
+                                    {searchTerm || selectedCategory !== 'All' ? "No matching products found" : "No active listings"}
+                                </h3>
+                                <p className="text-zinc-500">
+                                    {searchTerm || selectedCategory !== 'All' ? "Try adjusting your search or filters" : "Wait for farmers to list their next harvest or refresh the feed."}
+                                </p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {products.map((product) => (
+                                {filteredProducts.map((product) => (
                                     <motion.div
                                         key={product._id}
                                         initial={{ opacity: 0, y: 20 }}
