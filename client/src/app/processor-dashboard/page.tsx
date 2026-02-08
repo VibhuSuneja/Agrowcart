@@ -508,7 +508,7 @@ function ProcessorDashboard() {
                                 {Array.isArray(crops) && crops.map((crop, index) => (
                                     <motion.div
                                         key={index}
-                                        className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl group flex flex-col"
+                                        className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl group flex flex-col relative"
                                     >
                                         <div className="flex justify-between items-start mb-8">
                                             <div className="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-blue-600 overflow-hidden">
@@ -539,12 +539,14 @@ function ProcessorDashboard() {
                                             </div>
                                         </div>
 
-                                        <button
+                                        <motion.button
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
                                             onClick={(e) => { e.stopPropagation(); deleteCrop(crop._id) }}
-                                            className="absolute top-4 right-4 bg-white p-2 rounded-full text-red-500 shadow-sm"
+                                            className="absolute -top-3 -right-3 bg-red-500 text-white p-3 rounded-2xl shadow-xl shadow-red-500/30 opacity-0 group-hover:opacity-100 transition-all z-20"
                                         >
-                                            <Trash2 size={20} />
-                                        </button>
+                                            <Trash2 size={18} />
+                                        </motion.button>
                                     </motion.div>
                                 ))}
                             </div>
@@ -631,7 +633,7 @@ function ProcessorDashboard() {
                                     className="w-full bg-zinc-900 text-white font-black uppercase py-6 rounded-[1.5rem] flex items-center justify-center gap-4 transition-all hover:bg-blue-600"
                                     disabled={loading}
                                     onClick={async () => {
-                                        if (newCrop.name && newCrop.quantity && newCrop.price) {
+                                        if (newCrop.name && newCrop.quantity && newCrop.price && newCrop.fssaiLicense) {
                                             try {
                                                 setLoading(true)
                                                 const formData = new FormData();
@@ -645,13 +647,22 @@ function ProcessorDashboard() {
                                                 formData.append("fssaiLicense", newCrop.fssaiLicense);
                                                 formData.append("originState", newCrop.originState);
                                                 formData.append("originCity", newCrop.originCity);
-                                                // Legal requirement check
 
                                                 const res = await axios.post('/api/farmer/add-product', formData)
                                                 setCrops([...crops, res.data.product])
                                                 setShowAddCrop(false)
                                                 toast.success('Batch Verified & Marketplace Ready!')
-                                            } catch (error) { toast.error('Logging failed') } finally { setLoading(false) }
+                                            } catch (error) {
+                                                toast.error('Logging failed')
+                                            } finally {
+                                                setLoading(false)
+                                            }
+                                        } else {
+                                            if (!newCrop.fssaiLicense) {
+                                                toast.error("FSSAI License Number is mandatory for processors!");
+                                            } else {
+                                                toast.error("Please fill all mandatory fields (Name, Quantity, Price)");
+                                            }
                                         }
                                     }}
                                 >

@@ -38,6 +38,14 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // Industrial compliance check
+        if (session.user.role === "processor" && !fssaiLicense) {
+            return NextResponse.json(
+                { message: "FSSAI License is mandatory for industrial processors." },
+                { status: 400 }
+            );
+        }
+
         let imageUrl = "https://placehold.co/300?text=Millet";
         if (imageFile) {
             const uploadedUrl = await uploadOnCloudinary(imageFile);
