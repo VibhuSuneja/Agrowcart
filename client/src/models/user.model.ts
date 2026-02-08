@@ -114,6 +114,8 @@ const userSchema = new mongoose.Schema<IUser>({
     }
 }, { timestamps: true })
 
+userSchema.index({ mobile: 1 });
+userSchema.index({ role: 1 });
 userSchema.index({ location: "2dsphere" })
 
 const User = mongoose.models.User || mongoose.model("User", userSchema)
