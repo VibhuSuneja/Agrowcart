@@ -545,6 +545,13 @@ function StartupDashboard() {
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="bg-white p-12 rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-110"
                             >
+                                <button
+                                    onClick={() => setShowAddCrop(false)}
+                                    className="absolute top-8 right-8 p-3 bg-zinc-50 rounded-2xl text-zinc-400 hover:text-zinc-900 transition-all hover:bg-zinc-100"
+                                >
+                                    <X size={20} />
+                                </button>
+
                                 <div className="mb-12">
                                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
                                         <Fingerprint size={12} />
