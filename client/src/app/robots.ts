@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin/', '/api/', '/farmer-dashboard/', '/buyer-dashboard/'],
         },
-        sitemap: 'https://agrowcart.vercel.app/sitemap.xml',
+        sitemap: 'https://agrowcart.com/sitemap.xml',
     };
 }

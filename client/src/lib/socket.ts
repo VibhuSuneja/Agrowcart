@@ -8,7 +8,8 @@ export const getSocket = () => {
 
         if (typeof window !== "undefined") {
             const hostname = window.location.hostname;
-            socketUrl = `http://${hostname}:4000`;
+            const protocol = window.location.protocol === "https:" ? "https" : "http";
+            socketUrl = `${protocol}://${hostname}${window.location.protocol === "https:" ? "" : ":4000"}`;
         }
 
         console.log("🔌 Attempting Socket Connection to:", socketUrl);

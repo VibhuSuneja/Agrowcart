@@ -37,7 +37,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         let socketUrl = "http://localhost:4000";
         if (typeof window !== "undefined") {
             const hostname = window.location.hostname;
-            socketUrl = `http://${hostname}:4000`;
+            const protocol = window.location.protocol === "https:" ? "https" : "http";
+            socketUrl = `${protocol}://${hostname}${window.location.protocol === "https:" ? "" : ":4000"}`;
         }
 
         console.log("🔌 SocketProvider: Initializing connection to", socketUrl)

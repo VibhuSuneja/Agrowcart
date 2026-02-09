@@ -18,7 +18,7 @@ import BottomNav from "@/components/BottomNav";
 import { orbitron, jakarta } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://agrowcart.vercel.app'), // Replace with actual domain
+  metadataBase: new URL('https://agrowcart.com'),
   title: {
     default: "AgrowCart | AI-Driven Millets Value Chain Platform",
     template: "%s | AgrowCart"
@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   creator: "AgrowCart Team",
   publisher: "AgrowCart",
   manifest: "/manifest.json",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/logo.png',
+  },
   openGraph: {
     title: "AgrowCart | AI-Driven Millets Value Chain Platform",
     description: "Connect directly with millet farmers, access AI-powered crop insights, and explore value-added millet products.",
@@ -36,7 +41,7 @@ export const metadata: Metadata = {
     siteName: 'AgrowCart',
     images: [
       {
-        url: '/og-image.png', // Ensure this image exists in public folder
+        url: '/logo.jpg', // Ensure this image exists in public folder
         width: 1200,
         height: 630,
         alt: 'AgrowCart Platform Preview',
@@ -50,7 +55,7 @@ export const metadata: Metadata = {
     title: "AgrowCart | AI-Driven Millets Value Chain Platform",
     description: "Empowering farmers and buyers with AI-driven millet insights and direct connectivity.",
     creator: "@agrowcart",
-    images: ['/og-image.png'],
+    images: ['/logo.jpg'],
   },
   robots: {
     index: true,
