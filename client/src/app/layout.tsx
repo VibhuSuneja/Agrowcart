@@ -18,7 +18,7 @@ import BottomNav from "@/components/BottomNav";
 import { orbitron, jakarta } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://agrowcart.com'),
+  metadataBase: new URL('https://www.agrowcart.com'),
   title: {
     default: "AgrowCart | AI-Driven Millets Value Chain Platform",
     template: "%s | AgrowCart"
