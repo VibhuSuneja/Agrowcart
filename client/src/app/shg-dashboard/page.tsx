@@ -425,7 +425,7 @@ function SHGDashboard() {
                     <div className="space-y-4 relative z-10 w-full mb-6">
                         {[
                             { title: 'Livelihood Mission', desc: 'Support for collective aggregation centers.', url: 'https://nrlm.gov.in/' },
-                            { title: 'Mahila Kisan Mission', desc: 'Empowering women in the millet value chain.', url: 'https://mksp.dac.gov.in/' },
+                            { title: 'Mahila Kisan Mission', desc: 'Empowering women in the millet value chain.', url: 'https://nrlm.gov.in/mkspAction.do?method=showIndex' },
                             { title: 'Village Entrepreneurship', desc: 'Grants for local millet processing units.', url: 'https://nrlm.gov.in/svepAction.do?method=showIndex' }
                         ].map((scheme, i) => (
                             <div
