@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
-    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
+    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Edit,
     Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Factory, Settings
 } from 'lucide-react'
 import {
@@ -91,6 +91,8 @@ function ProcessorDashboard() {
     const [cropPreview, setCropPreview] = useState<string | null>(null)
     const [analysisResult, setAnalysisResult] = useState<any>(null)
     const [analyzing, setAnalyzing] = useState(false)
+    const [editingCrop, setEditingCrop] = useState<any | null>(null)
+    const [selectedCrop, setSelectedCrop] = useState<any | null>(null)
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -508,7 +510,9 @@ function ProcessorDashboard() {
                                 {Array.isArray(crops) && crops.map((crop, index) => (
                                     <motion.div
                                         key={index}
-                                        className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl group flex flex-col relative"
+                                        whileHover={{ y: -10 }}
+                                        className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-2xl group flex flex-col relative cursor-pointer"
+                                        onClick={() => setSelectedCrop(crop)}
                                     >
                                         <div className="flex justify-between items-start mb-8">
                                             <div className="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-blue-600 overflow-hidden">
@@ -524,7 +528,7 @@ function ProcessorDashboard() {
                                             </div>
                                         </div>
 
-                                        <h3 className="text-2xl font-black text-zinc-900 mb-6 tracking-tight uppercase">{crop.name}</h3>
+                                        <h3 className="text-2xl font-black text-zinc-900 mb-6 tracking-tight uppercase line-clamp-1">{crop.name}</h3>
 
                                         <div className="space-y-4 mt-auto">
                                             <div className="flex items-center justify-between pt-6 border-t border-zinc-50">
@@ -539,14 +543,40 @@ function ProcessorDashboard() {
                                             </div>
                                         </div>
 
-                                        <motion.button
-                                            whileHover={{ scale: 1.1 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            onClick={(e) => { e.stopPropagation(); deleteCrop(crop._id) }}
-                                            className="absolute -top-3 -right-3 bg-red-500 text-white p-3 rounded-2xl shadow-xl shadow-red-500/30 opacity-0 group-hover:opacity-100 transition-all z-20"
-                                        >
-                                            <Trash2 size={18} />
-                                        </motion.button>
+                                        <div className="absolute top-4 right-4 flex gap-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setEditingCrop(crop);
+                                                    setNewCrop({
+                                                        name: crop.name,
+                                                        quantity: String(crop.quantity || crop.stock || 0),
+                                                        price: crop.price,
+                                                        category: crop.category,
+                                                        unit: crop.unit,
+                                                        farmId: crop.farmId,
+                                                        harvestDate: new Date(crop.harvestDate).toISOString().split('T')[0],
+                                                        image: null,
+                                                        imagePreview: crop.image,
+                                                        fssaiLicense: crop.fssaiLicense || '',
+                                                        originState: crop.originState || 'Haryana',
+                                                        originCity: crop.originCity || ''
+                                                    });
+                                                    setShowAddCrop(true);
+                                                }}
+                                                className="bg-white/90 p-2.5 rounded-full text-zinc-400 hover:text-blue-600 transition-all shadow-lg border border-zinc-100 opacity-0 group-hover:opacity-100"
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
+                                                onClick={(e) => { e.stopPropagation(); deleteCrop(crop._id) }}
+                                                className="bg-red-500 text-white p-2.5 rounded-full shadow-xl shadow-red-500/30 opacity-0 group-hover:opacity-100 transition-all"
+                                            >
+                                                <Trash2 size={16} />
+                                            </motion.button>
+                                        </div>
                                     </motion.div>
                                 ))}
                             </div>
@@ -558,15 +588,15 @@ function ProcessorDashboard() {
             {/* Batch Logging Modal */}
             <AnimatePresence>
                 {showAddCrop && (
-                    <div className="fixed inset-0 z-100 flex items-center justify-center overflow-hidden">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-xl" />
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-xl" onClick={() => { setShowAddCrop(false); setEditingCrop(null); }} />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-12 rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-110"
+                            className="bg-white p-12 rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-[110]"
                         >
                             <button
-                                onClick={() => setShowAddCrop(false)}
+                                onClick={() => { setShowAddCrop(false); setEditingCrop(null); }}
                                 className="absolute top-8 right-8 p-3 bg-zinc-50 rounded-2xl text-zinc-400 hover:text-zinc-900 transition-all hover:bg-zinc-100"
                             >
                                 <X size={20} />
@@ -577,7 +607,7 @@ function ProcessorDashboard() {
                                     <Fingerprint size={12} />
                                     <span>Industrial Processing Log</span>
                                 </div>
-                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">New Product Batch</h3>
+                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">{editingCrop ? 'Update Batch' : 'New Product Batch'}</h3>
                             </div>
 
                             <div className="space-y-6">
@@ -655,10 +685,17 @@ function ProcessorDashboard() {
                                                 formData.append("originState", newCrop.originState);
                                                 formData.append("originCity", newCrop.originCity);
 
-                                                const res = await axios.post('/api/farmer/add-product', formData)
-                                                setCrops([...crops, res.data.product])
+                                                if (editingCrop) {
+                                                    formData.append("productId", editingCrop._id);
+                                                    const res = await axios.post('/api/farmer/update-product', formData)
+                                                    setCrops(crops.map(c => c._id === editingCrop._id ? res.data.product : c))
+                                                } else {
+                                                    const res = await axios.post('/api/farmer/add-product', formData)
+                                                    setCrops([...crops, res.data.product])
+                                                }
                                                 setShowAddCrop(false)
-                                                toast.success('Batch Verified & Marketplace Ready!')
+                                                setEditingCrop(null)
+                                                toast.success(editingCrop ? 'Batch Details Updated!' : 'Batch Verified & Marketplace Ready!')
                                             } catch (error) {
                                                 toast.error('Logging failed')
                                             } finally {
@@ -674,9 +711,127 @@ function ProcessorDashboard() {
                                     }}
                                 >
                                     {loading ? <Loader className="animate-spin" /> : (
-                                        <><span>Verify & List Product</span><Send className="w-5 h-5 text-blue-400" /></>
+                                        <><span>{editingCrop ? 'Update Batch' : 'Verify & List Product'}</span><Send className="w-5 h-5 text-blue-400" /></>
                                     )}
                                 </motion.button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Batch Details Modal */}
+            <AnimatePresence>
+                {selectedCrop && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden px-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/70 backdrop-blur-md"
+                            onClick={() => setSelectedCrop(null)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 30 }}
+                            className="bg-white rounded-[3rem] max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-3xl relative z-[210] overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="relative h-64 bg-zinc-100">
+                                {selectedCrop.image ? (
+                                    <img src={selectedCrop.image} alt={selectedCrop.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-zinc-300">
+                                        <Package size={80} />
+                                    </div>
+                                )}
+                                <button
+                                    onClick={() => setSelectedCrop(null)}
+                                    className="absolute top-4 right-4 bg-white/90 p-2 rounded-full text-zinc-400 hover:text-red-500 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="p-8 space-y-6">
+                                <div>
+                                    <div className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-[10px] mb-2">
+                                        <Fingerprint size={12} />
+                                        <span>Batch ID: {selectedCrop.farmId}</span>
+                                    </div>
+                                    <h2 className="text-3xl font-black text-zinc-900 tracking-tight leading-none mb-2">
+                                        {selectedCrop.name}
+                                    </h2>
+                                    <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest w-fit">
+                                        {selectedCrop.category}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6 py-6 border-y border-zinc-100">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Output Volume</p>
+                                        <p className="text-2xl font-black text-zinc-900 tracking-tighter">
+                                            {selectedCrop.quantity || selectedCrop.stock} <span className="text-sm font-bold text-zinc-400">{selectedCrop.unit}</span>
+                                        </p>
+                                    </div>
+                                    <div className="space-y-1 text-right">
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Market Price</p>
+                                        <p className="text-2xl font-black text-blue-600 tracking-tighter">
+                                            ₹{selectedCrop.price}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-zinc-50 rounded-xl flex items-center justify-center text-zinc-400">
+                                            <ShieldCheck size={18} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">FSSAI License</p>
+                                            <p className="text-zinc-700 font-bold text-sm tracking-tight">{selectedCrop.fssaiLicense || 'Not Provided'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-zinc-50 rounded-xl flex items-center justify-center text-zinc-400">
+                                            <MapPin size={18} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Processing Origin</p>
+                                            <p className="text-zinc-700 font-bold text-sm tracking-tight">{selectedCrop.originCity ? `${selectedCrop.originCity}, ` : ''}{selectedCrop.originState}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 flex gap-3">
+                                    <button
+                                        onClick={() => {
+                                            const cropToEdit = selectedCrop;
+                                            setSelectedCrop(null);
+                                            setEditingCrop(cropToEdit);
+                                            setNewCrop({
+                                                name: cropToEdit.name,
+                                                quantity: String(cropToEdit.quantity || cropToEdit.stock || 0),
+                                                price: cropToEdit.price,
+                                                category: cropToEdit.category,
+                                                unit: cropToEdit.unit,
+                                                farmId: cropToEdit.farmId,
+                                                harvestDate: new Date(cropToEdit.harvestDate).toISOString().split('T')[0],
+                                                image: null,
+                                                imagePreview: cropToEdit.image,
+                                                fssaiLicense: cropToEdit.fssaiLicense || '',
+                                                originState: cropToEdit.originState || 'Haryana',
+                                                originCity: cropToEdit.originCity || ''
+                                            });
+                                            setShowAddCrop(true);
+                                        }}
+                                        className="flex-1 bg-zinc-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-xl"
+                                    >
+                                        <Edit size={14} />
+                                        Update Details
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
