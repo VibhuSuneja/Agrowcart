@@ -4,6 +4,8 @@ import { Calendar, MapPin, Users, ArrowRight, Plus, Star, Search } from 'lucide-
 import { motion } from 'motion/react'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
+import { X, ExternalLink, Info } from 'lucide-react'
+import { AnimatePresence } from 'motion/react'
 
 const STATIC_EVENTS = [
     {
@@ -67,6 +69,7 @@ const STATIC_EVENTS = [
 export default function EventCalendar() {
     const [events, setEvents] = useState(STATIC_EVENTS)
     const [filter, setFilter] = useState<'all' | 'festival' | 'expo' | 'meeting'>('all')
+    const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
 
     const filteredEvents = events.filter(e => filter === 'all' || e.type === filter)
 
@@ -120,7 +123,10 @@ export default function EventCalendar() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="bg-white border border-zinc-100 p-5 rounded-[1.5rem] hover:shadow-lg hover:border-orange-200 transition-all group cursor-pointer"
-                            onClick={() => toast.success(`Viewing details for ${event.title}`)}
+                            onClick={() => {
+                                setSelectedEvent(event);
+                                toast.success(`Viewing info for ${event.title}`);
+                            }}
                         >
                             <div className="flex items-start gap-4">
                                 <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center shrink-0 border ${event.type === 'festival' ? 'bg-orange-50 border-orange-100 text-orange-600' :
@@ -148,6 +154,81 @@ export default function EventCalendar() {
                     ))}
                 </div>
             </div>
+
+            {/* Event Detail Modal */}
+            <AnimatePresence>
+                {selectedEvent && (
+                    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-xl"
+                            onClick={() => setSelectedEvent(null)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white rounded-[2.5rem] max-w-md w-full shadow-3xl relative z-[160] overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className={`h-32 flex items-center justify-center ${selectedEvent.type === 'festival' ? 'bg-orange-500' : 'bg-blue-600'}`}>
+                                <Calendar size={48} className="text-white opacity-20" />
+                                <div className="absolute top-6 right-6">
+                                    <button
+                                        onClick={() => setSelectedEvent(null)}
+                                        className="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="p-8">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${selectedEvent.type === 'festival' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
+                                        {selectedEvent.type}
+                                    </span>
+                                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{format(new Date(selectedEvent.date), 'PPPP')}</span>
+                                </div>
+
+                                <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-4">{selectedEvent.title}</h3>
+
+                                <div className="space-y-4 mb-8">
+                                    <div className="flex items-start gap-3">
+                                        <MapPin className="text-zinc-400 mt-1" size={18} />
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Location</p>
+                                            <p className="text-zinc-700 font-bold">{selectedEvent.location}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <Info className="text-zinc-400 mt-1" size={18} />
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Description</p>
+                                            <p className="text-zinc-600 text-sm font-medium leading-relaxed">
+                                                Join thousands of farmers and industry experts at {selectedEvent.title}. Discover modern techniques, local traditions, and networking opportunities.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        window.open(`https://www.google.com/search?q=${encodeURIComponent(selectedEvent.title + ' ' + selectedEvent.location)}`, '_blank');
+                                        setSelectedEvent(null);
+                                    }}
+                                    className="w-full bg-zinc-900 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-zinc-900/10"
+                                >
+                                    <span>Visit Official Site</span>
+                                    <ExternalLink size={16} />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }
