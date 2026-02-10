@@ -204,7 +204,7 @@ function ProcessorDashboard() {
                         >
                             Refine. <span className="text-zinc-400">Package.</span> <br />Profit.
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your value-added products and track production batches with SIH traceability.</p>
+                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your value-added products and track production batches with AgrowCart Traceability.</p>
                     </div>
 
 

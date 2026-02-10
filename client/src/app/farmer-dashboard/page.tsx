@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
-    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
-    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle, AlertTriangle
+    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Edit,
+    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle, AlertTriangle, XCircle
 } from 'lucide-react'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -92,6 +92,8 @@ function FarmerDashboard() {
     const [cropPreview, setCropPreview] = useState<string | null>(null)
     const [analysisResult, setAnalysisResult] = useState<any>(null)
     const [analyzing, setAnalyzing] = useState(false)
+    const [editingCrop, setEditingCrop] = useState<any | null>(null)
+    const [selectedCrop, setSelectedCrop] = useState<any | null>(null)
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -208,7 +210,7 @@ function FarmerDashboard() {
                             Grow. <span className="text-zinc-300 dark:text-zinc-700">Predict.</span> <br />Scale.
                         </motion.h1>
                         <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg leading-relaxed">
-                            Empowering organic farmers with AI-driven market intelligence,SIH standard traceability, and direct access to global marketplaces.
+                            Empowering organic farmers with AI-driven market intelligence, Global standard traceability, and direct access to global marketplaces.
                         </p>
                     </div>
 
@@ -542,8 +544,8 @@ function FarmerDashboard() {
                                         >
                                             <div className="flex items-center justify-between border-b border-white/5 pb-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-xl">
-                                                        {analysisResult.health === "Healthy" ? <CheckCircle size={28} /> : <AlertCircle size={28} />}
+                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl ${analysisResult.isValidCrop === false ? 'bg-red-500/20 text-red-500' : 'bg-primary/20 text-primary'}`}>
+                                                        {analysisResult.isValidCrop === false ? <XCircle size={28} /> : (analysisResult.health === "Healthy" ? <CheckCircle size={28} /> : <AlertCircle size={28} />)}
                                                     </div>
                                                     <div>
                                                         <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Detected Strain</p>
@@ -551,7 +553,7 @@ function FarmerDashboard() {
                                                     </div>
                                                 </div>
                                                 <div className="bg-white/5 px-4 py-2 rounded-xl text-primary font-black text-xs uppercase tracking-widest border border-primary/20">
-                                                    SIH #260 Compliant
+                                                    AgrowCart Certified
                                                 </div>
                                             </div>
 
@@ -565,8 +567,8 @@ function FarmerDashboard() {
 
                                                 <div className="space-y-2 text-right">
                                                     <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Market Grade</span>
-                                                    <div className="text-lg font-black text-primary">
-                                                        {analysisResult.grade} (A+)
+                                                    <div className={`text-lg font-black ${analysisResult.isValidCrop === false ? 'text-zinc-500' : 'text-primary'}`}>
+                                                        {analysisResult.grade} {analysisResult.isValidCrop !== false && analysisResult.grade === 'Premium' && '(A+)'}
                                                     </div>
                                                 </div>
                                             </div>
@@ -637,7 +639,8 @@ function FarmerDashboard() {
                                     transition={{ delay: index * 0.05 }}
                                     whileHover={{ y: -10 }}
                                     viewport={{ once: true }}
-                                    className="glass-panel p-6 rounded-[3rem] border border-white/20 dark:border-white/5 shadow-2xl shadow-zinc-900/5 group relative flex flex-col h-full hover:border-primary/40 transition-all duration-500"
+                                    className="glass-panel p-6 rounded-[3rem] border border-white/20 dark:border-white/5 shadow-2xl shadow-zinc-900/5 group relative flex flex-col h-full hover:border-primary/40 transition-all duration-500 cursor-pointer"
+                                    onClick={() => setSelectedCrop(crop)}
                                 >
                                     <div className="relative w-full aspect-square rounded-[2rem] overflow-hidden mb-6 bg-zinc-50 dark:bg-white/5">
                                         {crop.image ? (
@@ -648,17 +651,43 @@ function FarmerDashboard() {
                                             </div>
                                         )}
                                         <div className="absolute top-4 left-4 bg-primary/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">SIH Verified</span>
+                                            <span className="text-[8px] font-black text-white uppercase tracking-widest">Verified</span>
                                         </div>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteCrop(crop._id)
-                                            }}
-                                            className="absolute top-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-2.5 rounded-full text-zinc-400 hover:text-red-500 transition-all shadow-lg border border-white/20 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
+                                        <div className="absolute top-4 right-4 flex gap-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setEditingCrop(crop);
+                                                    setNewCrop({
+                                                        name: crop.name,
+                                                        quantity: String(crop.stock || 0),
+                                                        price: crop.price,
+                                                        category: crop.category,
+                                                        unit: crop.unit,
+                                                        farmId: crop.farmId,
+                                                        harvestDate: new Date(crop.harvestDate).toISOString().split('T')[0],
+                                                        image: null,
+                                                        imagePreview: crop.image,
+                                                        fssaiLicense: crop.fssaiLicense || '',
+                                                        originState: crop.originState || 'Haryana',
+                                                        originCity: crop.originCity || ''
+                                                    });
+                                                    setShowAddCrop(true);
+                                                }}
+                                                className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-2.5 rounded-full text-zinc-400 hover:text-primary transition-all shadow-lg border border-white/20 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteCrop(crop._id)
+                                                }}
+                                                className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-2.5 rounded-full text-zinc-400 hover:text-red-500 transition-all shadow-lg border border-white/20 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="flex-1 flex flex-col">
@@ -679,7 +708,7 @@ function FarmerDashboard() {
                                             <div>
                                                 <div className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Inventory</div>
                                                 <div className="text-lg font-black text-slate-900 dark:text-white leading-none tracking-tighter">
-                                                    {crop.quantity}<span className="text-[10px] ml-0.5">{crop.unit}</span>
+                                                    {crop.stock}<span className="text-[10px] ml-0.5">{crop.unit}</span>
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -706,7 +735,7 @@ function FarmerDashboard() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 bg-black/60 backdrop-blur-xl"
-                            onClick={() => setShowAddCrop(false)}
+                            onClick={() => { setShowAddCrop(false); setEditingCrop(null); }}
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -718,7 +747,7 @@ function FarmerDashboard() {
                             <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-green-400 to-emerald-600" />
 
                             <button
-                                onClick={() => setShowAddCrop(false)}
+                                onClick={() => { setShowAddCrop(false); setEditingCrop(null); }}
                                 className="absolute top-6 right-6 text-zinc-400 hover:text-red-500 transition-colors bg-zinc-50 p-2 rounded-full z-20"
                             >
                                 <X size={20} />
@@ -727,10 +756,10 @@ function FarmerDashboard() {
                             <div className="mb-6">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase tracking-widest mb-3">
                                     <Fingerprint size={10} />
-                                    <span>SIH #260 Traceability Protocol</span>
+                                    <span>AgrowCart Traceability Protocol</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-zinc-900 tracking-tighter mb-1">New Produce Log</h3>
-                                <p className="text-zinc-500 text-xs font-medium">Register your harvest on the blockchain-ready ledger.</p>
+                                <h3 className="text-2xl font-black text-zinc-900 tracking-tighter mb-1">{editingCrop ? 'Update Produce' : 'New Produce Log'}</h3>
+                                <p className="text-zinc-500 text-xs font-medium">{editingCrop ? 'Modify your existing harvest details.' : 'Register your harvest on the blockchain-ready ledger.'}</p>
                             </div>
 
                             <div className="space-y-4">
@@ -841,7 +870,7 @@ function FarmerDashboard() {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="relative group">
-                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest">Farm ID</div>
+                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest pointer-events-none">Farm ID</div>
                                         <input
                                             readOnly
                                             className="w-full bg-zinc-100 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-500 font-black text-[10px] cursor-default"
@@ -849,10 +878,10 @@ function FarmerDashboard() {
                                         />
                                     </div>
                                     <div className="relative group">
-                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest">Harvested</div>
+                                        <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest pointer-events-none">Harvested</div>
                                         <input
                                             type="date"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-800 font-bold text-[10px] outline-none"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-800 font-bold text-xs outline-none cursor-pointer"
                                             value={newCrop.harvestDate}
                                             onChange={(e) => setNewCrop({ ...newCrop, harvestDate: e.target.value })}
                                         />
@@ -884,14 +913,21 @@ function FarmerDashboard() {
                                                     formData.append("image", newCrop.image);
                                                 }
 
-                                                const res = await axios.post('/api/farmer/add-product', formData)
-                                                setCrops([...crops, res.data.product])
+                                                if (editingCrop) {
+                                                    formData.append("productId", editingCrop._id);
+                                                    const res = await axios.post('/api/farmer/update-product', formData)
+                                                    setCrops(crops.map(c => c._id === editingCrop._id ? res.data.product : c))
+                                                } else {
+                                                    const res = await axios.post('/api/farmer/add-product', formData)
+                                                    setCrops([...crops, res.data.product])
+                                                }
                                                 setShowAddCrop(false)
+                                                setEditingCrop(null)
                                                 setNewCrop({
                                                     ...newCrop, name: '', quantity: '', price: '', image: null, imagePreview: null,
                                                     farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000)
                                                 })
-                                                toast.success('Blockchain Logged & Marketplace Updated!')
+                                                toast.success(editingCrop ? 'Ledger Updated!' : 'Blockchain Logged & Marketplace Updated!')
                                             } catch (error: any) {
                                                 toast.error(error.response?.data?.message || 'Verification failed')
                                             } finally {
@@ -904,7 +940,7 @@ function FarmerDashboard() {
                                 >
                                     {loading ? <Loader className="animate-spin" /> : (
                                         <>
-                                            <span>Broadcast to Network</span>
+                                            <span>{editingCrop ? 'Update Listing' : 'Broadcast to Network'}</span>
                                             <Send className="w-4 h-4 text-green-400" />
                                         </>
                                     )}
@@ -1106,6 +1142,145 @@ function FarmerDashboard() {
                                     </div>
                                 </div>
                             )}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Selected Crop Detail Modal (Expansion) */}
+            <AnimatePresence>
+                {selectedCrop && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden px-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-xl"
+                            onClick={() => setSelectedCrop(null)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 30 }}
+                            className="bg-white dark:bg-zinc-900 rounded-[3.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-3xl relative z-[210] flex flex-col md:flex-row border border-white/20"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button
+                                onClick={() => setSelectedCrop(null)}
+                                className="absolute top-8 right-8 text-zinc-400 hover:text-red-500 transition-colors bg-zinc-50 dark:bg-white/5 p-3 rounded-full z-20 shadow-xl"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            <div className="w-full md:w-1/2 h-80 md:h-[600px] relative shrink-0">
+                                {selectedCrop.image ? (
+                                    <img src={selectedCrop.image} alt={selectedCrop.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                        <Sprout size={100} className="text-zinc-300" />
+                                    </div>
+                                )}
+                                <div className="absolute top-8 left-8 bg-primary/90 backdrop-blur-md px-4 py-2 rounded-full shadow-2xl border border-white/20">
+                                    <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Verified Harvest</span>
+                                </div>
+                            </div>
+
+                            <div className="p-8 md:p-14 flex-1 space-y-10 custom-scrollbar overflow-y-auto">
+                                <div>
+                                    <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-4">
+                                        <Fingerprint size={14} />
+                                        <span>Inventory ID: {selectedCrop.farmId}</span>
+                                    </div>
+                                    <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-none mb-4">
+                                        {selectedCrop.name}
+                                    </h2>
+                                    <div className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20 w-fit">
+                                        {selectedCrop.category}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-8 py-8 border-y border-zinc-100 dark:border-white/10">
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Available Stock</p>
+                                        <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">
+                                            {selectedCrop.stock}<span className="text-lg ml-1 font-bold text-zinc-400">{selectedCrop.unit}</span>
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2 text-right">
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Premium Rate</p>
+                                        <p className="text-3xl font-black text-primary tracking-tighter">
+                                            ₹{selectedCrop.price}<span className="text-lg ml-1 font-bold text-zinc-300">/ {selectedCrop.unit}</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-12 h-12 bg-zinc-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-zinc-400">
+                                            <Calendar size={22} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Harvested Date</p>
+                                            <p className="text-slate-700 dark:text-slate-300 font-bold">{new Date(selectedCrop.harvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-12 h-12 bg-zinc-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-zinc-400">
+                                            <MapPin size={22} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Origin Location</p>
+                                            <p className="text-slate-700 dark:text-slate-300 font-bold">{selectedCrop.originCity || 'N/A'}, {selectedCrop.originState}</p>
+                                        </div>
+                                    </div>
+                                    {selectedCrop.fssaiLicense && (
+                                        <div className="flex items-center gap-5">
+                                            <div className="w-12 h-12 bg-zinc-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-zinc-400">
+                                                <ShieldCheck size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Legal Certification</p>
+                                                <p className="text-slate-700 dark:text-slate-300 font-bold">{selectedCrop.fssaiLicense}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="pt-10 flex gap-4">
+                                    <button
+                                        onClick={() => {
+                                            const cropToEdit = selectedCrop;
+                                            setSelectedCrop(null);
+                                            setEditingCrop(cropToEdit);
+                                            setNewCrop({
+                                                name: cropToEdit.name,
+                                                quantity: String(cropToEdit.stock || 0),
+                                                price: cropToEdit.price,
+                                                category: cropToEdit.category,
+                                                unit: cropToEdit.unit,
+                                                farmId: cropToEdit.farmId,
+                                                harvestDate: new Date(cropToEdit.harvestDate).toISOString().split('T')[0],
+                                                image: null,
+                                                imagePreview: cropToEdit.image,
+                                                fssaiLicense: cropToEdit.fssaiLicense || '',
+                                                originState: cropToEdit.originState || 'Haryana',
+                                                originCity: cropToEdit.originCity || ''
+                                            });
+                                            setShowAddCrop(true);
+                                        }}
+                                        className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+                                    >
+                                        <Edit size={16} />
+                                        Update Details
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCrop(null)}
+                                        className="px-10 bg-zinc-100 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-zinc-200 transition-all border border-zinc-200 dark:border-white/10"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
                         </motion.div>
                     </div>
                 )}

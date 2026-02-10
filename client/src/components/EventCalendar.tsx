@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Calendar, MapPin, Users, ArrowRight, Plus, Star, Search } from 'lucide-react'
 import { motion } from 'motion/react'
 import { format } from 'date-fns'
+import toast from 'react-hot-toast'
 
 const STATIC_EVENTS = [
     {
@@ -99,8 +100,8 @@ export default function EventCalendar() {
                             key={f}
                             onClick={() => setFilter(f as any)}
                             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${filter === f
-                                    ? 'bg-zinc-900 text-white'
-                                    : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100'
+                                ? 'bg-zinc-900 text-white'
+                                : 'bg-zinc-50 text-zinc-500 hover:bg-zinc-100'
                                 }`}
                         >
                             {f}
@@ -116,11 +117,14 @@ export default function EventCalendar() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.05 }}
-                            className="bg-white border border-zinc-100 p-5 rounded-[1.5rem] hover:shadow-lg hover:border-orange-200 transition-all group"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="bg-white border border-zinc-100 p-5 rounded-[1.5rem] hover:shadow-lg hover:border-orange-200 transition-all group cursor-pointer"
+                            onClick={() => toast.success(`Viewing details for ${event.title}`)}
                         >
                             <div className="flex items-start gap-4">
                                 <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center shrink-0 border ${event.type === 'festival' ? 'bg-orange-50 border-orange-100 text-orange-600' :
-                                        event.type === 'expo' ? 'bg-blue-50 border-blue-100 text-blue-600' : 'bg-green-50 border-green-100 text-green-600'
+                                    event.type === 'expo' ? 'bg-blue-50 border-blue-100 text-blue-600' : 'bg-green-50 border-green-100 text-green-600'
                                     }`}>
                                     <span className="text-[10px] font-bold uppercase">{format(new Date(event.date), 'MMM')}</span>
                                     <span className="text-xl font-black leading-none">{format(new Date(event.date), 'dd')}</span>

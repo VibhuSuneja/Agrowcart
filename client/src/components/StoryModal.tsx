@@ -53,10 +53,10 @@ function StoryModal({ isOpen, onClose }: StoryModalProps) {
                                         <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400">
                                             <Rocket size={16} />
                                         </div>
-                                        <h4 className="text-lg font-bold text-white">The Spark (SIH 2024)</h4>
+                                        <h4 className="text-lg font-bold text-white">The Spark (Initial Vision)</h4>
                                     </div>
                                     <p className="text-zinc-400 leading-relaxed text-sm">
-                                        It started with a problem statement in the Smart India Hackathon: <span className="text-white font-semibold">"Value Chain for Millets"</span>.
+                                        It started with a focus on solving a critical gap in the agricultural supply chain: <span className="text-white font-semibold">"Value Chain for Millets"</span>.
                                         We saw that while millets were being promoted, the farmers were still disconnected from the real value. Middlemen ate the profits, and consumers paid a premium for questionable quality.
                                     </p>
                                 </div>

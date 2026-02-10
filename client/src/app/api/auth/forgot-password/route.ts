@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
         if (!user) {
             // To prevent email enumeration, we return success even if user not found
-            // but in SIH context, it's better to be explicit or just return success
+            // but in this context, it's better to be explicit or just return success
             return NextResponse.json({ message: "If an account exists with that email, a reset link has been sent." });
         }
 

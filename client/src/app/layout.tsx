@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | AgrowCart"
   },
   description: "Empowering farmers and buyers with AI-driven millet insights, market price predictions, and direct farm-to-fork connectivity.",
-  keywords: ["millets", "agriculture", "farmer", "marketplace", "AI", "crop analysis", "price prediction", "smart farming", "sih", "traceability"],
+  keywords: ["millets", "agriculture", "farmer", "marketplace", "AI", "crop analysis", "price prediction", "smart farming", "traceability"],
   authors: [{ name: "AgrowCart Team" }],
   creator: "AgrowCart Team",
   publisher: "AgrowCart",

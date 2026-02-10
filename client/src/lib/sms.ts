@@ -1,5 +1,5 @@
 
-// Mock SMS service for SIH presentation
+// Mock SMS service for presentation
 // In production, integrate with Twilio or Fast2SMS
 
 export const sendSMS = async (mobile: string, message: string) => {

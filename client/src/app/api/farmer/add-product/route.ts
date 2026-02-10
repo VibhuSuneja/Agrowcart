@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
             originState,
             originCity,
             batchNumber: farmId, // Using farmId as batchNumber for now
+            stock: Number(quantity) || 0
         });
 
         return NextResponse.json(

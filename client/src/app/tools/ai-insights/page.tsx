@@ -290,7 +290,7 @@ export default function AIInsightsPage() {
                             <div className="bg-white p-8 rounded-[2.4rem] h-full space-y-5">
                                 <ShieldCheck className="text-green-600" size={28} />
                                 <h3 className="text-xl font-black text-zinc-900 leading-none">Verified Protocol</h3>
-                                <p className="text-zinc-500 text-xs font-medium leading-relaxed">Cross-referenced with Agmarknet and SIH historical mandi price datasets.</p>
+                                <p className="text-zinc-500 text-xs font-medium leading-relaxed">Cross-referenced with Agmarknet and AgrowCart historical mandi price datasets.</p>
                                 <button className="flex items-center gap-2 text-[10px] font-black uppercase text-green-600 group">
                                     View Data Sources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                 </button>

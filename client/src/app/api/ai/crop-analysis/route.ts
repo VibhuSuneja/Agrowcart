@@ -17,12 +17,16 @@ export async function POST(req: NextRequest) {
 
             const base64Data = image.split(",")[1] || image;
 
-            const prompt = `Analyze this millet crop image. Identify:
-    1. Crop type
-    2. Health status (Healthy/Diseased)
+            const prompt = `Analyze this image for millet crop assessment. 
+    First, determine if the image actually contains a millet crop or any agricultural crop.
+    If it is NOT a crop image (e.g., human face, random object, highly blurred), set "isValidCrop" to false.
+    If it IS a crop image, set "isValidCrop" to true and identify:
+    1. Crop type (e.g. Foxtail Millet, Pearl Millet)
+    2. Health status (Healthy/Diseased/Pest Affected)
     3. Quality grade (Premium/Standard/Low)
-    4. Any detected issues
-    Return as JSON: { "cropType": string, "health": string, "grade": string, "issues": string[] }
+    4. Specific observations/issues
+    Return strictly as JSON: { "isValidCrop": boolean, "cropType": string, "health": string, "grade": string, "issues": string[] }
+    In "cropType", if not a crop, put "Invalid Input".
     Do not use markdown.`;
 
             const result = await model.generateContent([

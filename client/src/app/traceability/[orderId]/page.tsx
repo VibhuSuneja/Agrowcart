@@ -64,7 +64,7 @@ function TraceabilityPage() {
             status: "Ordered & Paid",
             location: order?.address?.city || "Customer Location",
             date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Oct 15, 2024",
-            desc: "Secure transaction completed via SIH-260 Payment Gateway.",
+            desc: "Secure transaction completed via AgrowCart Secure Payment Gateway.",
             icon: Warehouse,
             color: "text-amber-500",
             bg: "bg-amber-50"
@@ -166,7 +166,7 @@ function TraceabilityPage() {
                                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-green-400">
                                     <Fingerprint size={24} />
                                 </div>
-                                <h3 className="text-xl font-black tracking-tight pt-2">SIH-260 Protocol Verified</h3>
+                                <h3 className="text-xl font-black tracking-tight pt-2">AgrowCart Protocol Verified</h3>
                                 <p className="text-zinc-500 text-xs font-medium leading-relaxed">This batch has been successfully validated under the National Millet Traceability Standard.</p>
                             </div>
 
