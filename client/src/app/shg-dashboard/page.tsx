@@ -353,9 +353,62 @@ function SHGDashboard() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <DemandHeatmap />
-                    <MarketPricesWidget />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="md:col-span-1 lg:col-span-2">
+                        <DemandHeatmap />
+                    </div>
+                    <div className="md:col-span-1 lg:col-span-2">
+                        <MarketPricesWidget />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* News Feed (Resource Hub) */}
+                    <div className="lg:col-span-1 h-[500px]">
+                        <NewsCard />
+                    </div>
+
+                    {/* Member Management */}
+                    <div className="lg:col-span-2 bg-white rounded-[3.5rem] p-10 shadow-2xl shadow-green-900/5 border border-zinc-100 flex flex-col h-[500px]">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <div className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-[0.3em] text-[10px] mb-2">
+                                    <Users size={14} />
+                                    <span>Community Roster</span>
+                                </div>
+                                <h3 className="text-3xl font-black text-zinc-900 tracking-tight">SHG Members</h3>
+                            </div>
+                            <div className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-blue-100">
+                                42 Active Members
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
+                            {[
+                                { name: "Rajesh Kumar", role: "President", location: "Kolar", joined: "Oct 2023" },
+                                { name: "Sunita Devi", role: "Secretary", location: "Malur", joined: "Nov 2023" },
+                                { name: "Amit Singh", role: "Member", location: "Bangarpet", joined: "Jan 2024" },
+                                { name: "Meena Rao", role: "Member", location: "Kolar", joined: "Feb 2024" },
+                                { name: "Prakash J", role: "Member", location: "Malur", joined: "Mar 2024" }
+                            ].map((m, i) => (
+                                <div key={i} className="flex items-center justify-between p-4 bg-zinc-50 rounded-2xl border border-zinc-100 group hover:bg-white hover:shadow-lg transition-all">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-zinc-400 font-black text-xs border border-zinc-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                            {m.name.split(' ').map(n => n[0]).join('')}
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-zinc-900">{m.name}</p>
+                                            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{m.role} • {m.location}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Joined</p>
+                                        <p className="text-xs font-bold text-zinc-600">{m.joined}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 {/* Support Programs Section */}
                 <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center min-h-[400px]">
