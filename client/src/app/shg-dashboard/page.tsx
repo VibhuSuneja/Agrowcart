@@ -426,7 +426,7 @@ function SHGDashboard() {
                         {[
                             { title: 'Livelihood Mission', desc: 'Support for collective aggregation centers.', url: 'https://nrlm.gov.in/' },
                             { title: 'Mahila Kisan Mission', desc: 'Empowering women in the millet value chain.', url: 'https://nrlm.gov.in/mkspAction.do?method=showIndex' },
-                            { title: 'Village Entrepreneurship', desc: 'Grants for local millet processing units.', url: 'https://nrlm.gov.in/svepAction.do?method=showIndex' }
+                            { title: 'Village Entrepreneurship', desc: 'Grants for local millet processing units.', url: 'https://svep.nrlm.gov.in/' }
                         ].map((scheme, i) => (
                             <div
                                 key={i}
