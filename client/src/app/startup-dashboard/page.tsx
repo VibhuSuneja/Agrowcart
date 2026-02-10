@@ -217,6 +217,15 @@ function StartupDashboard() {
                                 <div className="text-xl font-black text-zinc-900">92/100</div>
                             </div>
                         </div>
+                        <motion.button
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => toast.success("Pitching your innovation to Haryana Angel Network...")}
+                            className="bg-zinc-900 text-white px-8 py-4 rounded-3xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-2xl shadow-zinc-900/20 group border border-white/10"
+                        >
+                            <Users size={16} className="text-purple-400" />
+                            <span>Connect with Investors</span>
+                        </motion.button>
                     </div>
                 </div>
 
