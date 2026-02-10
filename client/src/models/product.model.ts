@@ -42,7 +42,12 @@ const productSchema = new mongoose.Schema<IProduct>({
             "Millet Snacks",
             "Value-Added",
             "Seeds",
-            "Organic Mix"
+            "Organic Mix",
+            "Innovative Food",
+            "Agri-Tech Device",
+            "Supply Chain Solution",
+            "Bio-Packaging",
+            "Smart Farming AI"
         ],
         required: true
     },
@@ -56,7 +61,7 @@ const productSchema = new mongoose.Schema<IProduct>({
         type: String,
         required: true,
         enum: [
-            "kg", "g", "liter", "ml", "piece", "pack", "quintal"
+            "kg", "g", "liter", "ml", "piece", "pack", "quintal", "units"
         ]
 
     }
