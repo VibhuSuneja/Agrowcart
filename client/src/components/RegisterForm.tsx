@@ -1,12 +1,13 @@
 import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck } from 'lucide-react'
 import React, { useState } from 'react'
-import { motion } from "motion/react"
+import { motion, AnimatePresence } from "motion/react"
 import Image from 'next/image'
 import googleImage from "@/assets/google.png"
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
+import { LegalModal } from './LegalContent'
 
 type propType = {
   previousStep: (s: number) => void
@@ -20,6 +21,7 @@ function RegisterForm({ previousStep }: propType) {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [showLegal, setShowLegal] = useState<{ show: boolean, type: 'terms' | 'privacy' }>({ show: false, type: 'terms' })
   const router = useRouter()
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -169,7 +171,7 @@ function RegisterForm({ previousStep }: propType) {
               </div>
             </div>
             <label htmlFor="terms" className="text-[10px] text-zinc-500 cursor-pointer select-none leading-tight font-medium">
-              I agree to the <a href="/terms" target="_blank" className="text-green-600 font-bold hover:underline">Terms</a> and <a href="/privacy" target="_blank" className="text-green-600 font-bold hover:underline">Privacy Policy</a>
+              I agree to the <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowLegal({ show: true, type: 'terms' }) }} className="text-green-600 font-bold hover:underline">Terms</button> and <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowLegal({ show: true, type: 'privacy' }) }} className="text-green-600 font-bold hover:underline">Privacy Policy</button>
             </label>
           </div>
 
@@ -199,6 +201,15 @@ function RegisterForm({ previousStep }: propType) {
           </button>
         </p>
       </div>
+
+      <AnimatePresence>
+        {showLegal.show && (
+          <LegalModal
+            type={showLegal.type}
+            onClose={() => setShowLegal({ ...showLegal, show: false })}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

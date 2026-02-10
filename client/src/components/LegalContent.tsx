@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface LegalModalProps {
     type: 'terms' | 'privacy';
@@ -7,7 +8,7 @@ interface LegalModalProps {
 }
 
 export const TermsContent = () => (
-    <div className="prose prose-green max-w-none">
+    <div className="space-y-6">
         <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Terms of Service</h1>
         <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Effective Date: January 25, 2026</p>
 
@@ -97,7 +98,7 @@ export const TermsContent = () => (
 );
 
 export const PrivacyContent = () => (
-    <div className="prose prose-green max-w-none">
+    <div className="space-y-6">
         <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Privacy Protocol</h1>
         <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Last Updated: February 3, 2026 • DPDP Act 2023 Compliant</p>
 
@@ -186,3 +187,44 @@ export const PrivacyContent = () => (
         </div>
     </div>
 );
+export const LegalModal = ({ type, onClose }: LegalModalProps) => {
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={onClose}
+                className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-white w-full max-w-2xl max-h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col z-10"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute top-6 right-6 p-3 rounded-full hover:bg-zinc-100 transition-colors z-20 group"
+                >
+                    <X size={20} className="text-zinc-400 group-hover:text-green-600 transition-colors" />
+                </button>
+
+                <div className="flex-1 overflow-y-auto p-8 md:p-12 custom-scrollbar">
+                    {type === 'terms' ? <TermsContent /> : <PrivacyContent />}
+                </div>
+
+                <div className="p-8 border-t border-zinc-100 bg-zinc-50/50 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-green-900/10 hover:shadow-green-900/20 active:scale-95 text-sm"
+                    >
+                        Accept & Close
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
