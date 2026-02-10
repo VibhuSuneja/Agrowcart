@@ -705,6 +705,21 @@ function FarmerDashboard() {
                                         </h3>
 
                                         <div className="mt-auto pt-6 border-t border-zinc-100 dark:border-white/5 grid grid-cols-2 gap-4">
+                                            <div className="mb-4">
+                                                <div className="flex justify-between items-center mb-1.5">
+                                                    <div className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Supply Velocity</div>
+                                                    <div className="text-[9px] font-black text-primary uppercase tracking-widest">Active</div>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-zinc-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        whileInView={{ width: '85%' }}
+                                                        transition={{ duration: 1, delay: 0.5 }}
+                                                        className="h-full bg-linear-to-r from-primary to-emerald-400 rounded-full"
+                                                    />
+                                                </div>
+                                            </div>
+
                                             <div>
                                                 <div className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Inventory</div>
                                                 <div className="text-lg font-black text-slate-900 dark:text-white leading-none tracking-tighter">
