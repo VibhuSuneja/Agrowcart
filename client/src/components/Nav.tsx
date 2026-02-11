@@ -25,6 +25,8 @@ interface IUser {
     mobile?: string
     role: "user" | "deliveryBoy" | "admin" | "farmer" | "shg" | "buyer" | "startup" | "processor"
     image?: string
+    status?: "online" | "away" | "dnd"
+    bio?: string
 }
 function Nav({ user: propUser }: { user: any }) {
     const user = propUser || { name: 'Guest', email: '', role: 'user', image: null };
@@ -346,6 +348,9 @@ function Nav({ user: propUser }: { user: any }) {
                                 <User className="text-primary w-5 h-5" />
                             )}
                         </div>
+                        {user.status && (
+                            <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-zinc-900 shadow-sm ${user.status === 'online' ? 'bg-emerald-500' : user.status === 'away' ? 'bg-amber-500' : 'bg-red-500'}`}></div>
+                        )}
                     </motion.div>
 
                     <AnimatePresence>
@@ -359,6 +364,11 @@ function Nav({ user: propUser }: { user: any }) {
                                 <div className='flex items-center gap-4 p-4 mb-4 bg-primary/10 dark:bg-white/5 rounded-[1.5rem] border border-primary/10'>
                                     <div className='w-12 h-12 relative rounded-xl bg-white shadow-lg overflow-hidden flex items-center justify-center'>
                                         {user.image ? <Image src={user.image} alt='user' fill className='object-cover' /> : <User className="text-primary" />}
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1">
+                                        {user.status && (
+                                            <div className={`w-4 h-4 rounded-full border-2 border-white dark:border-zinc-800 shadow-sm ${user.status === 'online' ? 'bg-emerald-500' : user.status === 'away' ? 'bg-amber-500' : 'bg-red-500'}`}></div>
+                                        )}
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className='text-zinc-900 dark:text-white font-black truncate text-sm'>{user.name}</div>

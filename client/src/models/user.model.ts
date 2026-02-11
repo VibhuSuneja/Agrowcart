@@ -30,6 +30,8 @@ export interface IUser {
     },
     socketId: string | null
     isOnline: Boolean
+    status?: "online" | "away" | "dnd"
+    bio?: string
     wishlist?: mongoose.Types.ObjectId[]
     agreedToTerms?: Date
     passkeys?: IPasskeyCredential[]
@@ -91,6 +93,15 @@ const userSchema = new mongoose.Schema<IUser>({
     isOnline: {
         type: Boolean,
         default: false
+    },
+    status: {
+        type: String,
+        enum: ["online", "away", "dnd"],
+        default: "online"
+    },
+    bio: {
+        type: String,
+        default: ""
     },
     wishlist: [{
         type: mongoose.Schema.Types.ObjectId,

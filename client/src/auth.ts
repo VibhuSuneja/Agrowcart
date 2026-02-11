@@ -31,6 +31,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
+          image: user.image,
+          bio: user.bio,
+          status: user.status,
           agreedToTerms: user.agreedToTerms
         }
 
@@ -69,12 +72,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id,
           token.name = user.name,
           token.email = user.email,
-          token.role = user.role
+          token.role = user.role,
+          token.image = user.image,
+          token.bio = user.bio,
+          token.status = user.status
         // @ts-ignore
         token.agreedToTerms = user.agreedToTerms
       }
       if (trigger == "update") {
-        token.role = session.role
+        if (session.name) token.name = session.name
+        if (session.image) token.image = session.image
+        if (session.role) token.role = session.role
+        if (session.status) token.status = session.status
+        if (session.bio) token.bio = session.bio
         if (session.agreedToTerms) token.agreedToTerms = session.agreedToTerms
       }
 
@@ -87,6 +97,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           session.user.name = token.name as string,
           session.user.email = token.email as string
         session.user.role = token.role as string
+        session.user.image = token.image as string
+        session.user.bio = token.bio as string
+        session.user.status = token.status as string
         // @ts-ignore
         session.user.agreedToTerms = token.agreedToTerms as string
       }
