@@ -13,8 +13,9 @@ import Footer from '@/components/Footer'
 import Image from 'next/image'
 import NegotiationChat from '@/components/NegotiationChat'
 import CertificateModal from '@/components/CertificateModal'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, AppDispatch } from '@/redux/store'
+import { addToCart } from '@/redux/cartSlice'
 import TutorialGuide from '@/components/TutorialGuide'
 
 const BUYER_TOUR_STEPS = [
@@ -45,6 +46,7 @@ import { useRouter } from 'next/navigation'
 function BuyerMarketplace() {
     const { userData } = useSelector((state: RootState) => state.user)
     const router = useRouter()
+    const dispatch = useDispatch<AppDispatch>()
     const [products, setProducts] = useState<any[]>([])
     const [loadingProducts, setLoadingProducts] = useState(true)
     const [selectedProduct, setSelectedProduct] = useState<any>(null)
@@ -268,9 +270,19 @@ function BuyerMarketplace() {
                                             <div className="flex gap-3">
                                                 <button
                                                     onClick={() => window.location.href = `/product/${product._id}`}
-                                                    className="flex-1 bg-zinc-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-colors"
+                                                    className="flex-1 bg-zinc-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-zinc-800 transition-colors"
                                                 >
                                                     View Details
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        dispatch(addToCart({ ...product, quantity: 1 }));
+                                                        router.push('/user/cart');
+                                                        toast.success("Added to procurement list");
+                                                    }}
+                                                    className="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/10"
+                                                >
+                                                    Quick Buy
                                                 </button>
                                                 <button
                                                     onClick={() => openNegotiation(product)}

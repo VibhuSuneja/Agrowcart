@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { X, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface LegalModalProps {
@@ -215,29 +215,51 @@ export const PrivacyContent = () => (
         </section>
 
         <section className="mb-8 p-6 bg-zinc-900 rounded-3xl text-white">
-            <h2 className="text-lg font-bold mb-3">🔒 Zero-Leak Promise</h2>
-            <p className="text-zinc-400 text-[10px] leading-relaxed mb-4">
-                We do not sell raw personal or agricultural data to any third-party marketing firms. Data sharing is strictly restricted to functional partners listed above.
-            </p>
+            <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                <ShieldCheck size={20} className="text-emerald-400" />
+                Zero-Leak & Encryption Promise
+            </h2>
+            <div className="space-y-3 text-[10px] text-zinc-400 leading-relaxed">
+                <p>
+                    <strong>ENCRYPTION AT REST:</strong> All sensitive personal and agricultural data stored in our databases is encrypted using industry-standard <strong>AES-256</strong> algorithms.
+                </p>
+                <p>
+                    <strong>SECURE TRANSMISSION:</strong> Data is transmitted over <strong>TLS 1.3</strong> protected channels, ensuring end-to-end security from your device to our "Safe Harbor" servers.
+                </p>
+                <p>
+                    We do not sell raw personal data to any third-party marketing firms. Data sharing is strictly restricted to functional partners listed below.
+                </p>
+            </div>
         </section>
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">05</span>
-                Your Rights (DPDP Act)
+                Your Rights (DPDP Act, 2023)
             </h2>
             <div className="space-y-2 text-xs text-zinc-600">
+                <p>As a <strong>Data Principal</strong> under Indian law, you hold the following statutory rights:</p>
                 <p><strong>Right to Summary:</strong> Obtain a summary of processed data and identities of sharing parties.</p>
+                <p><strong>Right to Correction & Erasure:</strong> Correct inaccuracies or request permanent deletion of your account once processing purpose is fulfilled.</p>
                 <p><strong>Right to Nominate:</strong> Nominate an individual to exercise your rights in case of death or incapacity.</p>
-                <p><strong>Right to Erasure:</strong> Request permanent deletion of your account and data once processing purpose is fulfilled.</p>
-                <p><strong>Right to Grievance Redressal:</strong> Guaranteed response within 72 hours for all privacy-related queries.</p>
+                <p><strong>Right to Grievance Redressal:</strong> Guaranteed response from our Data Protection Officer within 72 hours for all privacy-related queries.</p>
             </div>
+        </section>
+
+        <section className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">06</span>
+                Cross-Border Transfers
+            </h2>
+            <p className="text-zinc-600 leading-relaxed text-xs">
+                In compliance with Section 16 of the DPDP Act, your data is primarily stored within the territory of India. Any cross-border transfers for AI processing (e.g., Google Gemini) are performed under strict data-sharing agreements that adhere to Indian security standards.
+            </p>
         </section>
 
         <div className="mt-8 pt-6 border-t border-gray-100">
             <p className="text-[8px] font-black uppercase text-zinc-400 tracking-widest mb-1">Data Protection Officer</p>
             <p className="text-xs font-bold text-zinc-900">Vibhu Suneja (Founder)</p>
-            <p className="text-xs text-green-600 font-bold">vibhusun01@gmail.com</p>
+            <p className="text-xs text-green-600 font-bold">vibhusun01@gmail.com • Registered DPO under DPDP 2023</p>
         </div>
     </div>
 );

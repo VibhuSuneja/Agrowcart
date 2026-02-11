@@ -261,13 +261,25 @@ function ProductDetailPage() {
                                         <Plus size={20} />
                                     </button>
                                 </div>
-                                <button
-                                    onClick={() => !cartItem && dispatch(addToCart({ ...product, quantity: 1 }))}
-                                    className="flex-1 bg-zinc-900 text-white py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-600 shadow-2xl shadow-zinc-900/20 transition-all"
-                                >
-                                    <ShoppingCart size={20} />
-                                    <span>{cartItem ? 'In Your Bag' : 'Add to Basket'}</span>
-                                </button>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                                    <button
+                                        onClick={() => !cartItem && dispatch(addToCart({ ...product, quantity: 1 }))}
+                                        className={`flex-1 ${cartItem ? 'bg-green-600' : 'bg-zinc-900'} text-white py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-600 shadow-2xl shadow-zinc-900/20 transition-all`}
+                                    >
+                                        <ShoppingCart size={20} />
+                                        <span>{cartItem ? 'In Your Bag' : 'Add to Basket'}</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (!cartItem) dispatch(addToCart({ ...product, quantity: 1 }));
+                                            router.push('/user/checkout');
+                                        }}
+                                        className="flex-1 bg-blue-600 text-white py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-blue-700 shadow-2xl shadow-blue-500/20 transition-all"
+                                    >
+                                        <Zap size={20} />
+                                        <span>Instant Buy</span>
+                                    </button>
+                                </div>
                                 <button
                                     onClick={() => {
                                         if (!userData) {
@@ -284,7 +296,7 @@ function ProductDetailPage() {
                                     className="w-full bg-white border-2 border-zinc-900 text-zinc-900 py-6 px-10 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-zinc-50 transition-all"
                                 >
                                     <MessageSquare size={20} />
-                                    <span>Bulk Inquiry</span>
+                                    <span>Bulk Inquiry (Negotiate)</span>
                                 </button>
                             </motion.div>
                         )}
