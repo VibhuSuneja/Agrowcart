@@ -55,7 +55,9 @@ export async function POST(req: NextRequest) {
         const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo
 
         const newCredential = {
-            credentialID: Buffer.from(credential.id).toString('base64url'),
+            // v13: credential.id is ALREADY a Base64URLString — do NOT re-encode
+            credentialID: credential.id,
+            // v13: credential.publicKey is a Uint8Array — convert to base64url for storage
             credentialPublicKey: Buffer.from(credential.publicKey).toString('base64url'),
             counter: credential.counter,
             transports: body.response.transports || [],
