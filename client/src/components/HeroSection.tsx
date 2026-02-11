@@ -35,7 +35,7 @@ function HeroSection() {
       icon: <Truck className="w-12 h-12 text-emerald-400" />,
       tagline: "LOGISTICS REIMAGINED",
       title: "Efficient Farm-to-Fork Value Chain",
-      subtitle: "Revolutionizing how nutritional millets reach the masses with fair pricing and real-time traceability.",
+      subtitle: "Revolutionizing how nutritional Shree Anna (Millets) reach the masses with fair pricing and real-time traceability.",
       btnText: "Track Freshness",
       action: () => router.push('/user/my-orders'),
       bg: "https://images.unsplash.com/photo-1683553170878-049f180627b0?q=80&w=1450&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -45,7 +45,7 @@ function HeroSection() {
       icon: <Smartphone className="w-12 h-12 text-lime-400" />,
       tagline: "DIGITAL EMPOWERMENT",
       title: "Empowering Rural Farmers with AI",
-      subtitle: "Leveraging technology for better crop analysis and market intelligence to double farmer incomes.",
+      subtitle: "Leveraging technology for better Shree Anna crop analysis and market intelligence to double farmer incomes.",
       btnText: "Join Movement",
       action: () => router.push('/register'),
       bg: "https://plus.unsplash.com/premium_photo-1663091378026-7bee6e1c7247?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

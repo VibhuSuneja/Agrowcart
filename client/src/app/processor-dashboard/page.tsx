@@ -23,6 +23,7 @@ import SchemesCard from '@/components/SchemesCard'
 import MarketPricesWidget from '@/components/MarketPricesWidget'
 import Nav from '@/components/Nav'
 import TutorialGuide from '@/components/TutorialGuide'
+import { useTranslations } from '@/i18n/LanguageProvider'
 
 import toast from 'react-hot-toast'
 import { CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react'
@@ -93,6 +94,8 @@ function ProcessorDashboard() {
     const [analyzing, setAnalyzing] = useState(false)
     const [editingCrop, setEditingCrop] = useState<any | null>(null)
     const [selectedCrop, setSelectedCrop] = useState<any | null>(null)
+    const [isAuthentic, setIsAuthentic] = useState(false)
+    const t = useTranslations('imageAuthenticity')
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -146,8 +149,23 @@ function ProcessorDashboard() {
     const handleCropImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            setCropImage(file)
-            setCropPreview(URL.createObjectURL(file))
+            // Technical Validation: Size check
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error(t('errorTooLarge'))
+                return
+            }
+
+            const img = new Image()
+            img.src = URL.createObjectURL(file)
+            img.onload = () => {
+                // Technical Validation: Resolution check
+                if (img.width < 800 || img.height < 600) {
+                    toast.error(t('errorLowRes'))
+                    return
+                }
+                setCropImage(file)
+                setCropPreview(URL.createObjectURL(file))
+            }
         }
     }
 
@@ -663,6 +681,76 @@ function ProcessorDashboard() {
                                             onChange={(e) => setNewCrop({ ...newCrop, originCity: e.target.value })}
                                         />
                                     </div>
+
+                                    {/* Image Upload for Batch */}
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-5">Product Presentation Page</label>
+                                        <label htmlFor="proc-batch-image" className="cursor-pointer block">
+                                            <div className="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[1.5rem] p-6 text-center hover:border-blue-500 transition-all flex flex-col items-center justify-center min-h-[120px]">
+                                                {newCrop.imagePreview ? (
+                                                    <div className="relative w-full h-32">
+                                                        <img src={newCrop.imagePreview} className="w-full h-full object-cover rounded-xl" alt="Preview" />
+                                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-xl">
+                                                            <Upload className="text-white" size={24} />
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <Upload className="text-zinc-300 mb-2" size={24} />
+                                                        <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Upload Batch Packaging/Product Photo</p>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="proc-batch-image"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    if (file.size > 5 * 1024 * 1024) {
+                                                        toast.error(t('errorTooLarge'));
+                                                        return;
+                                                    }
+                                                    const img = new Image();
+                                                    img.src = URL.createObjectURL(file);
+                                                    img.onload = () => {
+                                                        if (img.width < 800 || img.height < 600) {
+                                                            toast.error(t('errorLowRes'));
+                                                            return;
+                                                        }
+                                                        setNewCrop({
+                                                            ...newCrop,
+                                                            image: file,
+                                                            imagePreview: URL.createObjectURL(file)
+                                                        });
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    </div>
+
+                                    {/* Authenticity Declaration */}
+                                    <div className="p-6 bg-blue-50 rounded-[1.5rem] border border-blue-100 space-y-4">
+                                        <div className="flex gap-4">
+                                            <input
+                                                type="checkbox"
+                                                id="proc-authenticity-check"
+                                                className="mt-1 w-5 h-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                checked={isAuthentic}
+                                                onChange={(e) => setIsAuthentic(e.target.checked)}
+                                            />
+                                            <label htmlFor="proc-authenticity-check" className="text-[11px] font-bold text-zinc-600 cursor-pointer leading-tight">
+                                                {t('declarationText')}
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-[10px] text-blue-700 font-black uppercase tracking-widest pl-9">
+                                            <Info size={14} />
+                                            <span>{t('requirements')}</span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <motion.button
@@ -670,6 +758,10 @@ function ProcessorDashboard() {
                                     className="w-full bg-zinc-900 text-white font-black uppercase py-6 rounded-[1.5rem] flex items-center justify-center gap-4 transition-all hover:bg-blue-600"
                                     disabled={loading}
                                     onClick={async () => {
+                                        if (!isAuthentic && !editingCrop) {
+                                            toast.error(t('errorNoDeclaration'));
+                                            return;
+                                        }
                                         if (newCrop.name && newCrop.quantity && newCrop.price && newCrop.fssaiLicense) {
                                             try {
                                                 setLoading(true)
@@ -684,6 +776,9 @@ function ProcessorDashboard() {
                                                 formData.append("fssaiLicense", newCrop.fssaiLicense);
                                                 formData.append("originState", newCrop.originState);
                                                 formData.append("originCity", newCrop.originCity);
+                                                if (newCrop.image) {
+                                                    formData.append("image", newCrop.image);
+                                                }
 
                                                 if (editingCrop) {
                                                     formData.append("productId", editingCrop._id);
@@ -695,6 +790,7 @@ function ProcessorDashboard() {
                                                 }
                                                 setShowAddCrop(false)
                                                 setEditingCrop(null)
+                                                setIsAuthentic(false)
                                                 toast.success(editingCrop ? 'Batch Details Updated!' : 'Batch Verified & Marketplace Ready!')
                                             } catch (error) {
                                                 toast.error('Logging failed')

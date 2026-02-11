@@ -23,6 +23,7 @@ import SchemesCard from '@/components/SchemesCard'
 import MarketPricesWidget from '@/components/MarketPricesWidget'
 import Nav from '@/components/Nav'
 import TutorialGuide from '@/components/TutorialGuide'
+import { useTranslations } from '@/i18n/LanguageProvider'
 
 import toast from 'react-hot-toast'
 import { CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react'
@@ -93,6 +94,8 @@ function SHGDashboard() {
     const [cropPreview, setCropPreview] = useState<string | null>(null)
     const [analysisResult, setAnalysisResult] = useState<any>(null)
     const [analyzing, setAnalyzing] = useState(false)
+    const [isAuthentic, setIsAuthentic] = useState(false)
+    const t = useTranslations('imageAuthenticity')
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -146,8 +149,23 @@ function SHGDashboard() {
     const handleCropImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            setCropImage(file)
-            setCropPreview(URL.createObjectURL(file))
+            // Technical Validation: Size check
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error(t('errorTooLarge'))
+                return
+            }
+
+            const img = new Image()
+            img.src = URL.createObjectURL(file)
+            img.onload = () => {
+                // Technical Validation: Resolution check
+                if (img.width < 800 || img.height < 600) {
+                    toast.error(t('errorLowRes'))
+                    return
+                }
+                setCropImage(file)
+                setCropPreview(URL.createObjectURL(file))
+            }
         }
     }
 
@@ -741,11 +759,26 @@ function SHGDashboard() {
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0]
                                                 if (file) {
-                                                    setNewCrop({
-                                                        ...newCrop,
-                                                        image: file,
-                                                        imagePreview: URL.createObjectURL(file)
-                                                    })
+                                                    // Technical Validation: Size check
+                                                    if (file.size > 5 * 1024 * 1024) {
+                                                        toast.error(t('errorTooLarge'))
+                                                        return
+                                                    }
+
+                                                    const img = new Image()
+                                                    img.src = URL.createObjectURL(file)
+                                                    img.onload = () => {
+                                                        // Technical Validation: Resolution check
+                                                        if (img.width < 800 || img.height < 600) {
+                                                            toast.error(t('errorLowRes'))
+                                                            return
+                                                        }
+                                                        setNewCrop({
+                                                            ...newCrop,
+                                                            image: file,
+                                                            imagePreview: URL.createObjectURL(file)
+                                                        })
+                                                    }
                                                 }
                                             }}
                                         />
@@ -818,12 +851,36 @@ function SHGDashboard() {
                                     </div>
                                 </div>
 
+                                {/* Authenticity Declaration Block */}
+                                <div className="p-6 bg-amber-50 rounded-[1.5rem] border border-amber-100 space-y-4">
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="checkbox"
+                                            id="shg-authenticity-check"
+                                            className="mt-1 w-5 h-5 rounded border-zinc-300 text-green-600 focus:ring-green-500 cursor-pointer"
+                                            checked={isAuthentic}
+                                            onChange={(e) => setIsAuthentic(e.target.checked)}
+                                        />
+                                        <label htmlFor="shg-authenticity-check" className="text-[11px] font-bold text-zinc-600 cursor-pointer leading-tight">
+                                            {t('declarationText')}
+                                        </label>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[10px] text-amber-700 font-black uppercase tracking-widest pl-9">
+                                        <Info size={14} />
+                                        <span>{t('requirements')}</span>
+                                    </div>
+                                </div>
+
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-6 rounded-[1.5rem] shadow-2xl flex items-center justify-center gap-4 mt-8 transition-all hover:bg-green-600"
                                     disabled={loading}
                                     onClick={async () => {
+                                        if (!isAuthentic) {
+                                            toast.error(t('errorNoDeclaration'));
+                                            return;
+                                        }
                                         if (newCrop.name && newCrop.quantity && newCrop.price) {
                                             try {
                                                 setLoading(true)
@@ -840,6 +897,7 @@ function SHGDashboard() {
                                                 const res = await axios.post('/api/farmer/add-product', formData)
                                                 setCrops([...crops, res.data.product])
                                                 setShowAddCrop(false)
+                                                setIsAuthentic(false)
                                                 toast.success('Collective Record Logged!')
                                             } catch (error: any) {
                                                 toast.error('Logging failed')

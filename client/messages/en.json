@@ -1,6 +1,6 @@
 {
     "common": {
-        "appName": "Millets Marketplace",
+        "appName": "AgrowCart: Shree Anna Marketplace",
         "welcomeBack": "Welcome Back",
         "login": "Login",
         "signup": "Sign Up",
@@ -45,7 +45,7 @@
     },
     "homepage": {
         "hero": {
-            "title": "India's First Millet-Focused Marketplace",
+            "title": "India's First Shree Anna Marketplace",
             "subtitle": "Connecting farmers directly to health-conscious consumers",
             "description": "Discover nutritious, climate-resilient millets while empowering local farmers",
             "shopNow": "Shop Now",
@@ -268,5 +268,19 @@
         "profileUpdated": "Profile updated",
         "messageSent": "Message sent",
         "saved": "Saved successfully"
+    },
+    "imageAuthenticity": {
+        "declarationLabel": "Authenticity Declaration",
+        "declarationText": "I hereby declare that this photo is an original, unedited, and real representation of my actual crop produce. I confirm it hasn't been modified using any editing software.",
+        "requirements": "Minimum requirement: Size (at least 800x600 pixels), clear visibility, and no watermarks.",
+        "errorLowRes": "Image resolution is too low. Please upload a clearer photo (min 800x600).",
+        "errorNoDeclaration": "Please accept the authenticity declaration to proceed.",
+        "errorTooLarge": "File size is too large. Max limit is 5MB."
+    },
+    "procurementNorms": {
+        "title": "Government Mandi Requirements",
+        "docs": "Mandatory Documents: Aadhaar, Land Records (Khasra/Girdawari), and Bank Passbook.",
+        "edibility": "Edibility Standards (FSSAI 2023): Moisture < 13%, Extraneous Matter < 2%.",
+        "procedure": "Procurement Procedure: Register on State Govt portal, verification by PACS/FPO, and MSP-based direct bank transfer."
     }
 }

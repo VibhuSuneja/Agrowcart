@@ -164,13 +164,23 @@ function GlobalChatBot() {
                                             <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping absolute"></span>
                                             <span className="w-2 h-2 bg-emerald-400 rounded-full relative"></span>
                                         </div>
-                                        <span className="text-[10px] uppercase tracking-[0.2em] font-black text-emerald-200/80">Active AI</span>
+                                        <span className="text-[10px] uppercase tracking-[0.2em] font-black text-emerald-200/80">AI Intermediary</span>
                                     </div>
                                 </div>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="relative z-10 p-2 hover:bg-white/10 rounded-full transition-all group">
-                                <X size={20} className="group-hover:rotate-90 transition-transform" />
-                            </button>
+                            <div className="flex items-center gap-2 relative z-10">
+                                <button
+                                    onClick={() => window.open('mailto:vibhusun01@gmail.com?subject=Deepfake/SGI Takedown Request', '_blank')}
+                                    className="p-2 hover:bg-red-500/20 rounded-lg transition-all group/report flex items-center gap-2 border border-white/10"
+                                    title="Report Deepfake (3-Hour Takedown)"
+                                >
+                                    <MinusCircle size={16} className="text-white/60 group-hover/report:text-red-400" />
+                                    <span className="text-[8px] font-black uppercase tracking-widest text-white/40 group-hover/report:text-red-200 hidden md:block">Report</span>
+                                </button>
+                                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-all group">
+                                    <X size={20} className="group-hover:rotate-90 transition-transform" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Messages Area */}

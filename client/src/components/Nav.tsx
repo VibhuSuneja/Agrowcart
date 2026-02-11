@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -269,7 +269,13 @@ function Nav({ user: propUser }: { user: any }) {
                         <span className={`${orbitron.className} text-zinc-800 dark:text-white font-black text-lg md:text-xl tracking-tight group-hover:tracking-normal transition-all duration-300`}>
                             Agro<span className="relative">w<TrendingUp className="absolute -top-3.5 left-0 w-4 h-4 text-primary" /></span><span className="text-primary">Cart</span>
                         </span>
-                        <span className="text-[10px] text-zinc-400 font-bold tracking-widest uppercase hidden sm:block">Modern Organic Precision</span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] text-zinc-400 font-bold tracking-widest uppercase hidden sm:block">Modern Organic Precision</span>
+                            <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded-md">
+                                <Sparkles size={8} className="text-amber-500 animate-pulse" />
+                                <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest">Shree Anna</span>
+                            </div>
+                        </div>
                     </div>
                 </Link>
             </div>

@@ -23,6 +23,7 @@ import SchemesCard from '@/components/SchemesCard'
 import MarketPricesWidget from '@/components/MarketPricesWidget'
 import Nav from '@/components/Nav'
 import TutorialGuide from '@/components/TutorialGuide'
+import { useTranslations } from '@/i18n/LanguageProvider'
 
 import toast from 'react-hot-toast'
 
@@ -94,6 +95,9 @@ function FarmerDashboard() {
     const [analyzing, setAnalyzing] = useState(false)
     const [editingCrop, setEditingCrop] = useState<any | null>(null)
     const [selectedCrop, setSelectedCrop] = useState<any | null>(null)
+    const [isAuthentic, setIsAuthentic] = useState(false)
+    const t = useTranslations('imageAuthenticity')
+    const tf = useTranslations('farmerDashboard')
 
     const handleVoiceCommand = (command: string) => {
         const cmd = command.toLowerCase()
@@ -149,8 +153,23 @@ function FarmerDashboard() {
     const handleCropImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            setCropImage(file)
-            setCropPreview(URL.createObjectURL(file))
+            // Technical Validation: Size check
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error(t('errorTooLarge'))
+                return
+            }
+
+            const img = new Image()
+            img.src = URL.createObjectURL(file)
+            img.onload = () => {
+                // Technical Validation: Resolution check (Min 800x600 as per legal/business requirement)
+                if (img.width < 800 || img.height < 600) {
+                    toast.error(t('errorLowRes'))
+                    return
+                }
+                setCropImage(file)
+                setCropPreview(URL.createObjectURL(file))
+            }
         }
     }
 
@@ -307,9 +326,15 @@ function FarmerDashboard() {
                                         className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center p-10 bg-slate-950 rounded-[3rem] border border-white/10 shadow-3xl"
                                     >
                                         <div className="space-y-8">
-                                            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-primary/20">
-                                                <ChartIcon size={12} />
-                                                <span>Simulation Outcome</span>
+                                            <div className="flex flex-col gap-2">
+                                                <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-primary/20 w-fit">
+                                                    <ChartIcon size={12} />
+                                                    <span>Simulation Outcome</span>
+                                                </div>
+                                                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 text-indigo-400 rounded-full text-[9px] font-black uppercase tracking-[0.3em] border border-indigo-500/20 w-fit">
+                                                    <Sparkles size={10} />
+                                                    <span>AI-Generated Insight</span>
+                                                </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.3em]">Estimated Market Rate</div>
@@ -551,6 +576,10 @@ function FarmerDashboard() {
                                                         <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Detected Strain</p>
                                                         <p className="text-xl font-black text-white tracking-tight">{analysisResult.cropType}</p>
                                                     </div>
+                                                </div>
+                                                <div className="bg-indigo-500/20 px-3 py-1.5 rounded-lg text-indigo-400 font-black text-[9px] uppercase tracking-[0.2em] border border-indigo-500/30 flex items-center gap-2">
+                                                    <Sparkles size={12} />
+                                                    AI-Generated Insight
                                                 </div>
                                                 <div className="bg-white/5 px-4 py-2 rounded-xl text-primary font-black text-xs uppercase tracking-widest border border-primary/20">
                                                     AgrowCart Certified
@@ -800,11 +829,26 @@ function FarmerDashboard() {
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0]
                                                 if (file) {
-                                                    setNewCrop({
-                                                        ...newCrop,
-                                                        image: file,
-                                                        imagePreview: URL.createObjectURL(file)
-                                                    })
+                                                    // Technical Validation: Size check
+                                                    if (file.size > 5 * 1024 * 1024) {
+                                                        toast.error(t('errorTooLarge'))
+                                                        return
+                                                    }
+
+                                                    const img = new Image()
+                                                    img.src = URL.createObjectURL(file)
+                                                    img.onload = () => {
+                                                        // Technical Validation: Resolution check
+                                                        if (img.width < 800 || img.height < 600) {
+                                                            toast.error(t('errorLowRes'))
+                                                            return
+                                                        }
+                                                        setNewCrop({
+                                                            ...newCrop,
+                                                            image: file,
+                                                            imagePreview: URL.createObjectURL(file)
+                                                        })
+                                                    }
                                                 }
                                             }}
                                         />
@@ -903,12 +947,37 @@ function FarmerDashboard() {
                                     </div>
                                 </div>
 
+                                {/* Authenticity Declaration Block */}
+                                <div className="p-5 bg-amber-50/50 dark:bg-amber-500/5 rounded-2xl border border-amber-100 dark:border-amber-500/10 space-y-3">
+                                    <div className="flex gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id="authenticity-check"
+                                            className="mt-1 w-4 h-4 rounded border-zinc-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                                            checked={isAuthentic}
+                                            onChange={(e) => setIsAuthentic(e.target.checked)}
+                                        />
+                                        <label htmlFor="authenticity-check" className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 cursor-pointer leading-tight">
+                                            {t('declarationText')}
+                                        </label>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[10px] text-amber-700 dark:text-amber-500 font-extrabold uppercase tracking-widest pl-7">
+                                        <Info size={12} />
+                                        <span>{t('requirements')}</span>
+                                    </div>
+                                </div>
+
                                 <motion.button
                                     whileHover={{ scale: 1.01 }}
                                     whileTap={{ scale: 0.99 }}
                                     className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-4 rounded-2xl shadow-xl shadow-zinc-900/20 flex items-center justify-center gap-3 mt-4 transition-all hover:bg-green-600 border border-white/10 text-xs"
                                     disabled={loading}
                                     onClick={async () => {
+                                        if (!isAuthentic && !editingCrop) {
+                                            toast.error(t('errorNoDeclaration'));
+                                            return;
+                                        }
+
                                         if (newCrop.name && newCrop.quantity && newCrop.price) {
                                             try {
                                                 setLoading(true)
@@ -938,6 +1007,7 @@ function FarmerDashboard() {
                                                 }
                                                 setShowAddCrop(false)
                                                 setEditingCrop(null)
+                                                setIsAuthentic(false) // Reset
                                                 setNewCrop({
                                                     ...newCrop, name: '', quantity: '', price: '', image: null, imagePreview: null,
                                                     farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000)

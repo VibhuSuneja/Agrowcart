@@ -10,7 +10,7 @@ interface LegalModalProps {
 export const TermsContent = () => (
     <div className="space-y-6">
         <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Terms of Service</h1>
-        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Effective Date: January 25, 2026</p>
+        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Effective Date: February 11, 2026 • AI Compliance Update</p>
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -24,21 +24,46 @@ export const TermsContent = () => (
 
         <section className="mb-8 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">02</span>
-                AI Predictions & Liability Shield
+                <span className="w-6 h-6 rounded bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">02</span>
+                AI Governance & SGI Disclosure
             </h2>
-            <p className="text-zinc-600 leading-relaxed text-xs mb-3">
-                AgrowCart provide AI-driven market price simulations, demand heatmaps, and crop health analysis.
-            </p>
-            <div className="bg-white p-4 rounded-xl border-l-4 border-red-500 text-[10px] font-medium text-zinc-700 space-y-2 shadow-sm">
-                <p><strong>CRITICAL NOTICE:</strong> AI outputs are probabilistic simulations based on historical data. They do not constitute financial or legal advice.</p>
-                <p>AgrowCart shall NOT be liable for any financial losses or crop failure resulting from reliance on AI-generated insights.</p>
+            <div className="space-y-4 text-xs text-zinc-600 leading-relaxed">
+                <p>
+                    In compliance with the <strong>IndiaAI Governance Guidelines 2025</strong> and the <strong>IT (Amendment) Rules 2026</strong>, AgrowCart implements strict oversight for AI-driven insights and Synthetically Generated Information (SGI).
+                </p>
+                <div className="bg-white p-4 rounded-xl border-l-4 border-indigo-500 shadow-sm space-y-2">
+                    <p><strong>SIMULATION TRANSPARENCY:</strong> All price predictions and heatmaps are AI-generated probabilistic simulations. They are clearly labeled as "AI Insights" and do not constitute financial guarantees.</p>
+                    <p><strong>SGI LABELING:</strong> Any content (images/text) generated or significantly altered by AI must be disclosed. Users are prohibited from removing mandatory metadata/watermarks from AI-generated outputs.</p>
+                </div>
+                <div className="bg-red-50 p-4 rounded-xl border border-red-100 text-[10px] font-bold text-red-700 uppercase tracking-tight">
+                    DEEPFAKE & 3-HOUR TAKEDOWN: As per Feb 2026 regulations, any reported deepfake or impersonation content will be removed within a 3-hour window. Violations of SGI disclosure mandates will result in immediate safe-harbor forfeiture and account termination.
+                </div>
+            </div>
+        </section>
+
+        <section className="mb-8 overflow-hidden">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-amber-100 text-amber-700 flex items-center justify-center text-[10px]">03</span>
+                Digital Asset Authenticity
+            </h2>
+            <div className="bg-amber-50/50 p-6 rounded-2xl border border-amber-100 space-y-4">
+                <p className="text-zinc-600 leading-relaxed text-xs">
+                    All visual representations (photos/videos) of crop produce uploaded to the Platform must be <strong>original, genuine, and unmodified</strong>. By uploading an image, the User warrants that:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 text-[11px] text-zinc-700 font-medium">
+                    <li>The photo is an actual representation of the item being listed.</li>
+                    <li>No digital filters, AI enhancements, or editing software (Photoshop, etc.) have been used.</li>
+                    <li>The image meets technical requirements (Min 800x600 resolution).</li>
+                </ul>
+                <div className="bg-white p-4 rounded-xl border-l-4 border-amber-500 text-[10px] font-medium text-zinc-700">
+                    <strong>FORGERY PENALTY:</strong> Uploading fraudulent or modified images to deceive buyers is a violation of the Consumer Protection Act, 2019 and will result in immediate permanent account termination and forfeiture of pending payouts.
+                </div>
             </div>
         </section>
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">03</span>
+                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">04</span>
                 Marketplace & Transactions
             </h2>
             <p className="text-zinc-600 leading-relaxed text-xs">
@@ -48,7 +73,7 @@ export const TermsContent = () => (
 
         <section className="mb-8 bg-red-50 p-6 rounded-2xl border border-red-100">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">04</span>
+                <span className="w-6 h-6 rounded bg-red-100 text-red-700 flex items-center justify-center text-[10px]">05</span>
                 Intellectual Property & Anti-Cloning
             </h2>
             <div className="space-y-3 text-xs text-zinc-700">
@@ -75,7 +100,37 @@ export const TermsContent = () => (
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">05</span>
+                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">06</span>
+                Agricultural Procurement & Edibility Standards
+            </h2>
+            <div className="space-y-4 text-xs text-zinc-600 leading-relaxed">
+                <p>
+                    Farmers selling produce through AgrowCart-facilitated Mandi channels must comply with the <strong>Regulated Market Committee (APMC)</strong> norms and <strong>FSSAI 2023</strong> standards for "Nutri-Cereals".
+                </p>
+                <div className="bg-zinc-50 p-5 rounded-2xl border border-zinc-100 space-y-3">
+                    <p className="font-bold text-zinc-800 text-[10px] uppercase tracking-widest">Mandatory Documentation (Proof of Origin)</p>
+                    <ul className="list-disc pl-5 space-y-1 text-[11px]">
+                        <li><strong>Identity:</strong> Valid Aadhaar Card linked to the registered mobile number.</li>
+                        <li><strong>Land Records:</strong> Documentation of land ownership (Khasra/Girdawari) or registered lease.</li>
+                        <li><strong>Financial:</strong> Bank Passbook/Statement for direct MSP (Minimum Support Price) transfers.</li>
+                        <li><strong>Edibility Proof:</strong> Quality Testing Report from FSSAI-notified labs (for large batches/procurement).</li>
+                    </ul>
+                </div>
+                <div className="bg-green-50/50 p-5 rounded-2xl border border-green-100 space-y-3">
+                    <p className="font-bold text-green-800 text-[10px] uppercase tracking-widest">Edibility & Technical Quality (FSSAI 2023)</p>
+                    <p>All Millet produce must meet the 8 key quality parameters:</p>
+                    <ul className="list-disc pl-5 space-y-1 text-[11px]">
+                        <li><strong>Moisture:</strong> Maximum 13% m/m (Prevents mold/toxins).</li>
+                        <li><strong>Purity:</strong> Extraneous matter (sand, stones) must not exceed 2%.</li>
+                        <li><strong>Safety:</strong> Zero presence of prohibited pesticides and weevilled grains within tolerance limits.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section className="mb-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded bg-green-100 text-green-700 flex items-center justify-center text-[10px]">07</span>
                 Binding Arbitration
             </h2>
             <p className="text-zinc-600 leading-relaxed text-xs mb-3">
@@ -100,7 +155,7 @@ export const TermsContent = () => (
 export const PrivacyContent = () => (
     <div className="space-y-6">
         <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Privacy Protocol</h1>
-        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Last Updated: February 3, 2026 • DPDP Act 2023 Compliant</p>
+        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-6 border-b pb-4">Last Updated: February 11, 2026 • DPDP Rules 2025 Compliant</p>
 
         <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -108,7 +163,7 @@ export const PrivacyContent = () => (
                 Data Stewardship
             </h2>
             <p className="text-zinc-600 leading-relaxed text-xs">
-                We are committed to processing your agricultural and personal data with absolute transparency and for specified, lawful purposes only, in compliance with India&apos;s Digital Personal Data Protection Act (DPDP) 2023.
+                In accordance with the <strong>DPDP Rules 2025</strong>, AgrowCart processes your agricultural and personal data with explicit, informed, and granular consent. You may manage your consent through authorized <strong>Consent Managers</strong> as per Rule 4 of the DPDP Rules.
             </p>
         </section>
 
@@ -173,10 +228,10 @@ export const PrivacyContent = () => (
                 Your Rights (DPDP Act)
             </h2>
             <div className="space-y-2 text-xs text-zinc-600">
-                <p><strong>Right to Erasure:</strong> Request deletion of your account and all associated data by emailing vibhusun01@gmail.com</p>
-                <p><strong>Right to Correction:</strong> Update your personal information anytime via your profile settings</p>
-                <p><strong>Right to Data Portability:</strong> Request a copy of your data in machine-readable format (JSON)</p>
-                <p><strong>Right to Withdraw Consent:</strong> Opt out of optional data processing at any time</p>
+                <p><strong>Right to Summary:</strong> Obtain a summary of processed data and identities of sharing parties.</p>
+                <p><strong>Right to Nominate:</strong> Nominate an individual to exercise your rights in case of death or incapacity.</p>
+                <p><strong>Right to Erasure:</strong> Request permanent deletion of your account and data once processing purpose is fulfilled.</p>
+                <p><strong>Right to Grievance Redressal:</strong> Guaranteed response within 72 hours for all privacy-related queries.</p>
             </div>
         </section>
 
