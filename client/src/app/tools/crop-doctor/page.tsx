@@ -160,10 +160,7 @@ export default function CropDoctorPage() {
                                     </a>
                                 </div>
 
-                                <div className="text-center pt-4 border-t border-zinc-100">
-                                    <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Analysis Verified By</p>
-                                    <p className="text-xs font-bold text-zinc-600">Dr. Aryan Sharma • Senior AI Specialist</p>
-                                </div>
+
                             </motion.div>
                         )}
                     </div>

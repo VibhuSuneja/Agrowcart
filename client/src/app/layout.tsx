@@ -27,7 +27,6 @@ import CookieConsent from "@/components/CookieConsent";
 import NetworkStatus from "@/components/NetworkStatus";
 import BottomNav from "@/components/BottomNav";
 import { orbitron, jakarta } from "@/lib/fonts";
-import PWALoader from "@/components/PWALoader";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.agrowcart.com'),
@@ -40,7 +39,6 @@ export const metadata: Metadata = {
   authors: [{ name: "AgrowCart Team" }],
   creator: "AgrowCart Team",
   publisher: "AgrowCart",
-  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: '/icon-144.png', sizes: '144x144', type: 'image/png' },
@@ -109,7 +107,6 @@ export default function RootLayout({
             <StoreProvider>
               <LanguageProvider>
                 <InitUser />
-                <PWALoader />
                 {/* Skip to Main Content for Accessibility */}
                 <a
                   href="#main-content"
