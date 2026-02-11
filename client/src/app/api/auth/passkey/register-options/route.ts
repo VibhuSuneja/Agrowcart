@@ -25,9 +25,9 @@ export async function POST(req: NextRequest) {
         const hostname = req.nextUrl.hostname;
         const rpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
-        // Get existing credentials to exclude
+        // @simplewebauthn/server v13: excludeCredentials.id expects Base64URLString (plain string), NOT Buffer
         const excludeCredentials = (user.passkeys || []).map((cred: any) => ({
-            id: Buffer.from(cred.credentialID, 'base64url'),
+            id: cred.credentialID as string,
             transports: cred.transports || []
         }))
 

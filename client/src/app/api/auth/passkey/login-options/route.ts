@@ -25,12 +25,11 @@ export async function POST(req: NextRequest) {
         const hostname = req.nextUrl.hostname;
         const rpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
-        // CRITICAL FIX: Convert string IDs back to Buffers
-        // If we pass strings, the library double-encodes them and the browser/Windows won't find the match.
+        // @simplewebauthn/server v13: allowCredentials.id expects Base64URLString (plain string), NOT Buffer
         const allowCredentials = user.passkeys
             .filter((cred: any) => cred.credentialID)
             .map((cred: any) => ({
-                id: Buffer.from(cred.credentialID, 'base64url'),
+                id: cred.credentialID as string,
                 transports: cred.transports || []
             }))
 
