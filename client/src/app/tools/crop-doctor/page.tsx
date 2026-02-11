@@ -99,8 +99,8 @@ export default function CropDoctorPage() {
                                 <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                             </label>
                         ) : (
-                            <div className="relative rounded-2xl overflow-hidden mb-6 shadow-lg border border-zinc-100 group h-64">
-                                <img src={preview} alt="Crop Preview" className="w-full h-full object-cover" />
+                            <div className="relative rounded-2xl overflow-hidden mb-6 shadow-lg border border-zinc-100 group bg-zinc-900/5 min-h-[300px] flex items-center justify-center">
+                                <img src={preview} alt="Crop Preview" className="max-w-full max-h-[500px] object-contain" />
                                 <button
                                     onClick={(e) => {
                                         e.preventDefault();

@@ -53,7 +53,6 @@ export const TermsContent = () => (
                 <ul className="list-disc pl-5 space-y-1 text-[11px] text-zinc-700 font-medium">
                     <li>The photo is an actual representation of the item being listed.</li>
                     <li>No digital filters, AI enhancements, or editing software (Photoshop, etc.) have been used.</li>
-                    <li>The image meets technical requirements (Min 800x600 resolution).</li>
                 </ul>
                 <div className="bg-white p-4 rounded-xl border-l-4 border-amber-500 text-[10px] font-medium text-zinc-700">
                     <strong>FORGERY PENALTY:</strong> Uploading fraudulent or modified images to deceive buyers is a violation of the Consumer Protection Act, 2019 and will result in immediate permanent account termination and forfeiture of pending payouts.

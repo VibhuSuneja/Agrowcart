@@ -162,11 +162,6 @@ function FarmerDashboard() {
             const img = new Image()
             img.src = URL.createObjectURL(file)
             img.onload = () => {
-                // Technical Validation: Resolution check (Min 800x600 as per legal/business requirement)
-                if (img.width < 800 || img.height < 600) {
-                    toast.error(t('errorLowRes'))
-                    return
-                }
                 setCropImage(file)
                 setCropPreview(URL.createObjectURL(file))
             }
