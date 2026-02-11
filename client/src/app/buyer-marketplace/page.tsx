@@ -77,10 +77,15 @@ function BuyerMarketplace() {
     }
 
     const filteredProducts = products.filter(product => {
-        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.category.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory
-        return matchesSearch && matchesCategory
+        const matchesSearch =
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (product.location?.city && product.location.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (product.originCity && product.originCity.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (product.originState && product.originState.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+        return matchesSearch && matchesCategory;
     })
 
     useEffect(() => {
