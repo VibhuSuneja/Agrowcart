@@ -1,0 +1,17 @@
+# AgrowCart Robots.txt
+# https://www.agrowcart.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin-dashboard/
+Disallow: /settings/
+Disallow: /user/orders/
+Disallow: /user/cart/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://www.agrowcart.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

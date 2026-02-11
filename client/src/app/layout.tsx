@@ -1,5 +1,16 @@
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b1613' }
+  ],
+  viewportFit: 'cover',  // Safe area support for notched devices
+}
 
 import "./globals.css";
 import Provider from "@/Provider";
@@ -30,21 +41,25 @@ export const metadata: Metadata = {
   publisher: "AgrowCart",
   manifest: "/manifest.json",
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/logo.png',
+    icon: [
+      { url: '/icon-144.png', sizes: '144x144', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/icon-192.png',
+    apple: '/apple-touch-icon.png',
   },
   openGraph: {
     title: "AgrowCart | AI-Driven Millets Value Chain Platform",
     description: "Connect directly with millet farmers, access AI-powered crop insights, and explore value-added millet products.",
-    url: 'https://agrowcart.vercel.app',
+    url: 'https://www.agrowcart.com',
     siteName: 'AgrowCart',
     images: [
       {
-        url: '/logo.jpg', // Ensure this image exists in public folder
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'AgrowCart Platform Preview',
+        alt: 'AgrowCart - AI-Driven Millets Value Chain Platform',
       },
     ],
     locale: 'en_US',
@@ -55,9 +70,9 @@ export const metadata: Metadata = {
     title: "AgrowCart | AI-Driven Millets Value Chain Platform",
     description: "Empowering farmers and buyers with AI-driven millet insights and direct connectivity.",
     creator: "@agrowcart",
-    images: ['/logo.jpg'],
+    images: ['/og-image.png'],
   },
-  themeColor: '#066046',
+  // themeColor moved to viewport export above
   robots: {
     index: true,
     follow: true,

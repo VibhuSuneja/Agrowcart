@@ -57,6 +57,14 @@ const nextConfig: NextConfig = {
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'  // Enables DNS prefetching for performance
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'  // Force HTTPS for 2 years
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups'  // Required for OAuth and WebAuthn popups
           }
         ]
       }
