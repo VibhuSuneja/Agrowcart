@@ -124,23 +124,25 @@ export default function AIInsightsPage() {
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
                     {/* Market Price Simulator */}
                     <motion.section
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="lg:col-span-2 bg-white p-8 md:p-12 rounded-[3.5rem] border border-zinc-100 shadow-2xl shadow-green-900/5 relative overflow-hidden"
+                        className="lg:col-span-2 ultra-glass p-8 md:p-12 rounded-[3.5rem] relative overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-30" />
+                        {/* High-tech Background Deco */}
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 opacity-30 pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 opacity-20 pointer-events-none" />
 
-                        <div className="flex items-center gap-4 mb-10">
-                            <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center text-green-400 shadow-xl">
-                                <Zap fill="currentColor" size={24} />
+                        <div className="flex items-center gap-6 mb-12 relative z-10">
+                            <div className="w-16 h-16 bg-zinc-900 dark:bg-primary rounded-[1.5rem] flex items-center justify-center text-primary dark:text-white shadow-2xl relative group">
+                                <Zap fill="currentColor" size={28} />
+                                <div className="absolute -inset-2 rounded-[1.8rem] border border-current opacity-20 group-hover:scale-110 transition-transform" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Price Predictor</h2>
-                                <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Revenue Simulation</p>
+                                <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">Price Predictor</h2>
+                                <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em]">Neural Simulation Engine</p>
                             </div>
                         </div>
 
@@ -301,17 +303,16 @@ export default function AIInsightsPage() {
 
                 {/* Second Row: Market Forecasting & Heatmap */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-
                     {/* Market Intelligence Feed */}
-                    <section className="bg-white p-8 md:p-12 rounded-[3.5rem] border border-zinc-100 shadow-2xl shadow-green-900/5">
-                        <div className="flex items-center justify-between mb-10">
+                    <section className="ultra-glass p-8 md:p-12 rounded-[3.5rem] relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-10 relative z-10">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                                <div className="p-4 bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-500/10">
                                     <BarChart3 size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Market Intel</h3>
-                                    <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest">Demand Forecasting</p>
+                                    <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Market Intel</h3>
+                                    <p className="text-primary text-[10px] font-black uppercase tracking-widest">Global Demand Matrix</p>
                                 </div>
                             </div>
                             <div className="flex gap-2">

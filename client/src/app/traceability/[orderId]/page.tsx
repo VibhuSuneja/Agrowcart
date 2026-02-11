@@ -9,6 +9,7 @@ import {
 import { useRouter, useParams } from 'next/navigation'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import TraceabilityMap from '@/components/TraceabilityMap'
 
 import axios from 'axios'
 
@@ -123,6 +124,15 @@ function TraceabilityPage() {
                         </div>
                     </motion.div>
                 </div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mb-16"
+                >
+                    <TraceabilityMap />
+                </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Timeline */}

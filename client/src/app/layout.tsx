@@ -1,4 +1,4 @@
-
+import React, { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
@@ -109,7 +109,9 @@ export default function RootLayout({
             <StoreProvider>
               <LanguageProvider>
                 <InitUser />
-                <PageProgressBar />
+                <React.Suspense fallback={null}>
+                  <PageProgressBar />
+                </React.Suspense>
                 {/* Skip to Main Content for Accessibility */}
                 <a
                   href="#main-content"

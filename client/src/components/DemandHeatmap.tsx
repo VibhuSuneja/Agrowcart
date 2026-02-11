@@ -40,7 +40,7 @@ export default function DemandHeatmap() {
         <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white p-8 md:p-10 rounded-[3.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative overflow-hidden h-full flex flex-col"
+            className="ultra-glass p-8 md:p-10 rounded-[3.5rem] relative overflow-hidden h-full flex flex-col transition-all duration-700"
         >
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
