@@ -4,6 +4,8 @@ import { motion } from 'motion/react'
 import { Wheat, Sun, Droplets, Heart, Shield, Leaf, ArrowRight, Sparkles, Globe, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import MilletHeroBackground from '@/components/three/MilletHero'
+import CardGrain3D from '@/components/three/CardGrain3D'
 
 const millets = [
     {
@@ -12,6 +14,7 @@ const millets = [
         tagline: "The Calcium Powerhouse",
         nutrients: "344mg Ca per 100g — 3x more than milk",
         color: "from-red-500 to-orange-500",
+        hex: "#ef4444",
         bg: "bg-red-50 dark:bg-red-500/5",
         border: "border-red-100 dark:border-red-500/10",
         icon: "🌾",
@@ -23,6 +26,7 @@ const millets = [
         tagline: "India's Ancient Superfood",
         nutrients: "Rich in Iron, Phosphorus & Antioxidants",
         color: "from-amber-500 to-yellow-500",
+        hex: "#f59e0b",
         bg: "bg-amber-50 dark:bg-amber-500/5",
         border: "border-amber-100 dark:border-amber-500/10",
         icon: "🌿",
@@ -34,6 +38,7 @@ const millets = [
         tagline: "The Climate Warrior Grain",
         nutrients: "Thrives in 350mm rainfall — True drought crop",
         color: "from-stone-500 to-zinc-500",
+        hex: "#78716c",
         bg: "bg-stone-50 dark:bg-stone-500/5",
         border: "border-stone-200 dark:border-stone-500/10",
         icon: "💪",
@@ -45,6 +50,7 @@ const millets = [
         tagline: "The Smart Carb",
         nutrients: "Low Glycemic Index — Ideal for diabetes management",
         color: "from-lime-500 to-green-500",
+        hex: "#84cc16",
         bg: "bg-lime-50 dark:bg-lime-500/5",
         border: "border-lime-100 dark:border-lime-500/10",
         icon: "🍃",
@@ -56,6 +62,7 @@ const millets = [
         tagline: "The Detox Grain",
         nutrients: "High polyphenol content — Natural antioxidant",
         color: "from-teal-500 to-emerald-500",
+        hex: "#14b8a6",
         bg: "bg-teal-50 dark:bg-teal-500/5",
         border: "border-teal-100 dark:border-teal-500/10",
         icon: "🌱",
@@ -67,6 +74,7 @@ const millets = [
         tagline: "Small Grain, Mega Nutrition",
         nutrients: "Rich in B-Vitamins & Minerals",
         color: "from-violet-500 to-purple-500",
+        hex: "#8b5cf6",
         bg: "bg-violet-50 dark:bg-violet-500/5",
         border: "border-violet-100 dark:border-violet-500/10",
         icon: "✨",
@@ -78,6 +86,7 @@ const millets = [
         tagline: "The Fasting Grain",
         nutrients: "High fiber, low calories — Perfect for fasting & diets",
         color: "from-cyan-500 to-blue-500",
+        hex: "#06b6d4",
         bg: "bg-cyan-50 dark:bg-cyan-500/5",
         border: "border-cyan-100 dark:border-cyan-500/10",
         icon: "🙏",
@@ -89,6 +98,7 @@ const millets = [
         tagline: "The Brain Grain",
         nutrients: "Rich in Lecithin — Supports neural health",
         color: "from-pink-500 to-rose-500",
+        hex: "#ec4899",
         bg: "bg-pink-50 dark:bg-pink-500/5",
         border: "border-pink-100 dark:border-pink-500/10",
         icon: "🧠",
@@ -100,6 +110,7 @@ const millets = [
         tagline: "The Rarest Superfood",
         nutrients: "12.5g fiber per 100g — Highest among all millets",
         color: "from-emerald-500 to-green-600",
+        hex: "#10b981",
         bg: "bg-emerald-50 dark:bg-emerald-500/5",
         border: "border-emerald-100 dark:border-emerald-500/10",
         icon: "🏆",
@@ -114,14 +125,14 @@ const impactStats = [
     { icon: Heart, label: "Families Fed", value: "50K+", desc: "With nutritious millets" },
 ]
 
+
 export default function ShreeAnnaPage() {
     return (
         <main className="min-h-screen bg-white dark:bg-zinc-950">
             {/* Hero Section */}
             <section className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-amber-50/30 to-white dark:from-emerald-950/30 dark:via-zinc-950 dark:to-zinc-950" />
-                <div className="absolute top-20 right-10 w-96 h-96 bg-amber-200/20 dark:bg-amber-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-10 left-10 w-72 h-72 bg-emerald-200/30 dark:bg-emerald-500/5 rounded-full blur-3xl" />
+                <MilletHeroBackground />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-white/50 dark:from-emerald-950/20 dark:via-transparent dark:to-transparent pointer-events-none" />
 
                 <div className="relative max-w-7xl mx-auto px-4 md:px-8">
                     <motion.div
@@ -262,6 +273,7 @@ export default function ShreeAnnaPage() {
                                 whileHover={{ y: -6 }}
                                 className={`${millet.bg} ${millet.border} border rounded-3xl p-6 relative overflow-hidden group cursor-pointer transition-all duration-500 hover:shadow-xl`}
                             >
+                                <CardGrain3D color={millet.hex} />
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
                                         <span className="text-3xl">{millet.icon}</span>
