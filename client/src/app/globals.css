@@ -79,7 +79,8 @@
 
 /* Ultra Premium Effects */
 .ultra-glass {
-  @apply bg-white/30 dark:bg-zinc-950/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.05)];
+  @apply bg-white/30 dark:bg-zinc-950/40 backdrop-blur-3xl border border-white/20 dark:border-white/10;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
 .premium-depth {
@@ -87,7 +88,11 @@
 }
 
 .premium-depth-hover {
-  @apply transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(0, 0, 0, 0.12), 0_0_1px_0_rgba(0, 0, 0, 0.08)] hover:-translate-y-1;
+  @apply transition-all duration-500 hover:-translate-y-1;
+}
+
+.premium-depth-hover:hover {
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.12), 0 0 1px 0 rgba(0, 0, 0, 0.08);
 }
 
 .agrow-focus-ring {
