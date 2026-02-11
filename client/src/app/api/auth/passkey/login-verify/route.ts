@@ -79,6 +79,9 @@ export async function POST(req: NextRequest) {
 
         // Create session token
         const secret = process.env.AUTH_SECRET!
+        // CRITICAL: salt MUST match cookie name for NextAuth v5 to decode correctly
+        const cookieName = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token'
+
         const token = await encode({
             token: {
                 id: user._id.toString(),
@@ -88,12 +91,11 @@ export async function POST(req: NextRequest) {
                 agreedToTerms: user.agreedToTerms
             },
             secret,
-            salt: 'authjs.session-token',
+            salt: cookieName,
             maxAge: 10 * 24 * 60 * 60
         })
 
         const cookieStore = await cookies()
-        const cookieName = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token'
 
         cookieStore.set(cookieName, token, {
             httpOnly: true,
