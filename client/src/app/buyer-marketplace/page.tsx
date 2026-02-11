@@ -18,6 +18,8 @@ import { RootState, AppDispatch } from '@/redux/store'
 import { addToCart } from '@/redux/cartSlice'
 import TutorialGuide from '@/components/TutorialGuide'
 
+import Skeleton, { CardSkeleton } from '@/components/Skeleton'
+
 const BUYER_TOUR_STEPS = [
     {
         targetId: 'buyer-header',
@@ -207,9 +209,9 @@ function BuyerMarketplace() {
                         </div>
 
                         {loadingProducts ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {[1, 2, 3, 4].map(i => (
-                                    <div key={i} className="h-[300px] bg-white rounded-[2.5rem] animate-pulse border border-zinc-100" />
+                                    <CardSkeleton key={i} />
                                 ))}
                             </div>
                         ) : filteredProducts.length === 0 ? (

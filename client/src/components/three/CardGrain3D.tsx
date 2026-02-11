@@ -43,7 +43,8 @@ export default function CardGrain3D({ color = "#10b981" }: { color?: string }) {
             <Canvas dpr={typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 1.5}>
                 <PerspectiveCamera makeDefault position={[0, 0, 2.5]} />
                 <ambientLight intensity={1} />
-                <pointLight position={[5, 5, 5]} intensity={1} />
+                <pointLight position={[2, 2, 2]} intensity={1.5} color={color} />
+                <pointLight position={[-2, -2, -2]} intensity={1} color="#ffffff" />
                 <MiniGrain color={color} />
             </Canvas>
         </div>

@@ -77,6 +77,23 @@
   @apply bg-white/5 dark:bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden;
 }
 
+/* Ultra Premium Effects */
+.ultra-glass {
+  @apply bg-white/30 dark:bg-zinc-950/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.05)];
+}
+
+.premium-depth {
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08), 0 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.premium-depth-hover {
+  @apply transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(0, 0, 0, 0.12), 0_0_1px_0_rgba(0, 0, 0, 0.08)] hover:-translate-y-1;
+}
+
+.agrow-focus-ring {
+  @apply focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all;
+}
+
 /* Sidebar Gradient */
 .sidebar-gradient {
   background: linear-gradient(180deg, #066046 0%, #022c20 100%);

@@ -271,7 +271,7 @@ export default function ShreeAnnaPage() {
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.05 }}
                                 whileHover={{ y: -6 }}
-                                className={`${millet.bg} ${millet.border} border rounded-3xl p-6 relative overflow-hidden group cursor-pointer transition-all duration-500 hover:shadow-xl`}
+                                className={`${millet.bg} ${millet.border} border rounded-3xl p-6 relative overflow-hidden group cursor-pointer transition-all duration-500 premium-depth-hover`}
                             >
                                 <CardGrain3D color={millet.hex} />
                                 <div className="flex items-start justify-between mb-4">

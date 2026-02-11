@@ -85,6 +85,8 @@ export const metadata: Metadata = {
   },
 };
 
+import PageProgressBar from "@/components/PageProgressBar";
+
 export default function RootLayout({
   children, }: Readonly<{
     children: React.ReactNode;
@@ -107,6 +109,7 @@ export default function RootLayout({
             <StoreProvider>
               <LanguageProvider>
                 <InitUser />
+                <PageProgressBar />
                 {/* Skip to Main Content for Accessibility */}
                 <a
                   href="#main-content"
