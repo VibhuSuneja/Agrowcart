@@ -90,6 +90,25 @@ export default function GoogleTranslator() {
         setIsOpen(false)
 
         try {
+            // Special handling for English (Original Language)
+            if (langCode === 'en') {
+                const domain = window.location.hostname === 'localhost' ? '' : `domain=${window.location.hostname};`
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; ${domain}`
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+
+                // Also try to find and set the "Original" option if available
+                const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement
+                if (selectElement) {
+                    // Try to find the original language option (usually first or value equals pageLanguage)
+                    selectElement.value = ''
+                    selectElement.dispatchEvent(new Event('change'))
+                }
+
+                // Force a reload as Google Translate is notoriously sticky with DOM modifications
+                window.location.reload()
+                return
+            }
+
             const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement
             if (selectElement) {
                 selectElement.value = langCode

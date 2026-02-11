@@ -278,10 +278,10 @@ function Nav({ user: propUser }: { user: any }) {
                         </span>
                         <div className="flex items-center gap-2">
                             <span className="text-[10px] text-zinc-400 font-bold tracking-widest uppercase hidden sm:block">Modern Organic Precision</span>
-                            <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded-md">
+                            <Link href="/shree-anna" className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded-md hover:bg-amber-500/20 transition-all cursor-pointer">
                                 <Sparkles size={8} className="text-amber-500 animate-pulse" />
                                 <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest">Shree Anna</span>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </Link>
@@ -328,6 +328,9 @@ function Nav({ user: propUser }: { user: any }) {
                     )}
                     <Link href="/recipes" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Recipes">
                         <ChefHat size={22} />
+                    </Link>
+                    <Link href="/shree-anna" className="p-3 text-zinc-500 hover:text-amber-500 dark:text-zinc-400 dark:hover:text-amber-400 transition-colors" title="Shree Anna Hub">
+                        <Sparkles size={22} />
                     </Link>
                     <Link href="/community/forum" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Forum">
                         <MessageSquare size={22} />
