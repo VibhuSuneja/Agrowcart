@@ -83,9 +83,9 @@ function FarmerDashboard() {
     const [loading, setLoading] = useState(false)
     const [showAddCrop, setShowAddCrop] = useState(false)
     const [newCrop, setNewCrop] = useState<{
-        name: string, quantity: string, price: string, category: string, unit: string, farmId: string, harvestDate: string, image: File | null, imagePreview: string | null, fssaiLicense: string, originState: string, originCity: string
+        name: string, quantity: string, price: string, category: string, unit: string, farmId: string, harvestDate: string, image: File | null, imagePreview: string | null, fssaiLicense: string, originState: string, originCity: string, isGITagged: boolean, giCertificationId: string
     }>({
-        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null, fssaiLicense: '', originState: 'Haryana', originCity: ''
+        name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg', farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000), harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null, fssaiLicense: '', originState: 'Haryana', originCity: '', isGITagged: false, giCertificationId: ''
     })
     const [crops, setCrops] = useState<Array<any>>([])
     const [selectedScheme, setSelectedScheme] = useState<string | null>(null)
@@ -699,7 +699,9 @@ function FarmerDashboard() {
                                                         imagePreview: crop.image,
                                                         fssaiLicense: crop.fssaiLicense || '',
                                                         originState: crop.originState || 'Haryana',
-                                                        originCity: crop.originCity || ''
+                                                        originCity: crop.originCity || '',
+                                                        isGITagged: crop.isGITagged || false,
+                                                        giCertificationId: crop.giCertificationId || ''
                                                     });
                                                     setShowAddCrop(true);
                                                 }}
@@ -925,6 +927,43 @@ function FarmerDashboard() {
                                             onChange={(e) => setNewCrop({ ...newCrop, fssaiLicense: e.target.value })}
                                         />
                                     </div>
+
+                                    {/* GI Tag Certification Section */}
+                                    <div className="md:col-span-2 p-5 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-amber-200 dark:border-amber-500/20 space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-600">
+                                                    <Sparkles size={16} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-400 tracking-wider">Geographical Indication</p>
+                                                    <p className="text-[9px] font-bold text-amber-600/70 dark:text-amber-400/50 uppercase tracking-widest">GI Tag Certification</p>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className="w-5 h-5 rounded border-amber-300 text-amber-600 focus:ring-amber-500 cursor-pointer transition-all"
+                                                checked={newCrop.isGITagged}
+                                                onChange={(e) => setNewCrop({ ...newCrop, isGITagged: e.target.checked })}
+                                            />
+                                        </div>
+
+                                        {newCrop.isGITagged && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                className="relative group"
+                                            >
+                                                <Fingerprint className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500" size={14} />
+                                                <input
+                                                    placeholder="Enter GI Certification ID (e.g. GI-TN-2023-01)"
+                                                    className="w-full bg-white dark:bg-zinc-900 border border-amber-200 dark:border-amber-500/30 rounded-xl py-3 pl-11 pr-4 text-zinc-800 dark:text-white outline-none font-bold text-[10px] focus:border-amber-500 transition-all uppercase tracking-widest"
+                                                    value={newCrop.giCertificationId}
+                                                    onChange={(e) => setNewCrop({ ...newCrop, giCertificationId: e.target.value })}
+                                                />
+                                            </motion.div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -993,6 +1032,8 @@ function FarmerDashboard() {
                                                 formData.append("fssaiLicense", newCrop.fssaiLicense);
                                                 formData.append("originState", newCrop.originState);
                                                 formData.append("originCity", newCrop.originCity);
+                                                formData.append("isGITagged", String(newCrop.isGITagged));
+                                                formData.append("giCertificationId", newCrop.giCertificationId);
                                                 if (newCrop.image) {
                                                     formData.append("image", newCrop.image);
                                                 }
@@ -1010,7 +1051,8 @@ function FarmerDashboard() {
                                                 setIsAuthentic(false) // Reset
                                                 setNewCrop({
                                                     ...newCrop, name: '', quantity: '', price: '', image: null, imagePreview: null,
-                                                    farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000)
+                                                    farmId: 'FARM-' + Math.floor(Math.random() * 9000 + 1000),
+                                                    isGITagged: false, giCertificationId: ''
                                                 })
                                                 toast.success(editingCrop ? 'Ledger Updated!' : 'Blockchain Logged & Marketplace Updated!')
                                             } catch (error: any) {
@@ -1329,6 +1371,17 @@ function FarmerDashboard() {
                                             </div>
                                         </div>
                                     )}
+                                    {selectedCrop.isGITagged && (
+                                        <div className="flex items-center gap-5 p-4 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-amber-100 dark:border-amber-500/10">
+                                            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-500/20 rounded-2xl flex items-center justify-center text-amber-600">
+                                                <Sparkles size={22} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-1">GI Tag Verified</p>
+                                                <p className="text-slate-700 dark:text-slate-300 font-bold uppercase tracking-widest text-xs">{selectedCrop.giCertificationId}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="pt-10 flex gap-4">
@@ -1349,7 +1402,9 @@ function FarmerDashboard() {
                                                 imagePreview: cropToEdit.image,
                                                 fssaiLicense: cropToEdit.fssaiLicense || '',
                                                 originState: cropToEdit.originState || 'Haryana',
-                                                originCity: cropToEdit.originCity || ''
+                                                originCity: cropToEdit.originCity || '',
+                                                isGITagged: cropToEdit.isGITagged || false,
+                                                giCertificationId: cropToEdit.giCertificationId || ''
                                             });
                                             setShowAddCrop(true);
                                         }}

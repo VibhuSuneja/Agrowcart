@@ -2,7 +2,7 @@
 import React from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
-import { Minus, Plus, ShoppingCart, Star, ShieldCheck, Heart, Share2, MapPin } from 'lucide-react'
+import { Minus, Plus, ShoppingCart, Star, ShieldCheck, Heart, Share2, MapPin, Award } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/redux/store'
 import { addToCart, decreaseQuantity, increaseQuantity } from '@/redux/cartSlice'
@@ -30,6 +30,8 @@ interface IProduct {
   originState?: string,
   originCity?: string,
   stock?: number | null // null = in stock, 0 = out of stock
+  isGITagged?: boolean,
+  giCertificationId?: string,
 }
 
 function ProductItemCard({ item }: { item: IProduct }) {
@@ -173,6 +175,24 @@ function ProductItemCard({ item }: { item: IProduct }) {
             <span className="text-[10px] font-bold uppercase tracking-widest">{item.originCity || 'Haryana'}</span>
           </div>
         </div>
+
+        {/* Trust Badges — FSSAI & GI Tag */}
+        {(item.fssaiLicense || item.isGITagged) && (
+          <div className='flex items-center gap-1.5 mb-2 flex-wrap'>
+            {item.fssaiLicense && (
+              <div className='flex items-center gap-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-lg border border-blue-100 dark:border-blue-500/20'>
+                <ShieldCheck size={10} />
+                <span className='text-[8px] font-black uppercase tracking-widest'>FSSAI</span>
+              </div>
+            )}
+            {item.isGITagged && (
+              <div className='flex items-center gap-1 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-lg border border-amber-200 dark:border-amber-500/20'>
+                <Award size={10} />
+                <span className='text-[8px] font-black uppercase tracking-widest'>GI Tag</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <Link href={`/product/${item._id}`}>
           <h3 className='text-slate-900 dark:text-white font-black text-lg leading-[1.2] mb-3 group-hover:text-primary transition-colors tracking-tight line-clamp-2'>

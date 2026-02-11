@@ -26,6 +26,9 @@ export interface IProduct {
     disclaimer?: string,
     originState?: string,
     originCity?: string,
+    // GI Tag Certification
+    isGITagged?: boolean,
+    giCertificationId?: string,
 }
 
 const productSchema = new mongoose.Schema<IProduct>({
@@ -129,6 +132,15 @@ const productSchema = new mongoose.Schema<IProduct>({
     stock: {
         type: Number,
         default: null // null = unlimited/in stock
+    },
+    // GI (Geographical Indication) Tag — origin-based quality certification
+    isGITagged: {
+        type: Boolean,
+        default: false
+    },
+    giCertificationId: {
+        type: String,
+        required: false
     }
 }, {
     timestamps: true

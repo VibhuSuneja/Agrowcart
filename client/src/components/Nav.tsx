@@ -16,6 +16,7 @@ import TextToSpeech from './TextToSpeech'
 import GlobalCallListener from './GlobalCallListener'
 import { useTranslations } from '@/i18n/LanguageProvider'
 import { orbitron } from '@/lib/fonts'
+import PWAInstallButton from './PWAInstallButton'
 
 interface IUser {
     _id?: string
@@ -118,6 +119,10 @@ function Nav({ user: propUser }: { user: any }) {
                     <Link href="/community/forum" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
                         <div className='w-8 h-8 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center'><MessageSquare size={18} /></div>
                         Discussion Forum
+                    </Link>
+                    <Link href="/shree-anna" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-amber-500/10 active:text-amber-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center'><Sparkles size={18} /></div>
+                        Shree Anna
                     </Link>
 
                     <button
@@ -334,6 +339,8 @@ function Nav({ user: propUser }: { user: any }) {
                 </div>
 
                 <div className="h-6 w-px bg-zinc-200 dark:bg-white/10 mx-1 hidden lg:block"></div>
+
+                <PWAInstallButton />
 
                 <div className='relative' ref={profileDropDown}>
                     <motion.div
