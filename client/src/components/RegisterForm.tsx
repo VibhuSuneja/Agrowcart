@@ -46,7 +46,7 @@ function RegisterForm({ previousStep }: propType) {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-zinc-50 relative overflow-x-hidden overflow-y-auto custom-scrollbar'>
+    <div className='flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-zinc-50 dark:bg-zinc-950 relative overflow-x-hidden overflow-y-auto custom-scrollbar'>
       {/* Decorative background elements */}
       <div className='absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-gradient-to-br from-green-300/40 to-emerald-300/40 rounded-full blur-[100px] animate-pulse duration-[4000ms] pointer-events-none' />
       <div className='absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-gradient-to-tl from-lime-300/40 to-green-300/40 rounded-full blur-[100px] animate-pulse duration-[5000ms] pointer-events-none' />
@@ -60,15 +60,15 @@ function RegisterForm({ previousStep }: propType) {
         <span className='font-bold text-xs tracking-tight'>Go Back</span>
       </div>
 
-      <div className="w-full max-w-md bg-white p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 relative z-10 transition-all hover:shadow-green-900/10 mt-8">
+      <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 dark:border-zinc-800 relative z-10 transition-all hover:shadow-green-900/10 mt-8">
         <div className="flex flex-col items-center mb-6 text-center">
           <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-700 rounded-2xl shadow-xl shadow-green-500/20 flex items-center justify-center mb-4 transform rotate-3 hover:rotate-6 transition-all duration-300">
             <Leaf className="text-white drop-shadow-md" size={28} />
           </div>
-          <h1 className='text-2xl font-black text-zinc-900 tracking-tight mb-1'>
+          <h1 className='text-2xl font-black text-zinc-900 dark:text-white tracking-tight mb-1'>
             Join <span className='text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600'>AgrowCart</span>
           </h1>
-          <p className='text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100'>
+          <p className='text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 bg-green-50 dark:bg-green-500/10 px-3 py-1 rounded-full border border-green-100 dark:border-green-500/20'>
             <Sparkles size={12} className='text-green-500' />
             India's Premier Millet Network
           </p>
@@ -85,7 +85,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type="text"
               placeholder='Full Name'
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
+              className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setName(e.target.value)}
               value={name}
             />
@@ -96,7 +96,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type="email"
               placeholder='Email Address'
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
+              className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setEmail(e.target.value)}
               value={email}
             />
@@ -107,7 +107,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type={showPassword ? "text" : "password"}
               placeholder='Secure Password'
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-10 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
+              className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-10 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
@@ -123,7 +123,7 @@ function RegisterForm({ previousStep }: propType) {
           <div className='relative group'>
             <User className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors pointer-events-none' />
             <select
-              className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-zinc-800 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs appearance-none cursor-pointer'
+              className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs appearance-none cursor-pointer'
               onChange={(e) => setRole(e.target.value)}
               value={role}
             >
@@ -176,14 +176,14 @@ function RegisterForm({ previousStep }: propType) {
           </div>
 
           <div className='flex items-center gap-4 py-1'>
-            <div className='flex-1 h-px bg-zinc-100' />
+            <div className='flex-1 h-px bg-zinc-100 dark:bg-zinc-800' />
             <span className='text-[9px] font-black tracking-widest text-zinc-400 uppercase'>Social</span>
-            <div className='flex-1 h-px bg-zinc-100' />
+            <div className='flex-1 h-px bg-zinc-100 dark:bg-zinc-800' />
           </div>
 
           <button
             type="button"
-            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-3 rounded-xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 text-xs'
+            className='w-full flex items-center justify-center gap-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 py-3 rounded-xl text-zinc-700 dark:text-zinc-300 font-bold transition-all shadow-sm group active:scale-95 text-xs'
             onClick={() => signIn("google", { callbackUrl: "/" })}
           >
             <Image src={googleImage} width={18} height={18} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />

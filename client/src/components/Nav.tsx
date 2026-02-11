@@ -107,12 +107,12 @@ function Nav({ user: propUser }: { user: any }) {
                 <div className='flex-1 overflow-y-auto py-6 px-4 space-y-2'>
                     <p className='px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2'>Explore</p>
 
-                    <Link href="/" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                        <div className='w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center'><TrendingUp size={18} /></div>
+                    <Link href="/" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center'><TrendingUp size={18} /></div>
                         Home
                     </Link>
-                    <Link href="/recipes" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                        <div className='w-8 h-8 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center'><ChefHat size={18} /></div>
+                    <Link href="/recipes" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-orange-500/10 text-orange-400 flex items-center justify-center'><ChefHat size={18} /></div>
                         Community Recipes
                     </Link>
                     <Link href="/community/forum" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
@@ -146,13 +146,13 @@ function Nav({ user: propUser }: { user: any }) {
                         <>
                             <div className='my-4 border-t border-zinc-100'></div>
                             <p className='px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2'>Personal</p>
-                            <Link href="/user/cart" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center'><ShoppingCartIcon size={18} /></div>
+                            <Link href="/user/cart" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-green-500/10 text-green-400 flex items-center justify-center'><ShoppingCartIcon size={18} /></div>
                                 My Cart
                                 {cartData.length > 0 && <span className='ml-auto bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full'>{cartData.length}</span>}
                             </Link>
-                            <Link href="/user/my-orders" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center'><Package size={18} /></div>
+                            <Link href="/user/my-orders" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-yellow-500/10 text-yellow-400 flex items-center justify-center'><Package size={18} /></div>
                                 My Orders
                             </Link>
                         </>
@@ -162,16 +162,16 @@ function Nav({ user: propUser }: { user: any }) {
                         <>
                             <div className='my-4 border-t border-zinc-100'></div>
                             <p className='px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2'>Admin Controls</p>
-                            <Link href="/admin/add-product" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center'><PlusCircle size={18} /></div>
+                            <Link href="/admin/add-product" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center'><PlusCircle size={18} /></div>
                                 Add Product
                             </Link>
-                            <Link href="/admin/view-products" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center'><Boxes size={18} /></div>
+                            <Link href="/admin/view-products" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-teal-500/10 text-teal-400 flex items-center justify-center'><Boxes size={18} /></div>
                                 View Products
                             </Link>
-                            <Link href="/admin/manage-orders" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center'><ClipboardCheck size={18} /></div>
+                            <Link href="/admin/manage-orders" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center'><ClipboardCheck size={18} /></div>
                                 Manage Orders
                             </Link>
                         </>
@@ -181,8 +181,8 @@ function Nav({ user: propUser }: { user: any }) {
                         <>
                             <div className='my-4 border-t border-zinc-100'></div>
                             <p className='px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2'>Logistics Hub</p>
-                            <Link href="/delivery-dashboard" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-zinc-50 active:bg-green-50 active:text-green-700 transition-all font-semibold text-zinc-600' onClick={() => setMenuOpen(false)}>
-                                <div className='w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center'><Package size={18} /></div>
+                            <Link href="/delivery-dashboard" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center'><Package size={18} /></div>
                                 Delivery Dashboard
                             </Link>
                         </>

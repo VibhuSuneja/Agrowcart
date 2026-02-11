@@ -226,7 +226,7 @@ function FarmerDashboard() {
                             animate={{ opacity: 1, y: 0 }}
                             className='text-5xl sm:text-6xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.85]'
                         >
-                            Grow. <span className="text-zinc-300 dark:text-zinc-700">Predict.</span> <br />Scale.
+                            Grow. <span className="text-zinc-300 dark:text-zinc-600">Predict.</span> <br />Scale.
                         </motion.h1>
                         <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg leading-relaxed">
                             Empowering organic farmers with AI-driven market intelligence, Global standard traceability, and direct access to global marketplaces.
@@ -860,7 +860,7 @@ function FarmerDashboard() {
                                             <input
                                                 type="text"
                                                 placeholder="Crop e.g. Foxtail Millet"
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-4 focus:ring-green-500/5 focus:border-green-500 outline-none transition-all font-bold text-xs"
+                                                className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-green-500/5 focus:border-green-500 outline-none transition-all font-bold text-xs"
                                                 value={newCrop.name}
                                                 onChange={(e) => setNewCrop({ ...newCrop, name: e.target.value })}
                                             />
@@ -868,7 +868,7 @@ function FarmerDashboard() {
                                         <div className="relative group">
                                             <Package className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                                             <select
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-10 text-zinc-800 outline-none font-bold text-xs appearance-none focus:bg-white focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all cursor-pointer"
+                                                className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 pl-12 pr-10 text-zinc-800 dark:text-white outline-none font-bold text-xs appearance-none focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-green-500/5 focus:border-green-500 transition-all cursor-pointer"
                                                 value={newCrop.category}
                                                 onChange={(e) => setNewCrop({ ...newCrop, category: e.target.value })}
                                             >
@@ -887,7 +887,7 @@ function FarmerDashboard() {
                                         <input
                                             type="number"
                                             placeholder="Volume"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 outline-none font-bold text-xs"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 dark:text-white outline-none font-bold text-xs"
                                             value={newCrop.quantity}
                                             onChange={(e) => setNewCrop({ ...newCrop, quantity: e.target.value })}
                                         />
@@ -897,7 +897,7 @@ function FarmerDashboard() {
                                         <input
                                             type="number"
                                             placeholder="Rate/kg"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-10 pr-4 text-zinc-800 outline-none font-bold text-xs"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 pl-10 pr-4 text-zinc-800 dark:text-white outline-none font-bold text-xs"
                                             value={newCrop.price}
                                             onChange={(e) => setNewCrop({ ...newCrop, price: e.target.value })}
                                         />
@@ -905,13 +905,13 @@ function FarmerDashboard() {
                                     <div className="grid grid-cols-2 gap-4 md:col-span-2">
                                         <input
                                             placeholder="State"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 px-5 text-zinc-800 outline-none font-bold text-xs"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 px-5 text-zinc-800 dark:text-white outline-none font-bold text-xs"
                                             value={newCrop.originState}
                                             onChange={(e) => setNewCrop({ ...newCrop, originState: e.target.value })}
                                         />
                                         <input
                                             placeholder="City/Village"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 px-5 text-zinc-800 outline-none font-bold text-xs"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 px-5 text-zinc-800 dark:text-white outline-none font-bold text-xs"
                                             value={newCrop.originCity}
                                             onChange={(e) => setNewCrop({ ...newCrop, originCity: e.target.value })}
                                         />
@@ -920,7 +920,7 @@ function FarmerDashboard() {
                                         <ShieldCheck className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
                                         <input
                                             placeholder="FSSAI License (Optional for Farmers)"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 outline-none font-bold text-xs"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-zinc-800 dark:text-white outline-none font-bold text-xs"
                                             value={newCrop.fssaiLicense}
                                             onChange={(e) => setNewCrop({ ...newCrop, fssaiLicense: e.target.value })}
                                         />
@@ -940,7 +940,7 @@ function FarmerDashboard() {
                                         <div className="absolute top-3 left-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest pointer-events-none">Harvested</div>
                                         <input
                                             type="date"
-                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-800 font-bold text-xs outline-none cursor-pointer"
+                                            className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-2xl pt-6 pb-2.5 px-4 text-zinc-800 dark:text-white font-bold text-xs outline-none cursor-pointer"
                                             value={newCrop.harvestDate}
                                             onChange={(e) => setNewCrop({ ...newCrop, harvestDate: e.target.value })}
                                         />

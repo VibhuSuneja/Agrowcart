@@ -32,7 +32,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         await connectDb();
         const { id } = await params;
-        const body = await req.json(); // { content: "..." }
+        const body = await req.json();
+        const { sanitizeUserInput } = await import("@/lib/sanitize");
 
         const discussion = await Discussion.findById(id);
         if (!discussion) return NextResponse.json({ message: "Not found" }, { status: 404 });
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             userId: session.user.id,
             userName: session.user.name,
             userImage: session.user.image,
-            content: body.content,
+            content: sanitizeUserInput(body.content || ''),
             likes: 0,
             likedBy: []
         });

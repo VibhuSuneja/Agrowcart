@@ -25,8 +25,12 @@ export async function POST(req: NextRequest) {
         await connectDb();
         const body = await req.json();
 
+        const { sanitizeText, sanitizeUserInput } = await import("@/lib/sanitize");
+
         const discussion = await Discussion.create({
-            ...body,
+            title: sanitizeText(body.title || ''),
+            body: sanitizeUserInput(body.body || ''),
+            tags: Array.isArray(body.tags) ? body.tags.map((t: string) => sanitizeText(t)) : [],
             userId: session.user.id,
             userName: session.user.name,
             userImage: session.user.image,

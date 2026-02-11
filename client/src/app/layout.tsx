@@ -57,6 +57,7 @@ export const metadata: Metadata = {
     creator: "@agrowcart",
     images: ['/logo.jpg'],
   },
+  themeColor: '#066046',
   robots: {
     index: true,
     follow: true,

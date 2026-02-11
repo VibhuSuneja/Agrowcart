@@ -29,11 +29,16 @@ export async function POST(req: NextRequest) {
         const hostname = req.nextUrl.hostname;
         const currentRpID = hostname.includes('agrowcart.com') ? 'agrowcart.com' : hostname;
 
+        // Dynamic Origin Detection
+        const requestOrigin = req.headers.get('origin') || '';
         const possibleOrigins = [
             'https://agrowcart.com',
             'https://www.agrowcart.com',
-            'http://localhost:3000'
-        ]
+            'http://localhost:3000',
+            requestOrigin
+        ].filter(Boolean);
+
+        console.log('Passkey Register - RPID:', currentRpID, 'Origin:', requestOrigin);
 
         const verification = await verifyRegistrationResponse({
             response: body,

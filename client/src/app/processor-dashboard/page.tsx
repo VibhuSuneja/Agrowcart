@@ -220,9 +220,9 @@ function ProcessorDashboard() {
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-[0.9] sm:leading-none'
+                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 dark:text-white tracking-tighter leading-[0.9] sm:leading-none'
                         >
-                            Refine. <span className="text-zinc-400">Package.</span> <br />Profit.
+                            Refine. <span className="text-zinc-400 dark:text-zinc-500">Package.</span> <br />Profit.
                         </motion.h1>
                         <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Manage your value-added products and track production batches with AgrowCart Traceability.</p>
                     </div>
@@ -733,20 +733,20 @@ function ProcessorDashboard() {
                                     </div>
 
                                     {/* Authenticity Declaration */}
-                                    <div className="p-6 bg-blue-50 rounded-[1.5rem] border border-blue-100 space-y-4">
+                                    <div className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-[1.5rem] border border-blue-100 dark:border-blue-900/20 space-y-4">
                                         <div className="flex gap-4">
                                             <input
                                                 type="checkbox"
                                                 id="proc-authenticity-check"
-                                                className="mt-1 w-5 h-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                className="mt-1 w-5 h-5 rounded border-zinc-300 dark:border-zinc-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                 checked={isAuthentic}
                                                 onChange={(e) => setIsAuthentic(e.target.checked)}
                                             />
-                                            <label htmlFor="proc-authenticity-check" className="text-[11px] font-bold text-zinc-600 cursor-pointer leading-tight">
+                                            <label htmlFor="proc-authenticity-check" className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 cursor-pointer leading-tight">
                                                 {t('declarationText')}
                                             </label>
                                         </div>
-                                        <div className="flex items-center gap-2 text-[10px] text-blue-700 font-black uppercase tracking-widest pl-9">
+                                        <div className="flex items-center gap-2 text-[10px] text-blue-700 dark:text-blue-400 font-black uppercase tracking-widest pl-9">
                                             <Info size={14} />
                                             <span>{t('requirements')}</span>
                                         </div>
@@ -831,7 +831,7 @@ function ProcessorDashboard() {
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 30 }}
-                            className="bg-white rounded-[3rem] max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-3xl relative z-[210] overflow-hidden"
+                            className="bg-white dark:bg-zinc-900 rounded-[3rem] max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-3xl relative z-[210] border border-zinc-100 dark:border-white/5 overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="relative h-64 bg-zinc-100">
@@ -856,24 +856,24 @@ function ProcessorDashboard() {
                                         <Fingerprint size={12} />
                                         <span>Batch ID: {selectedCrop.farmId}</span>
                                     </div>
-                                    <h2 className="text-3xl font-black text-zinc-900 tracking-tight leading-none mb-2">
+                                    <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight leading-none mb-2">
                                         {selectedCrop.name}
                                     </h2>
-                                    <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest w-fit">
+                                    <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest w-fit">
                                         {selectedCrop.category}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6 py-6 border-y border-zinc-100">
+                                <div className="grid grid-cols-2 gap-6 py-6 border-y border-zinc-100 dark:border-white/5">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Output Volume</p>
-                                        <p className="text-2xl font-black text-zinc-900 tracking-tighter">
+                                        <p className="text-2xl font-black text-zinc-900 dark:text-white tracking-tighter">
                                             {selectedCrop.quantity || selectedCrop.stock} <span className="text-sm font-bold text-zinc-400">{selectedCrop.unit}</span>
                                         </p>
                                     </div>
                                     <div className="space-y-1 text-right">
                                         <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Market Price</p>
-                                        <p className="text-2xl font-black text-blue-600 tracking-tighter">
+                                        <p className="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tighter">
                                             ₹{selectedCrop.price}
                                         </p>
                                     </div>
@@ -886,7 +886,7 @@ function ProcessorDashboard() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">FSSAI License</p>
-                                            <p className="text-zinc-700 font-bold text-sm tracking-tight">{selectedCrop.fssaiLicense || 'Not Provided'}</p>
+                                            <p className="text-zinc-700 dark:text-zinc-300 font-bold text-sm tracking-tight">{selectedCrop.fssaiLicense || 'Not Provided'}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -895,7 +895,7 @@ function ProcessorDashboard() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Processing Origin</p>
-                                            <p className="text-zinc-700 font-bold text-sm tracking-tight">{selectedCrop.originCity ? `${selectedCrop.originCity}, ` : ''}{selectedCrop.originState}</p>
+                                            <p className="text-zinc-700 dark:text-zinc-300 font-bold text-sm tracking-tight">{selectedCrop.originCity ? `${selectedCrop.originCity}, ` : ''}{selectedCrop.originState}</p>
                                         </div>
                                     </div>
                                 </div>

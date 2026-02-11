@@ -3,6 +3,7 @@ import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import uploadOnCloudinary from "@/lib/cloudinary";
+import { sanitizeText, sanitizeUserInput } from "@/lib/sanitize";
 
 export async function POST(req: NextRequest) {
     try {
@@ -14,14 +15,14 @@ export async function POST(req: NextRequest) {
         }
 
         const formData = await req.formData();
-        const name = formData.get("name") as string;
-        const bio = formData.get("bio") as string;
+        const rawName = formData.get("name") as string;
+        const rawBio = formData.get("bio") as string;
         const status = formData.get("status") as string;
         const imageFile = formData.get("image") as File | null;
 
         const updateData: any = {};
-        if (name) updateData.name = name;
-        if (bio !== null) updateData.bio = bio;
+        if (rawName) updateData.name = sanitizeText(rawName);
+        if (rawBio !== null) updateData.bio = sanitizeUserInput(rawBio);
         if (status) updateData.status = status;
 
         if (imageFile) {
