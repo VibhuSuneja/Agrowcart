@@ -92,19 +92,37 @@ export default function GoogleTranslator() {
         try {
             // Special handling for English (Original Language)
             if (langCode === 'en') {
-                const domain = window.location.hostname === 'localhost' ? '' : `domain=${window.location.hostname};`
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; ${domain}`
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-
-                // Also try to find and set the "Original" option if available
-                const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement
-                if (selectElement) {
-                    // Try to find the original language option (usually first or value equals pageLanguage)
-                    selectElement.value = ''
-                    selectElement.dispatchEvent(new Event('change'))
+                const clearCookie = (name: string, domain?: string) => {
+                    const domainStr = domain ? `; domain=${domain}` : ''
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domainStr}`
                 }
 
-                // Force a reload as Google Translate is notoriously sticky with DOM modifications
+                const host = window.location.hostname
+                clearCookie('googtrans')
+                clearCookie('googtrans', host)
+                clearCookie('googtrans', `.${host}`)
+
+                // If it's a subdomain, clear for parent too
+                const parts = host.split('.')
+                if (parts.length > 2) {
+                    const parentDomain = parts.slice(-2).join('.')
+                    clearCookie('googtrans', parentDomain)
+                    clearCookie('googtrans', `.${parentDomain}`)
+                }
+
+                // Try to set it to /en/en which means English to English (Identity)
+                document.cookie = `googtrans=/en/en; path=/;`
+
+                // Also try to find and set the "Original" option if available
+                try {
+                    const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement
+                    if (selectElement) {
+                        selectElement.value = ''
+                        selectElement.dispatchEvent(new Event('change'))
+                    }
+                } catch (e) { }
+
+                // Force a reload as Google Translate is notoriously sticky
                 window.location.reload()
                 return
             }
