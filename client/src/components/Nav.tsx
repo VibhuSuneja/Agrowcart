@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -27,6 +27,8 @@ interface IUser {
     role: "user" | "deliveryBoy" | "admin" | "farmer" | "shg" | "buyer" | "startup" | "processor"
     image?: string
     status?: "online" | "away" | "dnd"
+    isVerified?: boolean
+    isBanned?: boolean
     bio?: string
 }
 function Nav({ user: propUser }: { user: any }) {
@@ -87,7 +89,10 @@ function Nav({ user: propUser }: { user: any }) {
                             {user.image ? <Image src={user.image} alt='user' fill className='object-cover' /> : <div className='w-full h-full flex items-center justify-center bg-zinc-100'><User className='text-zinc-400' /></div>}
                         </div>
                         <div>
-                            <h2 className='text-xl font-bold text-white tracking-tight leading-tight'>{user.name}</h2>
+                            <div className='flex items-center gap-1.5'>
+                                <h2 className='text-xl font-bold text-white tracking-tight leading-tight'>{user.name}</h2>
+                                {user.isVerified && <ShieldCheck size={16} className="text-blue-400 fill-blue-400" />}
+                            </div>
                             <div className='flex items-center gap-2 mt-1'>
                                 <span className='px-2 py-0.5 bg-white/20 rounded-md text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md'>
                                     {user.role}
@@ -381,7 +386,10 @@ function Nav({ user: propUser }: { user: any }) {
                                         )}
                                     </div>
                                     <div className="overflow-hidden">
-                                        <div className='text-zinc-900 dark:text-white font-black truncate text-sm'>{user.name}</div>
+                                        <div className='flex items-center gap-1.5 text-zinc-900 dark:text-white font-black truncate text-sm'>
+                                            {user.name}
+                                            {user.isVerified && <ShieldCheck size={12} className="text-blue-500 fill-blue-500" />}
+                                        </div>
                                         <div className='text-[10px] text-primary font-black uppercase tracking-[0.2em]'>{user.role} Hub</div>
                                     </div>
                                 </div>

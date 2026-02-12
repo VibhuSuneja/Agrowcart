@@ -75,12 +75,25 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
                 Orders
               </button>
             </Link>
+            <Link href="/admin/users">
+              <button className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-sm hover:border-zinc-900 dark:hover:border-zinc-100 dark:hover:text-zinc-100 transition-all">
+                <Users size={14} />
+                Manage Users
+              </button>
+            </Link>
             <Link href="/admin/add-product">
               <button className="bg-green-600 text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-green-600/20 hover:bg-green-700 transition-all">
                 <Plus size={14} />
                 New
               </button>
             </Link>
+            <button
+              onClick={() => window.location.href = '/api/admin/export-orders'}
+              className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
+            >
+              <ArrowDownRight size={14} className="rotate-90" />
+              Export Data
+            </button>
           </div>
 
           <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 p-1.5 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800">

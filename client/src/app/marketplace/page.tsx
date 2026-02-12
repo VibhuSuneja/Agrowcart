@@ -7,6 +7,12 @@ import connectDb from '@/lib/db'
 import Product, { IProduct } from '@/models/product.model'
 import User from '@/models/user.model'
 import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: 'Marketplace | Smart Millet Sourcing',
+    description: 'Browse fresh, organic millets directly from verified farmers. AI-powered pricing and quality assurance for every harvest.',
+}
 
 export default async function Marketplace(props: {
     searchParams: Promise<{

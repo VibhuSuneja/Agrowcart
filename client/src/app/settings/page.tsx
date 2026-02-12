@@ -200,6 +200,12 @@ function SettingsPage() {
                                                     <ShieldCheck size={12} />
                                                     {userData.role} Account
                                                 </span>
+                                                {userData.isVerified && (
+                                                    <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20">
+                                                        <CheckCircle2 size={12} />
+                                                        Verified Official
+                                                    </span>
+                                                )}
                                                 <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${formData.status === 'online' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : formData.status === 'away' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-red-50 text-red-600 border-red-100'} text-[10px] font-black uppercase tracking-widest border`}>
                                                     <Circle size={8} fill="currentColor" />
                                                     {formData.status}

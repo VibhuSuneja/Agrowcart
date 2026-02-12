@@ -107,6 +107,8 @@ function Login() {
           toast.error("Wrong password! Please try again.")
         } else if (errorCode.includes("user does not exist") || errorCode.includes("not found")) {
           toast.error("User not found. Please check your email or register.")
+        } else if (errorCode.includes("account banned")) {
+          toast.error("Your account has been banned. Please contact support.")
         } else {
           toast.error("Login failed. Please check your credentials.")
         }

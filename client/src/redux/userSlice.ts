@@ -12,6 +12,8 @@ interface IUser {
     city?: string
     state?: string
     status?: "online" | "away" | "dnd"
+    isVerified?: boolean
+    isBanned?: boolean
 }
 interface IUserSlice {
     userData: IUser | null

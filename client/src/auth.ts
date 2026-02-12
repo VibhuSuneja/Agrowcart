@@ -26,6 +26,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!isMatch) {
           throw new Error("incorrect password")
         }
+        if (user.isBanned) {
+          throw new Error("account banned")
+        }
         return {
           id: user._id.toString(),
           email: user.email,
@@ -34,7 +37,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           image: user.image,
           bio: user.bio,
           status: user.status,
-          agreedToTerms: user.agreedToTerms
+          agreedToTerms: user.agreedToTerms,
+          isVerified: user.isVerified,
+          isBanned: user.isBanned
         }
 
       }
@@ -60,10 +65,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
         }
 
+        if (dbUser.isBanned) {
+          return false
+        }
+
         user.id = dbUser._id.toString()
         user.role = dbUser.role
         // @ts-ignore
         user.agreedToTerms = dbUser.agreedToTerms
+        // @ts-ignore
+        user.isVerified = dbUser.isVerified
+        // @ts-ignore
+        user.isBanned = dbUser.isBanned
       }
       return true
     },
@@ -78,6 +91,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.status = user.status
         // @ts-ignore
         token.agreedToTerms = user.agreedToTerms
+        // @ts-ignore
+        token.isVerified = user.isVerified
+        // @ts-ignore
+        token.isBanned = user.isBanned
       }
       if (trigger == "update") {
         if (session.name) token.name = session.name
@@ -102,6 +119,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.status = token.status as string
         // @ts-ignore
         session.user.agreedToTerms = token.agreedToTerms as string
+        // @ts-ignore
+        session.user.isVerified = token.isVerified as boolean
+        // @ts-ignore
+        session.user.isBanned = token.isBanned as boolean
       }
       return session
     },
