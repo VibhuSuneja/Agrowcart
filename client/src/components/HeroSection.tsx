@@ -70,6 +70,22 @@ function HeroSection() {
       aria-roledescription="carousel"
       aria-label="AgrowCart Highlights"
     >
+      {/* SSR-rendered hero image: visible immediately in initial HTML before JS hydrates.
+          This is the LCP element - it must NOT be behind AnimatePresence/motion.div
+          which only renders after client-side hydration completes. */}
+      <Image
+        src="/images/hero/hero-1.jpg"
+        fill
+        alt=''
+        priority
+        fetchPriority="high"
+        sizes="100vw"
+        quality={75}
+        className='object-cover'
+      />
+      <div className='absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/70' aria-hidden="true" />
+
+      {/* Animated carousel layers on top once JS hydrates */}
       <AnimatePresence mode='wait' initial={false}>
         <motion.div
           key={current}
@@ -85,7 +101,7 @@ function HeroSection() {
           <Image
             src={slides[current]?.bg}
             fill
-            alt='' // Decorative background
+            alt=''
             priority={current === 0}
             fetchPriority={current === 0 ? "high" : "auto"}
             sizes="100vw"
