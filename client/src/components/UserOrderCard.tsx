@@ -7,7 +7,7 @@ import {
     ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles, X,
     CheckCircle2, MessageSquare, Download
 } from 'lucide-react'
-import Image from 'next/image'
+import NextImage from 'next/image'
 import { getSocket } from '@/lib/socket'
 import { useRouter } from 'next/navigation'
 import jsPDF from 'jspdf'
@@ -77,35 +77,83 @@ function UserOrderCard({ order }: { order: IOrder }) {
         return () => { socket.off("order-status-update") }
     }, [order?._id])
 
-    const downloadInvoice = () => {
+    const downloadInvoice = async () => {
         const doc = new jsPDF()
 
-        // Header
-        doc.setFontSize(20)
-        doc.text("AgrowCart Invoice", 14, 22)
-        doc.setFontSize(10)
-        doc.text(`Order ID: ${order._id}`, 14, 30)
-        doc.text(`Date: ${new Date(order.createdAt!).toLocaleDateString()}`, 14, 35)
+        // Load Logo
+        const logoUrl = '/logo.png'
+        const logoImg = await new Promise<HTMLImageElement>((resolve) => {
+            const img = new Image()
+            img.src = logoUrl
+            img.onload = () => resolve(img)
+            img.onerror = () => resolve(new Image()) // Fallback to no logo
+        })
 
-        // Customer Details
-        doc.text("Bill To:", 14, 45)
+        // Add Logo
+        if (logoImg.width > 0) {
+            doc.addImage(logoImg, 'PNG', 14, 10, 30, 30) // x, y, w, h
+        }
+
+        // Header Text (AgrowCart)
+        doc.setFontSize(22)
         doc.setFont("helvetica", "bold")
-        doc.text(order.address.fullName, 14, 50)
+        doc.setTextColor(22, 163, 74) // Green color
+        doc.text("AgrowCart", 50, 20)
+
+        doc.setFontSize(10)
+        doc.setTextColor(100)
         doc.setFont("helvetica", "normal")
-        doc.text(order.address.fullAddress, 14, 55)
-        doc.text(`Mobile: ${order.address.mobile}`, 14, 60)
+        doc.text("Farm to Fork - Fresh & Organic", 50, 26)
+        doc.text("GSTIN: 29AAAAA0000A1Z5", 50, 31)
+        doc.text("Email: support@agrowcart.com", 50, 36)
+
+        // Invoice Details (Right Side)
+        doc.setTextColor(0)
+        doc.setFontSize(14)
+        doc.setFont("helvetica", "bold")
+        doc.text("INVOICE", 140, 20)
+
+        doc.setFontSize(10)
+        doc.setFont("helvetica", "normal")
+        doc.text(`Invoice No: INV-${order._id?.slice(-6).toUpperCase()}`, 140, 28)
+        doc.text(`Date: ${new Date(order.createdAt!).toLocaleDateString()}`, 140, 34)
+        doc.text(`Status: ${order.paymentMethod === 'online' || order.isPaid ? 'PAID' : 'PENDING'}`, 140, 40)
+
+        // Divider
+        doc.setDrawColor(200)
+        doc.line(14, 45, 196, 45)
+
+        // Bill To
+        doc.setFontSize(11)
+        doc.setFont("helvetica", "bold")
+        doc.text("Bill To:", 14, 55)
+        doc.setFont("helvetica", "normal")
+        doc.setFontSize(10)
+        doc.text(order.address.fullName, 14, 61)
+        doc.text(order.address.fullAddress, 14, 66, { maxWidth: 80 })
+        doc.text(`Mobile: ${order.address.mobile}`, 14, 80)
 
         // Table
-        const tableColumn = ["Item", "Quantity", "Unit", "Price", "Total"]
+        const tableColumn = ["Item", "Unit Price", "Qty", "Tax (5%)", "Total"]
         const tableRows: any[] = []
+        let subTotal = 0
 
         order.items.forEach(item => {
+            const price = Number(item.price)
+            const total = price * item.quantity
+            subTotal += total
+
+            // Assuming price is inclusive of tax for simplicity in display, 
+            // or we add tax. Let's calculate tax component for display.
+            // Tax = Total - (Total / 1.05)
+            const taxAmount = (total - (total / 1.05))
+
             const itemData = [
                 item.name,
-                item.quantity,
-                item.unit,
-                item.price,
-                Number(item.price) * item.quantity
+                `Rs. ${price.toFixed(2)}`,
+                `${item.quantity} ${item.unit}`,
+                `Rs. ${taxAmount.toFixed(2)}`,
+                `Rs. ${total.toFixed(2)}`
             ]
             tableRows.push(itemData)
         })
@@ -113,21 +161,61 @@ function UserOrderCard({ order }: { order: IOrder }) {
         autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
-            startY: 70,
+            startY: 90,
+            headStyles: { fillColor: [22, 163, 74] }, // Green header
+            styles: { fontSize: 9, cellPadding: 3 },
         })
 
-        // Total
+        // Calculations
+        const deliveryFee = order.totalAmount - subTotal
+        const gstTotal = subTotal - (subTotal / 1.05) // 5% included
+        const discountPromise = 0 // Placeholder for now
+
+        // Summary Section
         const finalY = (doc as any).lastAutoTable.finalY + 10
+        const rightX = 140
+
+        doc.setFontSize(10)
+
+        // Subtotal
+        doc.text("Subtotal:", rightX, finalY)
+        doc.text(`Rs. ${subTotal.toFixed(2)}`, 196, finalY, { align: 'right' })
+
+        // Delivery
+        doc.text("Delivery Charges:", rightX, finalY + 6)
+        doc.text(`Rs. ${deliveryFee > 0 ? deliveryFee.toFixed(2) : '0.00'}`, 196, finalY + 6, { align: 'right' })
+
+        // GST Breakdown (Information only, as it's included)
+        doc.setTextColor(100)
+        doc.setFontSize(8)
+        doc.text(`(Includes GST 5%: Rs. ${gstTotal.toFixed(2)})`, rightX, finalY + 11)
+        doc.setTextColor(0)
+        doc.setFontSize(10)
+
+        // Discount
+        doc.text("Discount:", rightX, finalY + 16)
+        doc.setTextColor(220, 38, 38) // Red for negative/discount
+        doc.text(`- Rs. ${discountPromise.toFixed(2)}`, 196, finalY + 16, { align: 'right' })
+        doc.setTextColor(0)
+
+        // Divider
+        doc.line(rightX, finalY + 20, 196, finalY + 20)
+
+        // Grand Total
         doc.setFontSize(12)
         doc.setFont("helvetica", "bold")
-        doc.text(`Total Amount: Rs. ${order.totalAmount}`, 14, finalY)
-        doc.setFontSize(10)
-        doc.setFont("helvetica", "normal")
-        doc.text(`Payment Method: ${order.paymentMethod.toUpperCase()}`, 14, finalY + 5)
-        doc.text(`Status: ${status.toUpperCase()}`, 14, finalY + 10)
+        doc.text("Grand Total:", rightX, finalY + 28)
+        doc.setTextColor(22, 163, 74)
+        doc.text(`Rs. ${order.totalAmount.toFixed(2)}`, 196, finalY + 28, { align: 'right' })
 
-        // Footer
-        doc.save(`invoice_${order._id}.pdf`)
+        // Footer terms
+        doc.setTextColor(100)
+        doc.setFontSize(8)
+        doc.setFont("helvetica", "normal")
+        doc.text("Thank you for supporting sustainable agriculture!", 105, 280, { align: 'center' })
+        doc.text("This is a computer-generated invoice.", 105, 285, { align: 'center' })
+
+        doc.save(`Invoice_AgrowCart_${order._id}.pdf`)
     }
 
     return (
@@ -300,7 +388,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                             <div key={index} className="flex items-center justify-between p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:border-green-200 transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className="w-16 h-16 bg-zinc-50 rounded-xl relative overflow-hidden border border-zinc-100">
-                                        <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
+                                        <NextImage src={item.image} alt={item.name} fill className="object-contain p-2" />
                                     </div>
                                     <div>
                                         <h4 className="font-black text-zinc-900 text-sm leading-tight">{item.name}</h4>
