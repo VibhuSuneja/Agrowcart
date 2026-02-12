@@ -115,6 +115,7 @@ export default function WeatherCard() {
                                 onClick={() => setIsSearchOpen(true)}
                                 className="p-1.5 bg-zinc-100 text-zinc-500 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-colors"
                                 title="Search Location"
+                                aria-label="Search location"
                             >
                                 <Search size={14} />
                             </button>
@@ -130,7 +131,7 @@ export default function WeatherCard() {
                                 placeholder="Enter City (e.g. Pune)..."
                                 className="w-full bg-zinc-100 border border-zinc-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-500/20 text-zinc-900"
                             />
-                            <button type="button" onClick={() => setIsSearchOpen(false)} className="p-2 bg-zinc-100 rounded-lg hover:bg-zinc-200">
+                            <button type="button" onClick={() => setIsSearchOpen(false)} className="p-2 bg-zinc-100 rounded-lg hover:bg-zinc-200" aria-label="Close search">
                                 <X size={14} className="text-zinc-500" />
                             </button>
                         </form>

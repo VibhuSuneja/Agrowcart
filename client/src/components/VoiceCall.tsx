@@ -194,10 +194,10 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                 <audio ref={remoteAudioRef} autoPlay className="hidden" />
 
                 <div className="flex items-center gap-4 justify-center pt-4">
-                    <button onClick={toggleMute} className={`p-5 rounded-2xl transition-all ${isMuted ? 'bg-white text-zinc-900' : 'bg-zinc-800 text-zinc-400'}`}>
+                    <button onClick={toggleMute} aria-label={isMuted ? "Unmute microphone" : "Mute microphone"} className={`p-5 rounded-2xl transition-all ${isMuted ? 'bg-white text-zinc-900' : 'bg-zinc-800 text-zinc-400'}`}>
                         {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
                     </button>
-                    <button onClick={stopCall} className="p-5 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition-all shadow-xl shadow-red-500/20">
+                    <button onClick={stopCall} aria-label="End call" className="p-5 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition-all shadow-xl shadow-red-500/20">
                         <PhoneOff size={28} />
                     </button>
                 </div>

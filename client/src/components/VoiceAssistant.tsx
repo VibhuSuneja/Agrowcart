@@ -73,6 +73,7 @@ export default function VoiceAssistant({ onCommand }: VoiceAssistantProps) {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleListening}
+                aria-label={isListening ? "Stop voice assistant" : "Start voice assistant"}
                 className={`p-4 md:p-5 rounded-full shadow-2xl flex items-center justify-center transition-all ${isListening ? 'bg-red-500 text-white shadow-red-500/40 animate-pulse' : 'bg-white text-zinc-900 shadow-zinc-900/10 border-4 border-zinc-100 hover:border-green-400'}`}
                 title="Voice Assistant"
             >

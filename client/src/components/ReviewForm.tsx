@@ -79,6 +79,7 @@ export default function ReviewForm({
                     {/* Close Button */}
                     <button
                         onClick={onClose}
+                        aria-label="Close review form"
                         className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition"
                     >
                         <X size={20} />
@@ -143,8 +144,8 @@ export default function ReviewForm({
                             disabled={loading || rating === 0 || comment.trim().length < 10}
                             whileTap={{ scale: 0.95 }}
                             className={`w-full py-3 px-6 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition ${loading || rating === 0 || comment.trim().length < 10
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:shadow-lg'
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:shadow-lg'
                                 }`}
                         >
                             {loading ? (

@@ -404,6 +404,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                         {order.items.length > 2 && (
                             <button
                                 onClick={() => setExpanded(!expanded)}
+                                aria-label={expanded ? "Show fewer items" : "Show more items"}
                                 className="w-full py-4 text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-green-600 transition-colors flex items-center justify-center gap-2 bg-zinc-50/50 rounded-2xl"
                             >
                                 {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

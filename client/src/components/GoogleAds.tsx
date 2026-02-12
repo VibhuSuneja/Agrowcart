@@ -10,13 +10,13 @@ export default function GoogleAds({ GOOGLE_ADS_ID }: { GOOGLE_ADS_ID: string }) 
                 async
                 src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADS_ID}`}
                 crossOrigin="anonymous"
-                strategy="afterInteractive"
+                strategy="lazyOnload"
             />
 
             {/* Google Ads Conversion Tracking */}
             <Script
                 id="google-ads-config"
-                strategy="afterInteractive"
+                strategy="lazyOnload"
                 dangerouslySetInnerHTML={{
                     __html: `
             window.dataLayer = window.dataLayer || [];
