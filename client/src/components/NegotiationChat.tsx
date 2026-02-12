@@ -362,7 +362,7 @@ export default function NegotiationChat({
                             className={`flex ${msg.senderId?.toString() === currentUserId ? "justify-end" : "justify-start"}`}
                         >
                             <div className={`max-w-[80%] p-4 rounded-2xl shadow-sm ${msg.senderId?.toString() === currentUserId
-                                ? "bg-zinc-900 text-white rounded-br-none"
+                                ? "bg-zinc-900 text-zinc-100 rounded-br-none"
                                 : "bg-white text-zinc-800 border border-zinc-100 rounded-bl-none"
                                 }`}>
                                 <p className="text-sm font-medium leading-relaxed">{msg.text}</p>
