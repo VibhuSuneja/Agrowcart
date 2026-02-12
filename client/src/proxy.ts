@@ -42,11 +42,9 @@ export const proxy = auth((req) => {
 
     // Allow unrestricted access to public routes, but run i18n middleware
     return i18nMiddleware(req);
-})
-
-export default proxy;
+});
 
 export const config = {
     // combine both matchers: i18n and protected routes
-    matcher: ['/', '/(hi|ta|te|kn|mr)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)']
+    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 };
