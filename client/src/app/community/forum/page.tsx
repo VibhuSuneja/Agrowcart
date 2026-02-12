@@ -57,10 +57,12 @@ function MilletForum() {
             setNewTitle('')
             setNewBody('')
             setNewTags('')
-            // Prepend new discussion to the top of the list immediately
             setDiscussions(prev => [res.data, ...prev])
-        } catch (error) {
-            toast.error('Failed to post question')
+        } catch (error: any) {
+            const message = error.response?.data?.message || 'Failed to post question';
+            const details = error.response?.data?.error ? `: ${error.response.data.error}` : '';
+            toast.error(`${message}${details}`);
+            console.error("Forum Post Error:", error);
         }
     }
 
