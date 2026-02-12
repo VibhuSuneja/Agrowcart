@@ -4,6 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
 import React, { FormEvent, useState, useEffect, Suspense } from 'react'
+import { motion, AnimatePresence } from "motion/react"
+import Image from 'next/image'
+import googleImage from "@/assets/google.png"
 import { TermsContent, PrivacyContent } from '@/components/LegalContent'
 import { startAuthentication } from '@simplewebauthn/browser'
 import axios from 'axios'
