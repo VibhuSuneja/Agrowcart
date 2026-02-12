@@ -41,6 +41,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
             socketUrl = `${protocol}://${hostname}${window.location.protocol === "https:" ? "" : ":4000"}`;
         }
 
+        if (!session?.user?.id) return
+
         console.log("🔌 SocketProvider: Initializing connection to", socketUrl)
 
         const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_SERVER || socketUrl, {

@@ -69,6 +69,12 @@ async function Home(props: {
 
   return (
     <>
+      <link
+        rel="preload"
+        as="image"
+        href="https://plus.unsplash.com/premium_photo-1663012860167-220d9d9c8aca?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        fetchPriority="high"
+      />
       <Nav user={plainUser} />
       <GeoUpdater userId={plainUser._id} />
       {user.role == "user" ? (

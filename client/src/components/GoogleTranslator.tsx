@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Languages, ChevronDown, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
+import Script from 'next/script'
 
 const LANGUAGES = [
     { code: 'en', label: 'English' },
@@ -33,14 +34,8 @@ export default function GoogleTranslator() {
             )
         }
 
-        // Load the script
-        const existingScript = document.querySelector('script[src*="translate.google.com"]')
-        if (!existingScript) {
-            const script = document.createElement('script')
-            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-            script.async = true
-            document.body.appendChild(script)
-        } else if ((window as any).google && (window as any).google.translate) {
+        // Initialize if already loaded
+        if ((window as any).google && (window as any).google.translate) {
             (window as any).googleTranslateElementInit()
         }
 
@@ -206,6 +201,13 @@ export default function GoogleTranslator() {
                     display: none !important;
                 }
             `}</style>
+            <Script
+                src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+                strategy="lazyOnload"
+            />
+
+
+
 
             {/* The Widget Container (Hidden but Present) */}
             <div id="google_translate_element" />
