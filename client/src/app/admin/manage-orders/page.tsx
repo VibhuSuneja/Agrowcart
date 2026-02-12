@@ -127,32 +127,36 @@ function ManageOrders() {
   }, [])
 
   return (
-    <div className='min-h-screen bg-zinc-50 w-full'>
-      <div className='fixed top-0 left-0 w-full backdrop-blur-3xl bg-white/70 shadow-sm border-b border-zinc-100 z-50'>
+    <div className='min-h-screen bg-zinc-50 dark:bg-zinc-950 w-full'>
+      <div className='fixed top-0 left-0 w-full backdrop-blur-3xl bg-white/70 dark:bg-zinc-900/70 shadow-sm border-b border-zinc-100 dark:border-zinc-800 z-50'>
         <div className='max-w-6xl mx-auto flex items-center justify-between px-6 py-4'>
           <div className="flex items-center gap-4">
-            <button className='p-2 bg-zinc-100 rounded-xl hover:bg-zinc-200 active:scale-95 transition' onClick={() => router.push("/")}>
-              <ArrowLeft size={20} className="text-zinc-600" />
+            <button className='p-2 bg-zinc-100 dark:bg-zinc-800 rounded-xl hover:bg-zinc-200 dark:hover:bg-zinc-700 active:scale-95 transition' onClick={() => router.push("/")}>
+              <ArrowLeft size={20} className="text-zinc-600 dark:text-zinc-400" />
             </button>
-            <h1 className="text-2xl font-black text-zinc-900 tracking-tight">Manage Orders</h1>
+            <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">Manage Orders</h1>
           </div>
-          <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-full border border-green-100">
-            <Truck size={14} className="text-green-600" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-green-700">{partners.length} Agents Live</span>
+          <div className="flex items-center gap-2 bg-green-50 dark:bg-green-500/10 px-4 py-2 rounded-full border border-green-100 dark:border-green-500/20">
+            <Truck size={14} className="text-green-600 dark:text-green-400" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-green-700 dark:text-green-400">{partners.length} Agents Live</span>
           </div>
         </div>
       </div>
 
       <div className='max-w-6xl mx-auto px-6 pt-24 pb-16 space-y-10'>
         {partners.length > 0 && (
-          <LogisticsGlobalMap partners={partners} />
+          <div className="rounded-[2.5rem] overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-2xl">
+            <LogisticsGlobalMap partners={partners} />
+          </div>
         )}
 
         <div className='space-y-6'>
-          <h2 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400 pl-2">Real-time Order Queue</h2>
-          {orders?.map((order, index) => (
-            <AdminOrderCard key={order._id?.toString() || index} order={order} />
-          ))}
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-500 pl-2">Real-time Order Queue</h2>
+          <div className="grid grid-cols-1 gap-6">
+            {orders?.map((order, index) => (
+              <AdminOrderCard key={order._id?.toString() || index} order={order} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -269,22 +269,41 @@ function UserOrderCard({ order }: { order: IOrder }) {
                     </div>
 
                     {status === 'delivered' && (
-                        <div className="p-6 bg-green-50 border border-green-100 rounded-[2rem] flex items-center gap-6">
-                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-green-600 shadow-sm border border-green-100">
-                                <Sparkles size={24} />
-                            </div>
-                            <div>
-                                <h4 className="font-black text-green-700 tracking-tight">Order Fulfilled</h4>
-                                <p className="text-xs text-green-600/70 font-medium mb-3">Thank you for supporting sustainable agriculture.</p>
+                        <div className="p-6 bg-zinc-900 text-white rounded-[2.5rem] relative overflow-hidden shadow-2xl border border-white/5">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-2xl -mr-16 -mt-16" />
+                            <div className="relative">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center text-green-400 border border-green-500/30">
+                                            <CheckCircle2 size={24} />
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest leading-none">Batch Status</div>
+                                            <div className="text-xl font-black tracking-tight mt-1">Batch Secured</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[9px] font-black bg-green-500/20 text-green-400 px-2 py-1 rounded-md border border-green-500/30 uppercase tracking-widest leading-none mb-1">Verified</span>
+                                        <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Digital Twin Active</span>
+                                    </div>
+                                </div>
+
                                 <div className="flex gap-2">
                                     <button
-                                        onClick={() => router.push(`/traceability/${order._id}`)}
-                                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
+                                        onClick={() => router.push(`/user/track-order/${order._id}`)}
+                                        className="flex-1 bg-white/10 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
                                     >
-                                        <Sparkles size={12} className="text-amber-400" />
-                                        Trace Farm-to-Fork
+                                        <MessageSquare size={14} />
+                                        Chat History
                                     </button>
-                                    <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center p-1 border border-green-100 shrink-0">
+                                    <button
+                                        onClick={() => router.push(`/traceability/${order._id}`)}
+                                        className="flex-1 bg-green-600 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
+                                    >
+                                        <Sparkles size={14} className="text-amber-400" />
+                                        Trace Lifecycle
+                                    </button>
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 border border-green-100 shrink-0">
                                         <img
                                             src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
                                             alt="Scan"
@@ -295,6 +314,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
                             </div>
                         </div>
                     )}
+
 
                     {status === 'cancelled' && (
                         <div className="p-6 bg-red-50 border border-red-100 rounded-[2rem] flex items-center gap-6">

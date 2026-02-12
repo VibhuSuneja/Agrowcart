@@ -217,57 +217,57 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   }
 
   return (
-    <div className='w-full min-h-screen bg-linear-to-b from-green-50 to-white'>
+    <div className='w-full min-h-screen bg-zinc-50 dark:bg-zinc-950'>
       <Nav user={userData as any} />
       <div className='max-w-2xl mx-auto pb-24 pt-24'>
-        <div className='sticky top-0 bg-white/80 backdrop-blur-xl p-4 border-b shadow flex gap-3 items-center z-999'>
-          <button className='p-2 bg-green-100 rounded-full' onClick={() => router.push('/user/my-orders')}><ArrowLeft className="text-green-700" size={20} /></button>
+        <div className='sticky top-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 border-b border-zinc-100 dark:border-zinc-800 shadow flex gap-3 items-center z-50'>
+          <button className='p-2 bg-green-100 dark:bg-zinc-800 rounded-full' onClick={() => router.push('/user/my-orders')}><ArrowLeft className="text-green-700 dark:text-green-400" size={20} /></button>
           <div>
-            <h2 className='text-xl font-bold'>Track Order</h2>
-            <p className='text-sm text-gray-600'>order#{order?._id?.toString().slice(-6)} <span className='text-green-700 font-semibold'>{order?.status}</span></p>
+            <h2 className='text-xl font-black text-zinc-900 dark:text-zinc-100'>Track Order</h2>
+            <p className='text-xs font-bold text-zinc-500 uppercase tracking-widest'>order#{order?._id?.toString().slice(-6)} <span className='text-green-700 dark:text-green-500 font-black ml-2'>{order?.status}</span></p>
           </div>
 
         </div>
         <div className='px-4 mt-6 space-y-4'>
-          <div className='rounded-3xl overflow-hidden border shadow bg-white p-1'>
+          <div className='rounded-[2.5rem] overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 p-1'>
             <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation}>
               {order?.status === "out of delivery" && order?.deliveryOtp && (
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className='bg-green-50 rounded-2xl p-3 border border-green-100 flex items-center gap-4 shadow-sm'
+                  className='bg-green-50 dark:bg-green-500/10 rounded-2xl p-3 border border-green-100 dark:border-green-500/20 flex items-center gap-4 shadow-sm'
                 >
-                  <div className="bg-white px-3 py-2 rounded-xl shadow-xs border border-green-100 text-center">
+                  <div className="bg-white dark:bg-zinc-900 px-3 py-2 rounded-xl shadow-xs border border-green-100 dark:border-green-500/20 text-center">
                     <span className='text-[9px] font-bold uppercase text-zinc-400 block leading-none mb-1'>PIN</span>
-                    <span className='text-lg font-black text-green-600 tracking-[0.2em] leading-none'>{order.deliveryOtp}</span>
+                    <span className='text-lg font-black text-green-600 dark:text-green-400 tracking-[0.2em] leading-none'>{order.deliveryOtp}</span>
                   </div>
                   <div className='hidden sm:block'>
-                    <p className='text-xs text-green-800 font-bold'>D-OTP Active</p>
-                    <p className='text-[10px] text-green-600 leading-tight'>Share with partner only during handover.</p>
+                    <p className='text-xs text-green-800 dark:text-green-300 font-bold'>D-OTP Active</p>
+                    <p className='text-[10px] text-green-600 dark:text-green-500 leading-tight'>Share with partner only during handover.</p>
                   </div>
                 </motion.div>
               )}
             </LiveMap>
           </div>
 
-          <div className='bg-white rounded-3xl shadow-lg border p-4 h-[430px] flex flex-col'>
+          <div className='bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 p-6 h-[480px] flex flex-col'>
 
-            <div className='flex justify-between items-center mb-3'>
-              <span className='font-semibold text-gray-700 text-sm'>Quick Replies</span>
+            <div className='flex justify-between items-center mb-4'>
+              <span className='font-black text-zinc-400 text-[10px] uppercase tracking-[0.2em]'>Quick Replies</span>
               <motion.button
                 disabled={loading}
                 whileTap={{ scale: 0.9 }}
-                className="px-3 py-1 text-xs flex items-center gap-1 bg-purple-100 text-purple-700 rounded-full shadow-sm border border-purple-200 cursor-pointer"
+                className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 bg-purple-100 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 rounded-full shadow-sm border border-purple-200 dark:border-purple-500/20 cursor-pointer"
                 onClick={getSuggestion}
               ><Sparkle size={14} />{loading ? <Loader className="w-5 h-5 animate-spin" /> : "AI suggest"}</motion.button>
             </div>
 
-            <div className='flex gap-2 flex-wrap mb-3'>
+            <div className='flex gap-2 flex-wrap mb-4'>
               {suggestions.map((s, i) => (
                 <motion.div
                   key={s}
                   whileTap={{ scale: 0.92 }}
-                  className="px-3 py-1 text-xs bg-green-50 border border-green-200 cursor-pointer text-green-700 rounded-full"
+                  className="px-4 py-2 text-[10px] font-bold bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 cursor-pointer text-zinc-600 dark:text-zinc-400 rounded-full hover:border-green-400 transition-all"
                   onClick={() => setNewMessage(s)}
                 >
                   {s}
@@ -275,24 +275,24 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
               ))}
             </div>
 
-            <div className='flex-1 overflow-y-auto p-2 space-y-3' ref={chatBoxRef}>
+            <div className='flex-1 overflow-y-auto p-2 space-y-4 mb-4 scrollbar-hide' ref={chatBoxRef}>
               <AnimatePresence>
                 {messages?.map((msg, index) => (
                   <motion.div
-                    key={msg._id?.toString()}
+                    key={msg._id?.toString() || index}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`flex ${msg.senderId.toString() == userData?._id ? "justify-end" : "justify-start"}`}
                   >
-                    <div className={`px-4 py-2 max-w-[75%] rounded-2xl shadow 
+                    <div className={`px-5 py-3 max-w-[80%] rounded-2xl shadow-xl 
                   ${msg.senderId.toString() === userData?._id
-                        ? "bg-green-600 text-white rounded-br-none"
-                        : "bg-gray-100 text-gray-800 rounded-bl-none"
+                        ? "bg-zinc-900 text-white rounded-br-none"
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-bl-none"
                       }`}>
-                      <p >{msg.text}</p>
-                      <p className='text-[10px] opacity-70 mt-1 text-right'>{msg.time}</p>
+                      <p className="text-sm font-medium">{msg.text}</p>
+                      <p className='text-[9px] font-bold opacity-40 mt-1 text-right uppercase tracking-widest'>{msg.time}</p>
                     </div>
 
                   </motion.div>
@@ -301,9 +301,9 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
             </div>
 
 
-            <div className='flex gap-2 mt-3 border-t pt-3'>
-              <input type="text" placeholder='Type a Message...' className='flex-1 bg-gray-100 px-4 py-2 rounded-xl outline-none focus:ring-2 focus:ring-green-500' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
-              <button className='bg-green-600 hover:bg-green-700 p-3 rounded-xl text-white' onClick={sendMsg}><Send size={18} /></button>
+            <div className='flex gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800'>
+              <input type="text" placeholder='Type a Message...' className='flex-1 bg-zinc-50 dark:bg-zinc-950 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-400 transition-all text-sm font-medium' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+              <button className='bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-4 rounded-2xl transition-all' onClick={sendMsg}><Send size={20} /></button>
             </div>
 
           </div>

@@ -21,13 +21,20 @@ export async function POST(req: NextRequest) {
 
         let query = {}
         if (roomId) {
-            query = { roomId }
-        } else if (userId) {
-            // Delete all chats starting with this userId (negotiation:userId:...) or sent by this user
+            // Robust roomId matching
+            const roomIdStr = roomId.toString()
             query = {
                 $or: [
-                    { senderId: userId },
-                    { roomId: { $regex: userId, $options: 'i' } }
+                    { roomId: roomIdStr },
+                    { roomId: { $regex: roomIdStr, $options: 'i' } }
+                ]
+            }
+        } else if (userId) {
+            const userIdStr = userId.toString()
+            query = {
+                $or: [
+                    { senderId: userIdStr },
+                    { roomId: { $regex: userIdStr, $options: 'i' } }
                 ]
             }
         }
@@ -35,7 +42,7 @@ export async function POST(req: NextRequest) {
         const result = await Message.deleteMany(query)
 
         return NextResponse.json({
-            message: "Chats deleted successfully",
+            message: "Chats purged from system",
             deletedCount: result.deletedCount
         }, { status: 200 })
 
