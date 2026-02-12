@@ -6,6 +6,8 @@ import axios from 'axios'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 interface IChatMessage {
     id: string
@@ -29,6 +31,7 @@ function GlobalChatBot() {
     const [isListening, setIsListening] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const router = useRouter()
 
     const startListening = () => {
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -45,11 +48,32 @@ function GlobalChatBot() {
 
         recognition.onstart = () => setIsListening(true)
         recognition.onend = () => setIsListening(false)
-        recognition.onerror = () => setIsListening(false)
+        recognition.onerror = (event: any) => {
+            setIsListening(false)
+            if (event.error === 'no-speech') {
+                toast.error("Sorry, I didn't catch that. Please try again.")
+            } else if (event.error === 'not-allowed') {
+                toast.error("Microphone access denied. Please enable permissions.")
+            } else {
+                toast.error("Voice recognition error. Please type your message.")
+            }
+        }
 
         recognition.onresult = (event: any) => {
-            const transcript = event.results[0][0].transcript
-            setInput(prev => (prev ? prev + " " + transcript : transcript))
+            const transcript = event.results[0][0].transcript.toLowerCase()
+
+            // Voice Command: Navigation
+            if (transcript.includes("navigate to marketplace") || transcript.includes("go to marketplace")) {
+                toast.success("Navigating to Marketplace...")
+                speak("Taking you to the marketplace.")
+                router.push('/marketplace') // Assuming correct route is /user/marketplace or /marketplace? Checking typical structure.
+                // Assuming /user/marketplace based on checkout being /user/checkout
+                setIsOpen(false)
+                return
+            }
+
+            // Default: Type into input
+            setInput(prev => (prev ? prev + " " + event.results[0][0].transcript : event.results[0][0].transcript))
         }
 
         recognition.start()
