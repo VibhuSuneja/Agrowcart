@@ -1,3 +1,4 @@
+'use client'
 import AdminOrderCard from '@/components/AdminOrderCard'
 import { getSocket } from '@/lib/socket'
 import dynamic from 'next/dynamic'
