@@ -29,6 +29,9 @@ function Checkout() {
     const [position, setPosition] = useState<[number, number] | null>(null)
     const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod")
     const [orderLoading, setOrderLoading] = useState(false)
+    const [savedAddresses, setSavedAddresses] = useState<any[]>([])
+    const [showSavedAddresses, setShowSavedAddresses] = useState(false)
+    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -42,8 +45,50 @@ function Checkout() {
     useEffect(() => {
         if (userData) {
             setAddress((prev) => ({ ...prev, fullName: userData?.name || "", mobile: userData?.mobile || "" }))
+            fetchSavedAddresses()
         }
     }, [userData])
+
+    const fetchSavedAddresses = async () => {
+        try {
+            const res = await axios.get('/api/user/address')
+            if (res.data.success) {
+                setSavedAddresses(res.data.addresses)
+            }
+        } catch (error) {
+            console.error("Failed to fetch saved addresses", error)
+        }
+    }
+
+    const handleSelectAddress = (savedAddr: any) => {
+        setAddress({
+            fullName: savedAddr.fullName,
+            mobile: savedAddr.mobile,
+            city: savedAddr.city,
+            state: savedAddr.state,
+            pincode: savedAddr.pincode,
+            fullAddress: savedAddr.fullAddress
+        })
+        setPosition([savedAddr.latitude, savedAddr.longitude])
+        setSelectedAddressId(savedAddr._id)
+        setShowSavedAddresses(false)
+        toast.success("Address selected")
+    }
+
+    const saveAddress = async () => {
+        if (!position) return
+        try {
+            await axios.post('/api/user/address', {
+                ...address,
+                latitude: position[0],
+                longitude: position[1],
+                isDefault: savedAddresses.length === 0
+            })
+            fetchSavedAddresses()
+        } catch (error) {
+            console.error("Failed to save address", error)
+        }
+    }
 
     const handleSearchQuery = async () => {
         if (!searchQuery) return
@@ -90,6 +135,12 @@ function Checkout() {
 
         try {
             setOrderLoading(true)
+
+            // Auto-save address if it's new (not selected from list)
+            if (!selectedAddressId) {
+                await saveAddress()
+            }
+
             await axios.post("/api/user/order", {
                 userId: userData?._id,
                 items: cartData.map(item => ({
@@ -119,6 +170,12 @@ function Checkout() {
 
         try {
             setOrderLoading(true)
+
+            // Auto-save address if it's new
+            if (!selectedAddressId) {
+                await saveAddress()
+            }
+
             const result = await axios.post("/api/user/payment", {
                 userId: userData?._id,
                 items: cartData.map(item => ({
@@ -190,7 +247,43 @@ function Checkout() {
                                     <h2 className="text-2xl font-black text-zinc-900 tracking-tight">Delivery Details</h2>
                                     <p className="text-zinc-500 text-sm font-medium">Where should we deliver your millets?</p>
                                 </div>
+                                {savedAddresses.length > 0 && (
+                                    <button
+                                        onClick={() => setShowSavedAddresses(!showSavedAddresses)}
+                                        className="text-sm font-bold text-primary hover:underline"
+                                    >
+                                        {showSavedAddresses ? "Hide Saved Addresses" : "Select from Saved Addresses"}
+                                    </button>
+                                )}
                             </div>
+
+                            <AnimatePresence>
+                                {showSavedAddresses && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="mb-8 overflow-hidden"
+                                    >
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {savedAddresses.map((addr) => (
+                                                <div
+                                                    key={addr._id}
+                                                    onClick={() => handleSelectAddress(addr)}
+                                                    className={`cursor-pointer p-4 rounded-2xl border-2 transition-all ${selectedAddressId === addr._id
+                                                            ? "border-green-500 bg-green-50"
+                                                            : "border-zinc-100 hover:border-green-200 bg-zinc-50"
+                                                        }`}
+                                                >
+                                                    <div className="font-bold text-zinc-900 text-sm">{addr.fullName}</div>
+                                                    <div className="text-xs text-zinc-500 mt-1 line-clamp-2">{addr.fullAddress}</div>
+                                                    <div className="text-xs text-zinc-400 mt-2">{addr.city}, {addr.pincode}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
                             <div className='space-y-4'>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
