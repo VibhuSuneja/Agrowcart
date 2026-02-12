@@ -69,12 +69,12 @@ async function Home(props: {
 
   return (
     <>
-      <link
-        rel="preload"
-        as="image"
-        href="/images/hero/hero-1.jpg"
-        fetchPriority="high"
-      />
+      {/* NOTE: Do NOT manually preload /images/hero/hero-1.jpg here.
+          Next.js Image component with priority={true} automatically adds
+          the correct preload for the optimized /_next/image URL.
+          A manual preload here fetches the raw JPG (267KB) which is a
+          DIFFERENT URL than what <Image> requests, wasting bandwidth
+          and providing zero preload benefit for the actual LCP element. */}
       <Nav user={plainUser} />
       <GeoUpdater userId={plainUser._id} />
       {user.role == "user" ? (
