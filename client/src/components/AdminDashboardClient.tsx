@@ -24,7 +24,7 @@ type propType = {
 function AdminDashboardClient({ earning, stats, chartData }: propType) {
   const [filter, setFilter] = useState<"today" | "sevenDays" | "total">("total")
 
-  const currenEarning = filter === "today" ? earning.today
+  const currentEarning = filter === "today" ? earning.today
     : filter === "sevenDays" ? earning.sevenDays
       : earning.total
 
@@ -48,7 +48,7 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
   }))
 
   return (
-    <div className='min-h-screen bg-zinc-50 pb-20 pt-[120px]'>
+    <div className='min-h-screen bg-zinc-50 dark:bg-zinc-950 pb-20 pt-[120px]'>
       <div className='w-[95%] md:w-[85%] mx-auto space-y-10'>
 
         {/* Header Section */}
@@ -58,8 +58,8 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
               <LayoutDashboard size={14} />
               <span>Platform Administration</span>
             </div>
-            <h1 className="text-4xl font-black text-zinc-900 tracking-tight">Control Center</h1>
-            <p className="text-zinc-500 text-sm font-medium">Monitoring millet ecosystem metrics and chain performance.</p>
+            <h1 className="text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">Control Center</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Monitoring millet ecosystem metrics and chain performance.</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -70,7 +70,7 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
               </button>
             </Link>
             <Link href="/admin/manage-orders">
-              <button className="bg-white border border-zinc-200 text-zinc-600 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-sm hover:border-zinc-900 hover:text-zinc-900 transition-all">
+              <button className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-sm hover:border-zinc-900 dark:hover:border-zinc-100 dark:hover:text-zinc-100 transition-all">
                 <ClipboardCheck size={14} />
                 Orders
               </button>
@@ -83,7 +83,7 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-zinc-100">
+          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 p-1.5 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800">
             {(['today', 'sevenDays', 'total'] as const).map((f) => (
               <button
                 key={f}
@@ -114,7 +114,7 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
               </div>
               <h2 className='text-zinc-400 text-sm font-medium mb-1'>{title}</h2>
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black tracking-tighter text-white">₹{currenEarning.toLocaleString()}</span>
+                <span className="text-5xl font-black tracking-tighter text-white">₹{currentEarning.toLocaleString()}</span>
                 <span className="text-green-400 font-bold text-sm bg-green-400/10 px-2 py-0.5 rounded-lg flex items-center gap-0.5">
                   <ArrowUpRight size={14} /> 12%
                 </span>
@@ -132,16 +132,16 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-2 bg-white p-8 rounded-[3rem] shadow-2xl shadow-zinc-900/5 border border-zinc-100"
+            className="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-[3rem] shadow-2xl shadow-zinc-900/5 border border-zinc-100 dark:border-zinc-800"
           >
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className='text-xl font-black text-zinc-900 tracking-tight'>Orders Velocity</h3>
-                <p className="text-zinc-400 text-xs font-medium">Daily order frequency for the current week.</p>
+                <h3 className='text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight'>Orders Velocity</h3>
+                <p className="text-zinc-400 dark:text-zinc-500 text-xs font-medium">Daily order frequency for the current week.</p>
               </div>
-              <div className="flex items-center gap-2 bg-zinc-50 px-3 py-1.5 rounded-xl border border-zinc-100">
+              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-100 dark:border-zinc-800">
                 <Calendar size={14} className="text-zinc-400" />
-                <span className="text-[10px] font-black uppercase text-zinc-500">Weekly Stats</span>
+                <span className="text-[10px] font-black uppercase text-zinc-500 dark:text-zinc-400">Weekly Stats</span>
               </div>
             </div>
 
@@ -181,15 +181,15 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white border border-zinc-100 shadow-xl shadow-zinc-900/5 rounded-[2.5rem] p-8 flex flex-col gap-6 relative group transition-all"
+                className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-900/5 rounded-[2.5rem] p-8 flex flex-col gap-6 relative group transition-all"
               >
                 <div className={`w-14 h-14 rounded-2xl ${s.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                   <Icon size={28} />
                 </div>
                 <div>
-                  <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-1">{s.title}</p>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest mb-1">{s.title}</p>
                   <div className="flex items-end justify-between">
-                    <p className="text-3xl font-black text-zinc-900 tracking-tight">{s.value.toLocaleString()}</p>
+                    <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">{s.value.toLocaleString()}</p>
                     <div className={`flex items-center gap-0.5 text-[10px] font-black ${s.isUp ? 'text-green-500' : 'text-red-500'}`}>
                       {s.isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                       {s.trend}

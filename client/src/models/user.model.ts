@@ -18,15 +18,8 @@ export interface IUser {
     role: "user" | "deliveryBoy" | "admin" | "farmer" | "shg" | "buyer" | "startup" | "processor"
     image?: string,
     location?: {
-        type: {
-            type: StringConstructor;
-            enum: string[];
-            default: string;
-        };
-        coordinates: {
-            type: NumberConstructor[];
-            default: number[];
-        };
+        type: string;
+        coordinates: number[];
     },
     socketId: string | null
     isOnline: Boolean

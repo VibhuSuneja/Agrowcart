@@ -107,7 +107,7 @@ function ViewProducts() {
 
     }
     return (
-        <div className="pt-4 w-[95%] md:w-[85%] mx-auto pb-20">
+        <div className="pt-4 w-[95%] md:w-[85%] mx-auto pb-20 min-h-screen">
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -116,18 +116,18 @@ function ViewProducts() {
             >
                 <button
                     onClick={() => router.push("/")}
-                    className='flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 font-semibold px-4 py-2 rounded-full transition w-full sm:w-auto'
+                    className='flex items-center justify-center gap-2 bg-green-100 dark:bg-green-900/40 hover:bg-green-200 dark:hover:bg-green-900/60 text-green-700 dark:text-green-400 font-semibold px-4 py-2 rounded-full transition w-full sm:w-auto'
                 ><ArrowLeft size={18} /><span>Back</span></button>
-                <h1 className='text-2xl md:text-3xl font-extrabold text-green-700 flex items-center justify-center gap-2'><Package size={28} className='text-green-600' />Manage Products</h1>
+                <h1 className='text-2xl md:text-3xl font-extrabold text-green-700 dark:text-green-500 flex items-center justify-center gap-2'><Package size={28} className='text-green-600' />Manage Products</h1>
             </motion.div>
 
             <motion.form initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
                 onSubmit={handleSearch}
-                className="flex items-center bg-white border border-gray-200 rounded-full px-5 py-3 shadow-sm mb-10 hover:shadow-lg transition-all max-w-lg mx-auto w-full">
-                <Search className="text-gray-500 w-5 h-5 mr-2" />
-                <input type="text" className='w-full outline-none text-gray-700 placeholder-gray-400' placeholder='Search by name or category...' value={search} onChange={(e) => setSearch(e.target.value)} />
+                className="flex items-center bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-full px-5 py-3 shadow-sm mb-10 hover:shadow-lg transition-all max-w-lg mx-auto w-full">
+                <Search className="text-gray-500 dark:text-gray-400 w-5 h-5 mr-2" />
+                <input type="text" className='w-full outline-none bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500' placeholder='Search by name or category...' value={search} onChange={(e) => setSearch(e.target.value)} />
             </motion.form>
             <div className='space-y-4'>
                 {fillterd?.map((g, i) => (
@@ -135,7 +135,7 @@ function ViewProducts() {
                         key={i}
                         whileHover={{ scale: 1.01 }}
                         transition={{ type: "spring", stiffness: 100 }}
-                        className="bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-5 p-5 transition-all"
+                        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-md hover:shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center sm:items-start gap-5 p-5 transition-all"
                     >
                         <div className='relative w-full sm:w-44 aspect-square rounded-xl overflow-hidden border border-gray-200'>
                             <Image
@@ -148,12 +148,12 @@ function ViewProducts() {
 
                         <div className='flex-1 flex flex-col justify-between w-full'>
                             <div>
-                                <h3 className='font-semibold text-gray-800 text-lg truncate flex items-center gap-2'>
+                                <h3 className='font-semibold text-gray-800 dark:text-zinc-100 text-lg truncate flex items-center gap-2'>
                                     {g.name}
-                                    {g.isCompliant && <span className="text-[10px] bg-green-100 text-green-700 font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Verified</span>}
+                                    {g.isCompliant && <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Verified</span>}
                                 </h3>
                                 <div className="flex flex-col gap-1">
-                                    <p className='text-zinc-500 text-xs font-bold capitalize'>{g.category}</p>
+                                    <p className='text-zinc-500 dark:text-zinc-400 text-xs font-bold capitalize'>{g.category}</p>
                                     <p className='text-zinc-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5'>
                                         <MapPin size={12} className="text-zinc-300" />
                                         {g.originCity ? `${g.originCity}, ` : ''}{g.originState || 'Haryana'}
@@ -189,11 +189,11 @@ function ViewProducts() {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 40, opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-7 relative"
+                            className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-7 relative border border-gray-100 dark:border-zinc-800"
                         >
                             <div className='flex justify-between items-center mb-4'>
-                                <h2 className='text-2xl font-bold text-green-700'>Edit Product</h2>
-                                <button className='text-gray-600 hover:text-red-600' onClick={() => setEditing(null)}>
+                                <h2 className='text-2xl font-bold text-green-700 dark:text-green-500'>Edit Product</h2>
+                                <button className='text-gray-600 dark:text-gray-400 hover:text-red-600' onClick={() => setEditing(null)}>
                                     <X size={18} />
                                 </button>
                             </div>
@@ -214,7 +214,7 @@ function ViewProducts() {
                                     placeholder='Enter Product Name'
                                     value={editing.name}
                                     onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none' />
+                                    className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-gray-100 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none' />
 
                                 <select
                                     className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white'
@@ -262,7 +262,7 @@ function ViewProducts() {
                                     className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none resize-none'
                                     rows={4}
                                 />
-                                <div className="p-4 bg-zinc-50 rounded-xl space-y-3">
+                                <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-bold text-zinc-600">Verification Status</span>
                                         <button

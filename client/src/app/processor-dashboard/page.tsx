@@ -712,10 +712,6 @@ function ProcessorDashboard() {
                                                     const img = new Image();
                                                     img.src = URL.createObjectURL(file);
                                                     img.onload = () => {
-                                                        if (img.width < 800 || img.height < 600) {
-                                                            toast.error(t('errorLowRes'));
-                                                            return;
-                                                        }
                                                         setNewCrop({
                                                             ...newCrop,
                                                             image: file,

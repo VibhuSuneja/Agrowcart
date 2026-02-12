@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
-import { ChevronDown, ChevronUp, CreditCard, MapPin, Package, Phone, Truck, User, UserCheck } from 'lucide-react'
+import { ChevronDown, ChevronUp, CreditCard, MapPin, Package, Phone, Truck, User, UserCheck, MessageSquareX, Trash2 } from 'lucide-react'
+import toast from 'react-hot-toast'
 import Image from 'next/image'
 import axios from 'axios'
 
 import { IUser } from '@/models/user.model'
 import { getSocket } from '@/lib/socket'
+import dynamic from 'next/dynamic'
+const LiveMap = dynamic(() => import('./LiveMap'), { ssr: false })
+
 interface IOrder {
     _id?: string
     user: string
@@ -44,6 +48,8 @@ interface IOrder {
 function AdminOrderCard({ order }: { order: IOrder }) {
     const [expanded, setExpanded] = useState(false)
     const [status, setStatus] = useState<string>("pending")
+    const [showTrack, setShowTrack] = useState(false)
+    const [liveLocation, setLiveLocation] = useState<{ latitude: number, longitude: number } | null>(null)
     const statusOptions = ["pending", "out of delivery", "cancelled"]
 
     const updateStatus = async (orderId: string, status: string) => {
@@ -56,10 +62,26 @@ function AdminOrderCard({ order }: { order: IOrder }) {
             console.log(error)
         }
     }
+    const deleteOrderChat = async () => {
+        if (!confirm("Are you sure you want to purge all chat history for this order? This cannot be undone.")) return
+        try {
+            const result = await axios.post('/api/admin/delete-chats', { roomId: order._id })
+            toast.success(`Purged ${result.data.deletedCount} chat messages!`)
+        } catch (error) {
+            toast.error("Failed to delete chats")
+        }
+    }
 
     useEffect(() => {
         setStatus(order.status)
+        if (order.assignedDeliveryBoy?.location?.coordinates) {
+            setLiveLocation({
+                latitude: order.assignedDeliveryBoy.location.coordinates[1],
+                longitude: order.assignedDeliveryBoy.location.coordinates[0]
+            })
+        }
     }, [order])
+
     useEffect((): any => {
         const socket = getSocket()
         socket.on("order-status-update", (data) => {
@@ -69,6 +91,24 @@ function AdminOrderCard({ order }: { order: IOrder }) {
         })
         return () => socket.off("order-status-update")
     }, [])
+
+    useEffect(() => {
+        if (!showTrack || !order.assignedDeliveryBoy?._id) return
+        const socket = getSocket()
+        const handleLocationUpdate = (data: any) => {
+            if (data.userId === order.assignedDeliveryBoy?._id?.toString()) {
+                setLiveLocation({
+                    latitude: data.location.coordinates?.[1] ?? data.location.latitude,
+                    longitude: data.location.coordinates?.[0] ?? data.location.longitude,
+                })
+            }
+        }
+        socket.on("update-deliveryBoy-location", handleLocationUpdate)
+        return () => {
+            socket.off("update-deliveryBoy-location", handleLocationUpdate)
+        }
+    }, [showTrack, order.assignedDeliveryBoy?._id])
+
     return (
         <motion.div
             key={order._id?.toString()}
@@ -116,17 +156,42 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                         <span>{order.paymentMethod === "cod" ? "Cash On Delivery" : "Online Payment"}</span>
                     </p>
 
-                    {order.assignedDeliveryBoy && <div className='mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between'>
-                        <div className='flex items-center gap-3 text-sm text-gray-700'>
-                            <UserCheck className="text-blue-600" size={18} />
-                            <div className='font-semibold text-gray-800'>
-                                <p className=''>Assigned to : <span>{order.assignedDeliveryBoy.name}</span></p>
-                                <p className='text-xs text-gray-600'>📞 +91 {order.assignedDeliveryBoy.mobile}</p>
+                    {order.assignedDeliveryBoy && <div className='mt-4 flex flex-col gap-3'>
+                        <div className='bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between'>
+                            <div className='flex items-center gap-3 text-sm text-gray-700'>
+                                <UserCheck className="text-blue-600" size={18} />
+                                <div className='font-semibold text-gray-800'>
+                                    <p className=''>Assigned to : <span>{order.assignedDeliveryBoy.name}</span></p>
+                                    <p className='text-xs text-gray-600'>📞 +91 {order.assignedDeliveryBoy.mobile}</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className='bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition'>Call</a>
+                            <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className='bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition font-bold'>Call</a>
+                        </div>
+                        {status === "out of delivery" && (
+                            <button
+                                onClick={() => setShowTrack(!showTrack)}
+                                className={`w-full py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${showTrack ? 'bg-zinc-900 text-white' : 'bg-green-600 text-white shadow-lg shadow-green-600/20'}`}
+                            >
+                                <Truck size={14} />
+                                {showTrack ? "Hide Live Track" : "Live Track Partner"}
+                            </button>
+                        )}
                     </div>}
+
+                    {showTrack && liveLocation && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            className="mt-4 rounded-3xl overflow-hidden border border-zinc-100 shadow-inner"
+                        >
+                            <LiveMap
+                                userLocation={{ latitude: order.address.latitude, longitude: order.address.longitude }}
+                                deliveryBoyLocation={liveLocation}
+                            />
+                        </motion.div>
+                    )}
+
 
 
 
@@ -151,7 +216,16 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                             <option key={st} value={st}>{st.toUpperCase()}</option>
                         ))}
                     </select>}
-
+                    {order.assignment && (
+                        <button
+                            onClick={deleteOrderChat}
+                            className="p-2.5 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm flex items-center gap-1.5 font-black uppercase text-[9px] tracking-widest mt-2"
+                            title="Delete order chat history"
+                        >
+                            <MessageSquareX size={14} />
+                            Purge Chat
+                        </button>
+                    )}
                 </div>
             </div>
             <div className='border-t border-gray-200 mt-3 pt-3'>

@@ -83,8 +83,8 @@ function AddProduct() {
         }
     }
     return (
-        <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-white py-16 px-4 relative'>
-            <Link href={"/"} className='absolute top-6 left-6 flex items-center gap-2 text-green-700 font-semibold bg-white px-4 py-2 rounded-full shadow-md hover:bg-green-100 hover:shadow-lg transition-all'>
+        <div className='min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 py-16 px-4 relative'>
+            <Link href={"/"} className='absolute top-6 left-6 flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold bg-white dark:bg-zinc-900 px-4 py-2 rounded-full shadow-md hover:bg-green-100 dark:hover:bg-zinc-800 hover:shadow-lg transition-all border border-zinc-100 dark:border-zinc-800'>
                 <ArrowLeft className='w-5 h-5' />
                 <span className='hidden md:flex'>Back to home</span>
             </Link>
@@ -92,28 +92,28 @@ function AddProduct() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className='bg-white w-full max-w-2xl shadow-2xl rounded-3xl border border-green-100 p-8'
+                className='bg-white dark:bg-zinc-900 w-full max-w-2xl shadow-2xl rounded-3xl border border-green-100 dark:border-zinc-800 p-8'
             >
                 <div className='flex flex-col items-center mb-8'>
                     <div className='flex items-center gap-3'>
                         <PlusCircle className='text-green-600 w-8 h-8' />
-                        <h1>Add New Product</h1>
+                        <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-100 tracking-tight">Add New Product</h1>
                     </div>
-                    <p className='text-gray-500 text-sm mt-2 text-center'>Fill out the details below to add a new millet product.
+                    <p className='text-gray-500 dark:text-gray-400 text-sm mt-2 text-center'>Fill out the details below to add a new millet product.
                     </p>
                 </div>
                 <form className='flex flex-col gap-6 w-full ' onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="name" className='block text-gray-700 font-medium mb-1'> Product Name <span className='text-red-500'>*</span></label>
+                        <label htmlFor="name" className='block text-gray-700 dark:text-zinc-400 font-medium mb-1'> Product Name <span className='text-red-500'>*</span></label>
                         <input type="text" id='name' placeholder='eg: Foxtail Millet, Ragi Biscuits ...'
                             onChange={(e) => setName(e.target.value)}
                             value={name}
-                            className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all' />
+                            className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all' />
                     </div>
                     <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                         <div >
-                            <label className='block text-gray-700 font-medium mb-1'>Category<span className='text-red-500'>*</span></label>
-                            <select name="category" value={category} className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all bg-white' onChange={(e) => setCategory(e.target.value)}>
+                            <label className='block text-gray-700 dark:text-zinc-400 font-medium mb-1'>Category<span className='text-red-500'>*</span></label>
+                            <select name="category" value={category} className='w-full border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100' onChange={(e) => setCategory(e.target.value)}>
                                 <option value="">Select Category</option>
                                 {categories.map((cat, i) => (
                                     <option key={i} value={cat}>{cat}</option>
@@ -121,8 +121,8 @@ function AddProduct() {
                             </select>
                         </div>
                         <div>
-                            <label className='block text-gray-700 font-medium mb-1'>Unit<span className='text-red-500'>*</span></label>
-                            <select name="unit" className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all bg-white'
+                            <label className='block text-gray-700 dark:text-zinc-400 font-medium mb-1'>Unit<span className='text-red-500'>*</span></label>
+                            <select name="unit" className='w-full border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100'
                                 onChange={(e) => setUnit(e.target.value)}
                                 value={unit}
                             >
@@ -134,15 +134,15 @@ function AddProduct() {
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="name" className='block text-gray-700 font-medium mb-1'> Price <span className='text-red-500'>*</span></label>
-                        <input type="text" id='name' placeholder='eg. 120' className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
+                        <label htmlFor="name-price" className='block text-gray-700 dark:text-zinc-400 font-medium mb-1'> Price <span className='text-red-500'>*</span></label>
+                        <input type="text" id='name-price' placeholder='eg. 120' className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
                             onChange={(e) => setPrice(e.target.value)}
                             value={price}
                         />
                     </div>
                     <div>
-                        <label htmlFor="stock" className='block text-gray-700 font-medium mb-1'> Stock Inventory (kg/units) <span className='text-zinc-400 text-xs'>(0 for Out of Stock)</span></label>
-                        <input type="number" id='stock' placeholder='eg. 100' className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
+                        <label htmlFor="stock" className='block text-gray-700 dark:text-zinc-400 font-medium mb-1'> Stock Inventory (kg/units) <span className='text-zinc-400 text-xs'>(0 for Out of Stock)</span></label>
+                        <input type="number" id='stock' placeholder='eg. 100' className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all'
                             onChange={(e) => setStock(e.target.value)}
                             value={stock}
                         />

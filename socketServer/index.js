@@ -167,13 +167,18 @@ io.on("connection", (socket) => {
     });
 
     // DISCONNECT
-    socket.on("disconnect", (reason) => {
+    socket.on("disconnect", async (reason) => {
         console.log(`🥀 Node Disconnected: ${socket.id} (${reason})`);
         if (currentUserId && onlineUsers.has(currentUserId)) {
             onlineUsers.get(currentUserId).delete(socket.id);
             if (onlineUsers.get(currentUserId).size === 0) {
                 onlineUsers.delete(currentUserId);
                 io.emit("user-status-change", { userId: currentUserId, status: "offline" });
+
+                // Sync with Next.js DB
+                await axios.post(`${NEXT_BASE_URL}/api/socket/disconnect`, { userId: currentUserId }, {
+                    headers: { 'x-internal-secret': 'my-secure-interal-secret' }
+                }).catch(e => console.log("Disconnect DB Sync Error (non-fatal)"));
             }
         }
     });
