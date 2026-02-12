@@ -73,7 +73,7 @@ function HeroSection() {
       <AnimatePresence mode='wait' initial={false}>
         <motion.div
           key={current}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={current === 0 ? false : { opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -89,6 +89,7 @@ function HeroSection() {
             priority={current === 0}
             fetchPriority={current === 0 ? "high" : "auto"}
             sizes="100vw"
+            quality={75}
             className='object-cover'
           />
           <div className='absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/70' aria-hidden="true" />

@@ -24,8 +24,8 @@ import GoogleAds from "@/components/GoogleAds";
 import { Analytics } from "@vercel/analytics/next"
 import { LazySocketProvider } from "@/context/LazySocketProvider";
 import CookieConsent from "@/components/CookieConsent";
-import NetworkStatus from "@/components/NetworkStatus";
-import BottomNav from "@/components/BottomNav";
+import LazyNetworkStatus from "@/components/LazyNetworkStatus";
+import LazyBottomNav from "@/components/LazyBottomNav";
 import { orbitron, jakarta } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -124,8 +124,8 @@ export default function RootLayout({
 
                 <Toaster position="top-right" />
                 <ClientGlobalChatBot />
-                <BottomNav />
-                <NetworkStatus />
+                <LazyBottomNav />
+                <LazyNetworkStatus />
 
                 <main id="main-content" className="relative outline-none" tabIndex={-1}>
                   {children}

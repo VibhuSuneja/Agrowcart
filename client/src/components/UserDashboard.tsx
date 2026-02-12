@@ -95,7 +95,7 @@ function UserDashboard({ productList }: { productList: IProduct[] }) {
         )}
       </div>
 
-      <div className="mt-40 space-y-40">
+      <div className="mt-40 space-y-40 cv-auto">
         <MissionStory />
         <ReviewMarquee key={reviewsRefreshKey} />
         <FeedbackSection onReviewSubmitted={handleFeedbackRefresh} />

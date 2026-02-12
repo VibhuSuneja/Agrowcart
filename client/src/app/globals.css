@@ -135,3 +135,9 @@
 .agrow-glow {
   box-shadow: 0 0 20px -5px rgba(22, 163, 74, 0.3);
 }
+
+/* Performance: defer rendering of off-screen sections */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
