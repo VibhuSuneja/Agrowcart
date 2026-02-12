@@ -88,6 +88,12 @@ export const metadata: Metadata = {
 
 import PageProgressBar from "@/components/PageProgressBar";
 
+import dynamic from 'next/dynamic';
+
+const GlobalChatBot = dynamic(() => import("@/components/GlobalChatBot"), {
+  ssr: false,
+});
+
 export default function RootLayout({
   children, }: Readonly<{
     children: React.ReactNode;
