@@ -1,8 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const rateLimitMap = new Map<string, number[]>();
+
 export async function POST(req: NextRequest) {
     try {
+        const ip = req.headers.get("x-forwarded-for") || "unknown";
+        const now = Date.now();
+        const windowMs = 60 * 1000; // 1 minute
+        const limit = 5;
+
+        // Get timestamps for this IP, defaulting to empty array
+        const timestamps = rateLimitMap.get(ip) || [];
+
+        // Filter out timestamps older than the window
+        const validTimestamps = timestamps.filter(t => now - t < windowMs);
+
+        if (validTimestamps.length >= limit) {
+            return NextResponse.json(
+                { reply: "Whoa there, partner! 🚜 You're sending messages faster than a tractor in high gear. Please wait a moment." },
+                { status: 429 }
+            );
+        }
+
+        // Add current timestamp and update map
+        validTimestamps.push(now);
+        rateLimitMap.set(ip, validTimestamps);
+
+        // Cleanup old entries periodically (optional, but good for memory)
+        if (rateLimitMap.size > 1000) {
+            for (const [key, val] of rateLimitMap.entries()) {
+                if (val.every(t => now - t > windowMs)) {
+                    rateLimitMap.delete(key);
+                }
+            }
+        }
+
         const { message } = await req.json();
 
         if (!process.env.GEMINI_API_KEY) {
@@ -30,6 +63,7 @@ Instructions:
 - If asked about prices or stock: Refer them to the Marketplace page.
 - If asked about an order: Direct them to 'My Orders' in their dashboard.
 - If asked about health benefits: Highlight high fiber and mineral content.
+- Formatting: Use **bold** for key terms and markdown lists for multiple items.
 - Tone: Professional, warm, and tech-savvy. Use 1-2 green/farm emojis.`;
 
         const result = await model.generateContent(prompt);

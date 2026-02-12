@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'motion/react'
 import { MessageCircle, Send, X, Bot, User, Sparkles, MinusCircle, Loader, Paperclip, Volume2, FileIcon, Mic } from 'lucide-react'
 import axios from 'axios'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface IChatMessage {
     id: string
@@ -217,7 +219,20 @@ function GlobalChatBot() {
                                                 <span className="text-[10px] font-black uppercase tracking-widest leading-none">Attachment Received</span>
                                             </div>
                                         )}
-                                        <p className="leading-relaxed font-medium">{msg.text}</p>
+
+                                        <div className="leading-relaxed font-medium text-sm">
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                                components={{
+                                                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 my-2 space-y-1" {...props} />,
+                                                    ol: ({ node, ...props }) => <ol className="list-decimal pl-4 my-2 space-y-1" {...props} />,
+                                                    strong: ({ node, ...props }) => <span className="font-black" {...props} />,
+                                                    a: ({ node, ...props }) => <a className="underline decoration-2 underline-offset-2" {...props} target="_blank" rel="noopener noreferrer" />
+                                                }}
+                                            >
+                                                {msg.text}
+                                            </ReactMarkdown>
+                                        </div>
                                         <div className="flex items-center justify-between mt-3">
                                             <p className={cn(
                                                 "text-[9px] font-black uppercase tracking-widest opacity-60",
@@ -303,9 +318,10 @@ function GlobalChatBot() {
                                 <p className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-500">Agrowcart Omni-Channel AI Hub</p>
                             </div>
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </motion.div >
+                )
+                }
+            </AnimatePresence >
 
             <motion.button
                 whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
@@ -319,7 +335,7 @@ function GlobalChatBot() {
                     <span className="absolute top-0 right-0 w-4 h-4 bg-gold-harvest rounded-full border-2 border-white animate-bounce"></span>
                 )}
             </motion.button>
-        </div>
+        </div >
     )
 }
 
