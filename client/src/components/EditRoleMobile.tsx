@@ -1,10 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from "motion/react"
-import { ArrowRight, Bike, User, UserCog, Wheat, Users, ShoppingCart, Rocket, Factory, Sparkles, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Bike, User, UserCog, Wheat, Users, ShoppingCart, Rocket, Factory, Sparkles, ShieldCheck, Smartphone } from 'lucide-react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 function EditRoleMobile() {
   const [roles, setRoles] = useState([
@@ -17,10 +19,17 @@ function EditRoleMobile() {
     { id: "processor", label: "Processor", icon: Factory, desc: "Value addition & milling" },
     { id: "deliveryBoy", label: "Logistics Partner", icon: Bike, desc: "Fulfillment & delivery" }
   ])
+  const { userData } = useSelector((state: RootState) => state.user)
   const [selectedRole, setSelectedRole] = useState("")
   const [mobile, setMobile] = useState("")
   const { update } = useSession()
   const router = useRouter()
+
+  useEffect(() => {
+    if (userData?.role && !selectedRole) {
+      setSelectedRole(userData.role)
+    }
+  }, [userData, selectedRole])
 
   const handleEdit = async () => {
     try {
@@ -112,7 +121,7 @@ function EditRoleMobile() {
             <label className='text-xs font-black uppercase text-zinc-400 tracking-[0.2em] ml-2'>Identity Verification</label>
             <div className="relative group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-600 transition-colors">
-                <Bike size={20} />
+                <Smartphone size={20} />
               </div>
               <input
                 type="tel"

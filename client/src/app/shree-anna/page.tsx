@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import MilletHeroBackground from '@/components/three/MilletHero'
 import CardGrain3D from '@/components/three/CardGrain3D'
+import MilletQuiz from '@/components/MilletQuiz'
 
 const millets = [
     {
@@ -184,6 +185,68 @@ export default function ShreeAnnaPage() {
                     </motion.div>
                 </div>
             </section>
+
+            {/* AI Nutritionist CTA Banner */}
+            <section className="relative z-20 -mt-20 mb-20">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="bg-zinc-900 rounded-[3rem] p-8 md:p-12 relative overflow-hidden group border border-white/5 shadow-3xl"
+                    >
+                        {/* High-tech background effect */}
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] -mr-48 -mt-48 transition-transform group-hover:scale-110" />
+
+                        <div className="relative flex flex-col md:flex-row items-center justify-between gap-10">
+                            <div className="space-y-6 max-w-2xl">
+                                <div className="inline-flex items-center gap-2 text-emerald-400 font-black uppercase tracking-[0.4em] text-[10px] bg-emerald-400/10 px-4 py-2 rounded-full border border-emerald-400/20">
+                                    <Sparkles size={14} className="animate-pulse" />
+                                    <span>New: Intelligent Wellness</span>
+                                </div>
+                                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+                                    Your personal AI <br />
+                                    <span className="text-emerald-500">Millet Nutritionist</span>
+                                </h2>
+                                <p className="text-zinc-400 font-medium text-lg">
+                                    Struggling to integrate millets? Get a customized 7-day meal plan based on your health goals (Weight Loss, Diabetes, Muscle Gain) in seconds.
+                                </p>
+                                <Link href="/tools/nutritionist">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="bg-emerald-500 text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-emerald-500/20 flex items-center gap-4 group/btn"
+                                    >
+                                        <span>Start Free Calibration</span>
+                                        <ArrowRight size={20} className="group-hover/btn:translate-x-2 transition-transform" />
+                                    </motion.button>
+                                </Link>
+                            </div>
+                            <div className="relative hidden lg:block">
+                                <div className="w-64 h-64 bg-white/5 rounded-[4rem] border border-white/10 backdrop-blur-3xl p-8 flex flex-col justify-center items-center text-center space-y-4">
+                                    <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                                        <Heart size={32} className="text-white fill-current" />
+                                    </div>
+                                    <div>
+                                        <div className="text-2xl font-black text-white">99%</div>
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Bio-Accuracy</div>
+                                    </div>
+                                </div>
+                                {/* Floating Tags */}
+                                <div className="absolute -top-4 -right-4 bg-zinc-800 border border-white/5 p-3 rounded-2xl shadow-2xl flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Weight Loss</span>
+                                </div>
+                                <div className="absolute -bottom-4 -left-4 bg-zinc-800 border border-white/5 p-3 rounded-2xl shadow-2xl flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Diabetes Care</span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            <MilletQuiz />
 
             {/* Why Millets Section */}
             <section className="py-20 md:py-28 bg-zinc-50/50 dark:bg-zinc-900/30">

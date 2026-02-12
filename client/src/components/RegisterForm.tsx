@@ -1,4 +1,4 @@
-import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck } from 'lucide-react'
+import { ArrowLeft, EyeIcon, EyeOff, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, Smartphone } from 'lucide-react'
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from "motion/react"
 import Image from 'next/image'
@@ -18,6 +18,7 @@ function RegisterForm({ previousStep }: propType) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [role, setRole] = useState("user")
+  const [mobile, setMobile] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [agreed, setAgreed] = useState(false)
@@ -33,7 +34,7 @@ function RegisterForm({ previousStep }: propType) {
     setLoading(true)
     try {
       await axios.post("/api/auth/register", {
-        name, email, password, role, agreed
+        name, email, password, role, agreed, mobile
       })
       toast.success("Account created successfully!")
       router.push("/login")
@@ -121,6 +122,18 @@ function RegisterForm({ previousStep }: propType) {
           </div>
 
           <div className='relative group'>
+            <Smartphone className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors pointer-events-none' />
+            <input
+              type="tel"
+              placeholder='10-digit Mobile Number'
+              className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
+              onChange={(e) => setMobile(e.target.value)}
+              value={mobile}
+              maxLength={10}
+            />
+          </div>
+
+          <div className='relative group'>
             <User className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors pointer-events-none' />
             <select
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs appearance-none cursor-pointer'
@@ -141,8 +154,8 @@ function RegisterForm({ previousStep }: propType) {
           </div>
 
           <button
-            disabled={!name || !email || !password || loading}
-            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!name || !email || !password || loading)
+            disabled={!name || !email || !password || !mobile || mobile.length !== 10 || loading}
+            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!name || !email || !password || !mobile || mobile.length !== 10 || loading)
               ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}

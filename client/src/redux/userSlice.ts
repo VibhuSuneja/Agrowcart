@@ -9,6 +9,8 @@ interface IUser {
     role: "user" | "deliveryBoy" | "admin" | "farmer" | "shg" | "buyer" | "startup" | "processor"
     image?: string
     bio?: string
+    city?: string
+    state?: string
     status?: "online" | "away" | "dnd"
 }
 interface IUserSlice {

@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
 import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
-    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info,
+    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Gavel,
     Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users
 } from 'lucide-react'
 import {
@@ -427,12 +428,24 @@ function SHGDashboard() {
                 <div className="bg-green-600 p-10 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden flex flex-col justify-center min-h-[400px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
 
-                    <div className="relative z-10 mb-8">
-                        <div className="flex items-center gap-2 text-white/70 font-black uppercase tracking-[0.3em] text-[10px] mb-2">
-                            <Briefcase size={14} />
-                            <span>Community Mandates</span>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-white/70 font-black uppercase tracking-[0.3em] text-[10px]">
+                                <Briefcase size={14} />
+                                <span>Community Mandates</span>
+                            </div>
+                            <h3 className="text-3xl font-black leading-tight tracking-tight">SHG Support <br />Programs</h3>
                         </div>
-                        <h3 className="text-3xl font-black leading-tight tracking-tight">SHG Support <br />Programs</h3>
+                        <Link href="/tools/contract-hub">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-white text-green-700 px-8 py-4 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit flex items-center gap-3 border border-white/20 whitespace-nowrap lg:mr-8"
+                            >
+                                <Gavel size={16} />
+                                <span>Draft Agreements</span>
+                            </motion.button>
+                        </Link>
                     </div>
 
                     <div className="space-y-4 relative z-10 w-full mb-6">

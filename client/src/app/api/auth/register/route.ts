@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     try {
         await connectDb()
-        const { name, email, password, role, agreed } = await req.json()
+        const { name, email, password, role, agreed, mobile } = await req.json()
         const existUser = await User.findOne({ email })
         if (existUser) {
             return NextResponse.json(
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
             email,
             password: hashedPassword,
             role: finalRole,
+            mobile,
             agreedToTerms: agreed ? new Date() : undefined
         })
         return NextResponse.json(

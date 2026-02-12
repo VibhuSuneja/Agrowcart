@@ -31,7 +31,7 @@ async function Home(props: {
   const user = await User.findById(session?.user?.id)
   if (!user) redirect("/login")
 
-  const inComplete = !user.role || (user.role === "user" && !user.mobile)
+  const inComplete = !user.role || (user.role !== "admin" && !user.mobile)
   if (inComplete) {
     return <EditRoleMobile />
   }

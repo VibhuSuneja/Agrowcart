@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
 import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
-    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Edit,
+    Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Edit, Gavel,
     Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, CheckCircle, AlertCircle, AlertTriangle, XCircle
 } from 'lucide-react'
 import {
@@ -419,14 +420,26 @@ function FarmerDashboard() {
                                         </p>
                                     </div>
 
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => window.open('https://enam.gov.in/web/dashboard/historical-data', '_blank')}
-                                        className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit"
-                                    >
-                                        View Global Directory
-                                    </motion.button>
+                                    <div className="flex flex-wrap items-center gap-4">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => window.open('https://enam.gov.in/web/dashboard/historical-data', '_blank')}
+                                            className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit"
+                                        >
+                                            View Global Directory
+                                        </motion.button>
+                                        <Link href="/tools/contract-hub">
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="bg-primary hover:bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.3em] text-xs hover:shadow-2xl transition-all w-fit flex items-center gap-3 border border-white/20"
+                                            >
+                                                <Gavel size={16} />
+                                                <span>Draft Legal Agreement</span>
+                                            </motion.button>
+                                        </Link>
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
