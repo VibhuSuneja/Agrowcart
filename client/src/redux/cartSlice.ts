@@ -32,22 +32,22 @@ const saveCartData = (data: IProduct[]) => {
    }
 }
 
-const initialCartData = loadCartData()
-const initialSubTotal = initialCartData.reduce((sum, item) => sum + Number(item.price) * (item.quantity || 1), 0)
-const initialDeliveryFee = initialSubTotal === 0 ? 0 : (initialSubTotal > 1000 ? 0 : 40)
-const initialFinalTotal = initialSubTotal + initialDeliveryFee
-
+// Initial state must be identical on server and client to prevent hydration errors.
 const initialState: ICartSlice = {
-   cartData: initialCartData,
-   subTotal: initialSubTotal,
-   deliveryFee: initialDeliveryFee,
-   finalTotal: initialFinalTotal
+   cartData: [],
+   subTotal: 0,
+   deliveryFee: 0,
+   finalTotal: 0
 }
 
 const cartSlice = createSlice({
    name: "cart",
    initialState,
    reducers: {
+      hydrateCart: (state, action: PayloadAction<IProduct[]>) => {
+         state.cartData = action.payload
+         cartSlice.caseReducers.calculateTotals(state)
+      },
       addToCart: (state, action: PayloadAction<IProduct>) => {
          const existing = state.cartData.find(item => item._id === action.payload._id)
          if (existing) {
@@ -89,5 +89,5 @@ const cartSlice = createSlice({
    }
 })
 
-export const { addToCart, increaseQuantity, decreaseQuantity, removeFromCart } = cartSlice.actions
+export const { addToCart, increaseQuantity, decreaseQuantity, removeFromCart, hydrateCart } = cartSlice.actions
 export default cartSlice.reducer

@@ -199,11 +199,12 @@ function GlobalChatBot() {
                                     onClick={() => window.open('mailto:vibhusun01@gmail.com?subject=Deepfake/SGI Takedown Request', '_blank')}
                                     className="p-2 hover:bg-red-500/20 rounded-lg transition-all group/report flex items-center gap-2 border border-white/10"
                                     title="Report Deepfake (3-Hour Takedown)"
+                                    aria-label="Report Deepfake"
                                 >
                                     <MinusCircle size={16} className="text-white/60 group-hover/report:text-red-400" />
                                     <span className="text-[8px] font-black uppercase tracking-widest text-white/40 group-hover/report:text-red-200 hidden md:block">Report</span>
                                 </button>
-                                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-all group">
+                                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-all group" aria-label="Close chat window">
                                     <X size={20} className="group-hover:rotate-90 transition-transform" />
                                 </button>
                             </div>
@@ -268,6 +269,7 @@ function GlobalChatBot() {
                                                     onClick={() => speak(msg.text)}
                                                     className="p-1.5 hover:bg-zinc-100/50 dark:hover:bg-white/10 rounded-lg transition-all"
                                                     title="Listen to AI"
+                                                    aria-label="Listen to response"
                                                 >
                                                     <Volume2 size={12} className="text-primary" />
                                                 </button>
@@ -304,6 +306,7 @@ function GlobalChatBot() {
                                         onClick={() => fileInputRef.current?.click()}
                                         className="w-12 h-12 bg-white/5 dark:bg-white/5 hover:bg-white/10 text-zinc-500 rounded-2xl flex items-center justify-center transition-all border border-white/10"
                                         title="Attach Resource"
+                                        aria-label="Attach file"
                                     >
                                         <Paperclip size={20} />
                                     </button>
@@ -317,6 +320,7 @@ function GlobalChatBot() {
                                                 : "bg-white/5 dark:bg-white/5 text-zinc-500 hover:bg-white/10 border-white/10"
                                         )}
                                         title="Voice Command"
+                                        aria-label={isListening ? "Stop listening" : "Start voice command"}
                                     >
                                         <Mic size={20} />
                                     </button>
@@ -333,6 +337,7 @@ function GlobalChatBot() {
                                         type="submit"
                                         disabled={!input.trim() || loading}
                                         className="absolute right-2 top-2 w-8 h-8 bg-primary text-white rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all shadow-lg shadow-primary/30"
+                                        aria-label="Send message"
                                     >
                                         <Send size={14} />
                                     </button>
@@ -352,6 +357,7 @@ function GlobalChatBot() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-16 h-16 bg-primary text-white rounded-[1.8rem] shadow-[0_10px_30px_rgba(6,96,70,0.4)] flex items-center justify-center relative group overflow-hidden border-2 border-white/20"
+                aria-label={isOpen ? "Close chat" : "Open chat"}
             >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                 {isOpen ? <X size={32} className="relative z-10" /> : <MessageCircle size={32} className="relative z-10" />}

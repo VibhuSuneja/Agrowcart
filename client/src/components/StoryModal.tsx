@@ -39,6 +39,7 @@ function StoryModal({ isOpen, onClose }: StoryModalProps) {
                             </div>
                             <button
                                 onClick={onClose}
+                                aria-label="Close story modal"
                                 className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
                             >
                                 <X size={20} />

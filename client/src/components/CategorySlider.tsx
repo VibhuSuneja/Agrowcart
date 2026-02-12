@@ -64,6 +64,7 @@ function CategorySlider() {
         <div className="flex gap-3">
           <button
             disabled={!showLeft}
+            aria-label="Scroll left"
             className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 border ${showLeft ? 'bg-white dark:bg-zinc-900 shadow-xl hover:bg-primary hover:text-white border-zinc-100 dark:border-white/10' : 'bg-transparent text-zinc-300 border-zinc-100 dark:border-white/5 opacity-50'}`}
             onClick={() => scroll("left")}
           >
@@ -71,6 +72,7 @@ function CategorySlider() {
           </button>
           <button
             disabled={!showRight}
+            aria-label="Scroll right"
             className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 border ${showRight ? 'bg-white dark:bg-zinc-900 shadow-xl hover:bg-primary hover:text-white border-zinc-100 dark:border-white/10' : 'bg-transparent text-zinc-300 border-zinc-100 dark:border-white/5 opacity-50'}`}
             onClick={() => scroll("right")}
           >

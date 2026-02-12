@@ -14,12 +14,18 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+import enMessages from '../../messages/en.json';
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
     const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-    const [messages, setMessages] = useState<Messages>({});
+    const [messages, setMessages] = useState<Messages>(enMessages);
 
     // Load messages when locale changes
     useEffect(() => {
+        if (locale === 'en') {
+            setMessages(enMessages);
+            return;
+        }
         const loadMessages = async () => {
             try {
                 const msgs = await import(`../../messages/${locale}.json`);
@@ -27,10 +33,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
             } catch (error) {
                 console.error(`Failed to load messages for locale: ${locale}`, error);
                 // Fallback to English
-                if (locale !== 'en') {
-                    const fallback = await import(`../../messages/en.json`);
-                    setMessages(fallback.default);
-                }
+                setMessages(enMessages);
             }
         };
         loadMessages();

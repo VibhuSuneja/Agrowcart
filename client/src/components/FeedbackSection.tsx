@@ -87,6 +87,7 @@ function FeedbackSection({ onReviewSubmitted }: FeedbackSectionProps) {
                                             suppressHydrationWarning
                                             onClick={() => setRating(star)}
                                             className="transition-all duration-300 transform hover:scale-125"
+                                            aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                                         >
                                             <Star
                                                 size={32}

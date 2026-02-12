@@ -53,8 +53,10 @@ function HeroSection() {
   ]
 
   const [current, setCurrent] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length)
     }, 5000)
@@ -68,7 +70,7 @@ function HeroSection() {
       aria-roledescription="carousel"
       aria-label="AgrowCart Highlights"
     >
-      <AnimatePresence mode='wait'>
+      <AnimatePresence mode='wait' initial={false}>
         <motion.div
           key={current}
           initial={{ opacity: 0, scale: 1.1 }}
@@ -95,7 +97,7 @@ function HeroSection() {
         <div className='max-w-4xl space-y-8'>
           <motion.div
             key={`tag-${current}`}
-            initial={{ opacity: 0, x: -20 }}
+            initial={isMounted ? { opacity: 0, x: -20 } : false}
             animate={{ opacity: 1, x: 0 }}
             className='flex items-center gap-3'
           >
@@ -106,7 +108,7 @@ function HeroSection() {
 
           <motion.div
             key={`content-${current}`}
-            initial={{ opacity: 0, y: 30 }}
+            initial={isMounted ? { opacity: 0, y: 30 } : false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className='space-y-6'
@@ -125,7 +127,7 @@ function HeroSection() {
 
           <motion.div
             key={`btns-${current}`}
-            initial={{ opacity: 0, y: 20 }}
+            initial={isMounted ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className='flex flex-wrap gap-4'

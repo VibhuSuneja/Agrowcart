@@ -70,6 +70,7 @@ export default function ShareModal({ isOpen, onClose, url, title }: ShareModalPr
                             </div>
                             <button
                                 onClick={onClose}
+                                aria-label="Close share modal"
                                 className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors"
                             >
                                 <X size={20} />

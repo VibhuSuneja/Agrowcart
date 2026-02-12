@@ -122,6 +122,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleWishlist}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
               className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-xl shadow-lg border transition-all ${isWishlisted
                 ? 'bg-red-500 border-red-400 text-white'
                 : 'bg-white/90 dark:bg-zinc-900/90 border-white/20 text-zinc-400 hover:text-red-500'
@@ -133,6 +134,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleShare}
+              aria-label="Share product"
               className='w-10 h-10 rounded-xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl flex items-center justify-center text-zinc-400 hover:text-primary shadow-lg border border-white/20 transition-all'
             >
               <Share2 size={18} />
@@ -218,6 +220,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => dispatch(addToCart({ ...item, quantity: 1 }))}
+              aria-label="Add to cart"
               className='w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-xl agrow-glow group-hover:scale-110 transition-all'
             >
               <ShoppingCart size={20} />
@@ -227,6 +230,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
               <button
                 className='w-8 h-8 flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-red-500 transition-colors shadow-sm'
                 onClick={() => dispatch(decreaseQuantity(item._id))}
+                aria-label="Decrease quantity"
               >
                 <Minus size={14} />
               </button>
@@ -234,6 +238,7 @@ function ProductItemCard({ item }: { item: IProduct }) {
               <button
                 className='w-8 h-8 flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-primary transition-colors shadow-sm'
                 onClick={() => dispatch(increaseQuantity(item._id))}
+                aria-label="Increase quantity"
               >
                 <Plus size={14} />
               </button>
