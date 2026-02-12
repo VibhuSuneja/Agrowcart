@@ -12,8 +12,9 @@ const i18nMiddleware = createMiddleware({
     // Always use a locale prefix
     localePrefix: 'as-needed'
 });
+export const runtime = 'nodejs';
 
-export default auth((req) => {
+export const proxy = auth((req) => {
     const isLoggedIn = !!req.auth;
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
@@ -43,6 +44,8 @@ export default auth((req) => {
     // Allow unrestricted access to public routes, but run i18n middleware
     return i18nMiddleware(req);
 })
+
+export default proxy;
 
 export const config = {
     // combine both matchers: i18n and protected routes
