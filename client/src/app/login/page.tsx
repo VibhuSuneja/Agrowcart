@@ -1,5 +1,5 @@
 'use client'
-import { ArrowLeft, EyeIcon, EyeOff, Fingerprint, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, X } from 'lucide-react'
+import { ArrowLeft, EyeIcon, EyeOff, Fingerprint, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, WifiOff, X } from 'lucide-react'
 import React, { FormEvent, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from "motion/react"
 import Image from 'next/image'
@@ -10,8 +10,10 @@ import { toast } from 'react-hot-toast'
 import { TermsContent, PrivacyContent } from '@/components/LegalContent'
 import { startAuthentication } from '@simplewebauthn/browser'
 import axios from 'axios'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 
 function Login() {
+  const isOnline = useNetworkStatus()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -22,12 +24,7 @@ function Login() {
   const [forgotEmail, setForgotEmail] = useState("")
   const [forgotLoading, setForgotLoading] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
-  const [mounted, setMounted] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleForgotSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -130,8 +127,6 @@ function Login() {
     }
   }
 
-  if (!mounted) return null;
-
   return (
     <div className='flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-zinc-50 relative overflow-x-hidden overflow-y-auto custom-scrollbar'>
       {/* Decorative background elements - optimized for smaller viewports */}
@@ -209,16 +204,16 @@ function Login() {
           </div>
 
           <button
-            disabled={!email || !password || loading}
-            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!email || !password || loading)
+            disabled={!email || !password || loading || !isOnline}
+            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!email || !password || loading || !isOnline)
               ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}
           >
             {loading ? <Loader2 className='w-4 h-4 animate-spin' /> : (
               <>
-                <span className="text-sm">Secure Sign In</span>
-                <LogIn size={16} />
+                <span className="text-sm">{isOnline ? "Secure Sign In" : "Offline Mode"}</span>
+                {isOnline ? <LogIn size={16} /> : <WifiOff size={16} />}
               </>
             )}
           </button>
@@ -231,13 +226,14 @@ function Login() {
 
           <button
             type="button"
-            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-3 rounded-xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-xs'
+            disabled={!isOnline}
+            className='w-full flex items-center justify-center gap-3 bg-white border border-zinc-200 hover:bg-zinc-50 py-3 rounded-xl text-zinc-700 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed text-xs'
             onClick={() => {
               signIn("google", { callbackUrl: "/" })
             }}
           >
             <Image src={googleImage} width={18} height={18} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
-            <span>Continue with Google</span>
+            <span>{isOnline ? "Continue with Google" : "Google Login Unavailable"}</span>
           </button>
 
           <div className='flex items-center gap-4 py-1 mt-1'>

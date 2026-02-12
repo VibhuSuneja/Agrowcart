@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { LegalModal } from './LegalContent'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
+import { WifiOff } from 'lucide-react'
 
 type propType = {
   previousStep: (s: number) => void
@@ -24,6 +26,7 @@ function RegisterForm({ previousStep }: propType) {
   const [agreed, setAgreed] = useState(false)
   const [showLegal, setShowLegal] = useState<{ show: boolean, type: 'terms' | 'privacy' }>({ show: false, type: 'terms' })
   const router = useRouter()
+  const isOnline = useNetworkStatus()
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -154,16 +157,16 @@ function RegisterForm({ previousStep }: propType) {
           </div>
 
           <button
-            disabled={!name || !email || !password || !mobile || mobile.length !== 10 || loading}
-            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!name || !email || !password || !mobile || mobile.length !== 10 || loading)
+            disabled={!name || !email || !password || !mobile || mobile.length !== 10 || loading || !isOnline}
+            className={`w-full font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl inline-flex items-center justify-center gap-2 mt-1 ${(!name || !email || !password || !mobile || mobile.length !== 10 || loading || !isOnline)
               ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700 text-white shadow-green-900/20 hover:scale-[1.02] active:scale-100"
               }`}
           >
             {loading ? <Loader2 className='w-4 h-4 animate-spin' /> : (
               <>
-                <span className="text-sm">Get Started Now</span>
-                <Sparkles size={16} />
+                <span className="text-sm">{isOnline ? "Get Started Now" : "Offline Mode"}</span>
+                {isOnline ? <Sparkles size={16} /> : <WifiOff size={16} />}
               </>
             )}
           </button>
@@ -196,11 +199,12 @@ function RegisterForm({ previousStep }: propType) {
 
           <button
             type="button"
-            className='w-full flex items-center justify-center gap-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 py-3 rounded-xl text-zinc-700 dark:text-zinc-300 font-bold transition-all shadow-sm group active:scale-95 text-xs'
+            disabled={!isOnline}
+            className='w-full flex items-center justify-center gap-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 py-3 rounded-xl text-zinc-700 dark:text-zinc-300 font-bold transition-all shadow-sm group active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed text-xs'
             onClick={() => signIn("google", { callbackUrl: "/" })}
           >
-            <Image src={googleImage} width={18} height={18} alt='google' className='grayscale group-hover:grayscale-0 transition-all' />
-            <span>Continue with Google</span>
+            <Image src={googleImage} width={18} height={18} alt='google' className='grayscale group-hover:grayscale-0 transition-all focus:grayscale-0' />
+            <span>{isOnline ? "Continue with Google" : "Google Registration Unavailable"}</span>
           </button>
         </motion.form>
 
