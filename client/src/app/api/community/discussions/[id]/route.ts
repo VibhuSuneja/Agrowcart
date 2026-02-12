@@ -51,7 +51,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
         return NextResponse.json(discussion, { status: 201 });
     } catch (error) {
-        return NextResponse.json({ message: "Error adding comment" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        return NextResponse.json({ message: `Error adding comment: ${errorMessage}` }, { status: 500 });
     }
 }
 
@@ -83,6 +84,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         await discussion.save();
         return NextResponse.json(discussion, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ message: "Error liking discussion" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        return NextResponse.json({ message: `Error liking discussion: ${errorMessage}` }, { status: 500 });
     }
 }
