@@ -12,7 +12,6 @@ const i18nMiddleware = createMiddleware({
     // Always use a locale prefix
     localePrefix: 'as-needed'
 });
-export const runtime = 'nodejs';
 
 export const proxy = auth((req) => {
     const isLoggedIn = !!req.auth;
