@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDb from "@/lib/db";
 import Discussion from "@/models/discussion.model";
 import { auth } from "@/auth";
-import { sanitizeText, sanitizeUserInput } from "@/lib/sanitize";
+
+// Simple server-safe sanitizer (no DOM dependency)
+function stripHtml(str: string): string {
+    if (!str || typeof str !== 'string') return '';
+    return str
+        .replace(/<[^>]*>/g, '')        // Remove HTML tags
+        .replace(/[<>"']/g, '')          // Remove dangerous chars
+        .trim();
+}
 
 export async function GET(req: NextRequest) {
     try {
@@ -12,6 +20,7 @@ export async function GET(req: NextRequest) {
             .limit(50);
         return NextResponse.json(discussions, { status: 200 });
     } catch (error) {
+        console.error("FORUM_GET_ERROR:", error);
         return NextResponse.json({ message: "Error fetching discussions" }, { status: 500 });
     }
 }
@@ -19,7 +28,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const session = await auth();
-        // @ts-ignore - session.user.id is added in callbacks but might not be in the default type
+        // @ts-ignore
         if (!session?.user?.id) {
             return NextResponse.json({ message: "Unauthorized: Please login again" }, { status: 401 });
         }
@@ -32,16 +41,12 @@ export async function POST(req: NextRequest) {
 
         await connectDb();
 
-        const sanitizedTitle = sanitizeText(body.title);
-        const sanitizedBody = sanitizeUserInput(body.body);
-        const sanitizedTags = Array.isArray(body.tags)
-            ? body.tags.map((t: string) => sanitizeText(t)).filter((t: string) => t.length > 0)
-            : [];
-
         const discussion = await Discussion.create({
-            title: sanitizedTitle,
-            body: sanitizedBody,
-            tags: sanitizedTags,
+            title: stripHtml(body.title),
+            body: stripHtml(body.body),
+            tags: Array.isArray(body.tags)
+                ? body.tags.map((t: string) => stripHtml(t)).filter((t: string) => t.length > 0)
+                : [],
             userId: session.user.id,
             userName: session.user.name || "Anonymous",
             userImage: session.user.image || "",
@@ -58,4 +63,3 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
 }
-

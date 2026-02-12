@@ -3,6 +3,15 @@ import connectDb from "@/lib/db";
 import Discussion from "@/models/discussion.model";
 import { auth } from "@/auth";
 
+// Simple server-safe sanitizer (no DOM dependency)
+function stripHtml(str: string): string {
+    if (!str || typeof str !== 'string') return '';
+    return str
+        .replace(/<[^>]*>/g, '')
+        .replace(/[<>"']/g, '')
+        .trim();
+}
+
 // GET single discussion
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -33,7 +42,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         await connectDb();
         const { id } = await params;
         const body = await req.json();
-        const { sanitizeUserInput } = await import("@/lib/sanitize");
 
         const discussion = await Discussion.findById(id);
         if (!discussion) return NextResponse.json({ message: "Not found" }, { status: 404 });
@@ -42,7 +50,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             userId: session.user.id,
             userName: session.user.name,
             userImage: session.user.image,
-            content: sanitizeUserInput(body.content || ''),
+            content: stripHtml(body.content || ''),
             likes: 0,
             likedBy: []
         });
