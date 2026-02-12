@@ -1,5 +1,15 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { PrivacyContent } from '@/components/LegalContent';
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy',
+    description: 'Learn how AgrowCart collects, uses, and protects your personal data. Our privacy policy covers data handling, cookie use, and your rights as a platform user.',
+    openGraph: {
+        title: 'Privacy Policy | AgrowCart',
+        description: 'Learn how AgrowCart collects, uses, and protects your personal data.',
+    },
+}
 
 const PrivacyPolicy = () => {
     return (

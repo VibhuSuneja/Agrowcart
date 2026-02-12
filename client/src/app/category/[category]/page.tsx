@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { auth } from '@/auth';
 import Nav from '@/components/Nav';
 import ProductItemCard from '@/components/ProductItemCard';
@@ -8,6 +9,19 @@ import { redirect } from 'next/navigation';
 import { Sparkles, ArrowLeft, Package } from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+    const { category } = await params;
+    const decoded = decodeURIComponent(category);
+    return {
+        title: `${decoded} Products`,
+        description: `Browse premium ${decoded.toLowerCase()} products on AgrowCart. Fresh, organic millets sourced directly from verified farmers across India.`,
+        openGraph: {
+            title: `${decoded} Products | AgrowCart`,
+            description: `Explore ${decoded.toLowerCase()} millets on AgrowCart marketplace.`,
+        },
+    }
+}
 
 export default async function CategoryPage({
     params,

@@ -90,7 +90,6 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     if (!socket) return
 
     socket.on("new-assignment", (deliveryAssignment) => {
-      console.log("LOG: New Assignment received via socket", deliveryAssignment)
       setAssignments((prev) => [...prev, deliveryAssignment])
       toast.success("New Delivery Assignment!")
 
@@ -176,7 +175,6 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
 
   const sendOtp = async () => {
     const orderId = activeOrder?.order?._id
-    console.log("Debugging Send OTP:", { activeOrder, orderId }) // Debug log
 
     if (!orderId) {
       toast.error("Error: Order ID missing. Please refresh.")

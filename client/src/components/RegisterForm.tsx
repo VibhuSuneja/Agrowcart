@@ -89,6 +89,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type="text"
               placeholder='Full Name'
+              aria-label="Full Name"
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -100,6 +101,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type="email"
               placeholder='Email Address'
+              aria-label="Email Address"
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setEmail(e.target.value)}
               value={email}
@@ -111,6 +113,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type={showPassword ? "text" : "password"}
               placeholder='Secure Password'
+              aria-label="Secure Password"
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-10 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setPassword(e.target.value)}
               value={password}
@@ -129,6 +132,7 @@ function RegisterForm({ previousStep }: propType) {
             <input
               type="tel"
               placeholder='10-digit Mobile Number'
+              aria-label="Mobile Number"
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white placeholder:text-zinc-400 focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setMobile(e.target.value)}
               value={mobile}
@@ -140,6 +144,7 @@ function RegisterForm({ previousStep }: propType) {
             <User className='absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-green-500 transition-colors pointer-events-none' />
             <select
               className='w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl py-3 pl-10 pr-4 text-zinc-800 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs appearance-none cursor-pointer'
+              aria-label="Role Selection"
               onChange={(e) => setRole(e.target.value)}
               value={role}
             >

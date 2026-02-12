@@ -1,5 +1,15 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { RefundPolicyContent } from '@/components/RefundPolicyContent';
+
+export const metadata: Metadata = {
+    title: 'Refund & Cancellation Policy',
+    description: 'Understand the AgrowCart refund and cancellation policy. Know your rights regarding order returns, refund timelines, and eligible conditions for millet product orders.',
+    openGraph: {
+        title: 'Refund & Cancellation Policy | AgrowCart',
+        description: 'Understand the AgrowCart refund and cancellation policy for orders.',
+    },
+}
 
 const RefundPolicy = () => {
     return (

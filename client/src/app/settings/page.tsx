@@ -224,8 +224,9 @@ function SettingsPage() {
                                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         {/* Name Input */}
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Display Name</label>
+                                            <label htmlFor="displayName" className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Display Name</label>
                                             <input
+                                                id="displayName"
                                                 type="text"
                                                 className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-2xl py-4 px-5 text-zinc-800 dark:text-white font-bold outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all"
                                                 value={formData.name}
@@ -252,8 +253,9 @@ function SettingsPage() {
 
                                         {/* Bio Input */}
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Personal Bio</label>
+                                            <label htmlFor="bio" className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Personal Bio</label>
                                             <textarea
+                                                id="bio"
                                                 className="w-full bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-2xl py-4 px-5 text-zinc-800 dark:text-white font-bold outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all min-h-[120px] resize-none"
                                                 placeholder="Share your agricultural vision..."
                                                 value={formData.bio}

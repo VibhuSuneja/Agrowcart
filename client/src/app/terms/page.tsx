@@ -1,5 +1,15 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { TermsContent } from '@/components/LegalContent';
+
+export const metadata: Metadata = {
+    title: 'Terms of Service',
+    description: 'Read the AgrowCart Terms of Service. Understand user obligations, platform rules, intellectual property, and dispute resolution for using the AgrowCart millet marketplace.',
+    openGraph: {
+        title: 'Terms of Service | AgrowCart',
+        description: 'Read the AgrowCart Terms of Service governing use of the platform.',
+    },
+}
 
 const TermsAndConditions = () => {
     return (

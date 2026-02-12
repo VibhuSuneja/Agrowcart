@@ -75,7 +75,6 @@ function Login() {
         return
       }
 
-      console.log("Starting Passkey Auth with options:", options)
 
       const authResponse = await startAuthentication({ optionsJSON: options })
 
@@ -204,6 +203,7 @@ function Login() {
             <input
               type="email"
               placeholder='Email Address'
+              aria-label="Email Address"
               className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setEmail(e.target.value)}
               value={email}
@@ -216,6 +216,7 @@ function Login() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder='Account Password'
+              aria-label="Account Password"
               className='w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 pl-10 pr-10 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 focus:outline-none transition-all font-medium text-xs'
               onChange={(e) => setPassword(e.target.value)}
               value={password}
@@ -357,6 +358,7 @@ function Login() {
               type="email"
               placeholder='Email address'
               required
+              aria-label="Recovery Email Address"
               className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all font-medium text-sm'
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}

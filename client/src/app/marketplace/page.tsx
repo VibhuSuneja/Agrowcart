@@ -12,6 +12,10 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
     title: 'Marketplace | Smart Millet Sourcing',
     description: 'Browse fresh, organic millets directly from verified farmers. AI-powered pricing and quality assurance for every harvest.',
+    openGraph: {
+        title: 'Marketplace | AgrowCart',
+        description: 'Browse fresh, organic millets directly from verified farmers with AI-powered quality assurance.',
+    },
 }
 
 export default async function Marketplace(props: {

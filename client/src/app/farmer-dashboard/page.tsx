@@ -277,6 +277,7 @@ function FarmerDashboard() {
                                     <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/input:text-primary transition-colors" size={20} />
                                     <input
                                         placeholder="Target Region"
+                                        aria-label="Target Region"
                                         className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={region} onChange={e => setRegion(e.target.value)}
                                     />
@@ -285,6 +286,7 @@ function FarmerDashboard() {
                                     <Sprout className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within/input:text-primary transition-colors" size={20} />
                                     <input
                                         placeholder="Crop Variety"
+                                        aria-label="Crop Variety"
                                         className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={crop} onChange={e => setCrop(e.target.value)}
                                     />
@@ -294,6 +296,7 @@ function FarmerDashboard() {
                                     <input
                                         placeholder="Volume (kg)"
                                         type="number"
+                                        aria-label="Volume in kg"
                                         className="w-full bg-white/5 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-[1.8rem] py-6 pl-16 pr-6 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm"
                                         value={quantity} onChange={e => setQuantity(e.target.value)}
                                     />

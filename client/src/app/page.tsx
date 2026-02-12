@@ -1,5 +1,15 @@
+import { Metadata } from 'next'
 import { auth } from '@/auth'
 import AdminDashboard from '@/components/AdminDashboard'
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+  description: 'Your personalized AgrowCart dashboard. Manage orders, view AI-powered crop insights, and connect directly with the millet ecosystem.',
+  openGraph: {
+    title: 'Dashboard | AgrowCart',
+    description: 'Your personalized AgrowCart dashboard. Manage orders, view AI-powered crop insights, and connect directly with the millet ecosystem.',
+  },
+}
 import DeliveryBoy from '@/components/DeliveryBoy'
 import EditRoleMobile from '@/components/EditRoleMobile'
 import Footer from '@/components/Footer'
@@ -27,7 +37,6 @@ async function Home(props: {
   await connectDb()
   const session = await auth()
   if (!session) redirect("/login")
-  console.log(session?.user)
   const user = await User.findById(session?.user?.id)
   if (!user) redirect("/login")
 
@@ -57,7 +66,6 @@ async function Home(props: {
 
 
 
-  console.log("User role from DB:", user.role)
 
   return (
     <>
