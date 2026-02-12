@@ -1,12 +1,9 @@
 'use client'
 import { ArrowLeft, EyeIcon, EyeOff, Fingerprint, Key, Leaf, Loader2, Lock, LogIn, Mail, Sparkles, User, UserCheck, WifiOff, X } from 'lucide-react'
-import React, { FormEvent, useState, useEffect } from 'react'
-import { motion, AnimatePresence } from "motion/react"
-import Image from 'next/image'
-import googleImage from "@/assets/google.png"
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'react-hot-toast'
+import React, { FormEvent, useState, useEffect, Suspense } from 'react'
 import { TermsContent, PrivacyContent } from '@/components/LegalContent'
 import { startAuthentication } from '@simplewebauthn/browser'
 import axios from 'axios'
@@ -25,6 +22,22 @@ function Login() {
   const [forgotLoading, setForgotLoading] = useState(false)
   const [legalType, setLegalType] = useState<'terms' | 'privacy'>('terms')
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      if (error === 'AccessDenied' || error.toLowerCase().includes('banned')) {
+        toast.error("Your account has been deactivated by administration.")
+      } else if (error === 'CredentialsSignin') {
+        toast.error("Invalid email or password.")
+      } else {
+        toast.error("Authentication failed. Please try again.")
+      }
+      // Clear the error from URL without refreshing
+      router.replace('/login', { scroll: false })
+    }
+  }, [searchParams, router])
 
   const handleForgotSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -101,14 +114,35 @@ function Login() {
 
       if (result?.error) {
         const errorCode = result.error.toLowerCase()
+
+        // Specific checks for banned status
+        if (errorCode.includes("account banned") || errorCode.includes("banned")) {
+          toast.error("Your account has been deactivated by administration.")
+          setLoading(false)
+          return
+        }
+
+        // Fallback check if NextAuth hides the specific error message
+        if (errorCode === "credentialssignin") {
+          try {
+            // We use a safe public check to see if the user is banned without revealing too much
+            const checkRes = await axios.post('/api/auth/check-ban', { email })
+            if (checkRes.data.isBanned) {
+              toast.error("Your account has been deactivated by administration.")
+              setLoading(false)
+              return
+            }
+          } catch (err) {
+            // Silently fail and proceed to generic error
+          }
+        }
+
         if (errorCode === "credentialssignin" || errorCode === "configuration") {
           toast.error("Wrong email or password. Please try again.")
         } else if (errorCode.includes("incorrect password") || errorCode.includes("wrong password")) {
           toast.error("Wrong password! Please try again.")
         } else if (errorCode.includes("user does not exist") || errorCode.includes("not found")) {
           toast.error("User not found. Please check your email or register.")
-        } else if (errorCode.includes("account banned")) {
-          toast.error("Your account has been banned. Please contact support.")
         } else {
           toast.error("Login failed. Please check your credentials.")
         }
@@ -400,5 +434,11 @@ function Login() {
   )
 }
 
-export default Login
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-zinc-50"><Loader2 className="animate-spin text-green-600" size={40} /></div>}>
+      <Login />
+    </Suspense>
+  )
+}
 
