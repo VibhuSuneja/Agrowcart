@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "motion/react"
 import {
     ChevronDown, ChevronUp, CreditCard, MapPin, Package,
     Truck, UserCheck, Calendar, IndianRupee,
-    ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles, X
+    ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles, X,
+    CheckCircle2, MessageSquare
 } from 'lucide-react'
 import Image from 'next/image'
 import { getSocket } from '@/lib/socket'

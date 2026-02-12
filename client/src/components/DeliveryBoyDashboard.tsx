@@ -93,6 +93,19 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       console.log("LOG: New Assignment received via socket", deliveryAssignment)
       setAssignments((prev) => [...prev, deliveryAssignment])
       toast.success("New Delivery Assignment!")
+
+      // Play notification sound & TTS
+      try {
+        const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3")
+        audio.play().catch(e => console.error("Audio play failed", e))
+
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("New delivery mission available");
+          window.speechSynthesis.speak(utterance);
+        }
+      } catch (err) {
+        console.error("Notification failed", err)
+      }
     })
     socket.on("order-status-update", ({ orderId, status }) => {
       if (status === "cancelled") {
