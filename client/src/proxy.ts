@@ -1,31 +1,24 @@
 import { auth } from "@/auth"
-import createMiddleware from 'next-intl/middleware';
-import { locales } from './i18n/request';
-
-const i18nMiddleware = createMiddleware({
-    // A list of all locales that are supported
-    locales,
-    // Used when no locale matches
-    defaultLocale: 'en',
-    // Automatically detect locale from user's browser
-    localeDetection: true,
-    // Always use a locale prefix
-    localePrefix: 'as-needed'
-});
+import { NextResponse } from "next/server";
 
 export const proxy = auth((req) => {
     const isLoggedIn = !!req.auth;
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
 
+    // Skip middleware for internal Vercel/Next.js paths if matcher somehow misses them
+    if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.includes('.')) {
+        return NextResponse.next();
+    }
+
     // Protect Admin Dashboard
     if (pathname.startsWith('/admin')) {
         if (!isLoggedIn) {
-            return Response.redirect(new URL('/login', nextUrl));
+            return NextResponse.redirect(new URL('/login', nextUrl));
         }
         // Strict Role Check for Admin Routes
         if (req.auth?.user?.role !== 'admin') {
-            return Response.redirect(new URL('/', nextUrl)); // Redirect unauthorized users to home
+            return NextResponse.redirect(new URL('/', nextUrl)); // Redirect unauthorized users to home
         }
     }
 
@@ -33,18 +26,17 @@ export const proxy = auth((req) => {
     if (
         pathname.includes('-dashboard') ||
         pathname.startsWith('/delivery') ||
-        pathname.startsWith('/buyer-marketplace')
+        pathname.startsWith('/buyer-marketplace') ||
+        pathname.startsWith('/user')
     ) {
-        if (!isLoggedIn) {
-            return Response.redirect(new URL('/login', nextUrl));
+        if (!isLoggedIn && pathname !== '/login' && pathname !== '/register') {
+            return NextResponse.redirect(new URL('/login', nextUrl));
         }
     }
 
-    // Allow unrestricted access to public routes, but run i18n middleware
-    return i18nMiddleware(req);
+    return NextResponse.next();
 });
 
 export const config = {
-    // combine both matchers: i18n and protected routes
     matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 };
