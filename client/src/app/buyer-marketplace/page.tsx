@@ -185,7 +185,7 @@ function BuyerMarketplace() {
                                     <select
                                         value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
-                                        className="bg-white border border-zinc-200 pl-11 pr-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm appearance-none cursor-pointer"
+                                        className="bg-white border border-zinc-200 pl-11 pr-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm appearance-none cursor-pointer text-zinc-900"
                                     >
                                         <option value="All">All Categories</option>
                                         <option value="Raw Millets">Raw Millets</option>
@@ -202,7 +202,7 @@ function BuyerMarketplace() {
                                         placeholder="Search harvest type..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full md:w-64 bg-white border border-zinc-200 pl-12 pr-6 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm"
+                                        className="w-full md:w-64 bg-white border border-zinc-200 pl-12 pr-6 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold text-sm shadow-sm text-zinc-900"
                                     />
                                 </div>
                             </div>

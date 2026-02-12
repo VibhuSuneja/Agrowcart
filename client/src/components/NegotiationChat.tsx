@@ -420,7 +420,7 @@ export default function NegotiationChat({
                         <input
                             type="text"
                             placeholder="Propose a rate..."
-                            className="flex-1 bg-zinc-50 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 border border-zinc-100 font-bold text-sm transition-all"
+                            className="flex-1 bg-zinc-50 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 border border-zinc-100 font-bold text-sm text-zinc-900 transition-all"
                             value={newMessage}
                             onChange={handleSelfTyping}
                             onKeyDown={(e) => e.key === 'Enter' && sendMsg()}
