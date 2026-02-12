@@ -47,7 +47,7 @@ function MilletForum() {
         if (!newTitle || !newBody) return
 
         try {
-            await axios.post('/api/community/discussions', {
+            const res = await axios.post('/api/community/discussions', {
                 title: newTitle,
                 body: newBody,
                 tags: newTags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
@@ -57,7 +57,8 @@ function MilletForum() {
             setNewTitle('')
             setNewBody('')
             setNewTags('')
-            fetchDiscussions()
+            // Prepend new discussion to the top of the list immediately
+            setDiscussions(prev => [res.data, ...prev])
         } catch (error) {
             toast.error('Failed to post question')
         }
