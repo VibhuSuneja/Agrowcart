@@ -5,6 +5,8 @@ import { setUserData } from '@/redux/userSlice'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import { signOut } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
 function useGetMe(enabled: boolean) {
   const dispatch = useDispatch<AppDispatch>()
@@ -18,6 +20,11 @@ function useGetMe(enabled: boolean) {
       try {
         const result = await axios.get('/api/me')
         if (!cancelled) {
+          if (result.data.isBanned) {
+            toast.error("Your account has been deactivated by administration.")
+            signOut({ callbackUrl: "/login?error=account_banned" })
+            return
+          }
           dispatch(setUserData(result.data))
         }
       } catch (error) {
