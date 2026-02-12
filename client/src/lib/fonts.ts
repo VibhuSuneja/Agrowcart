@@ -5,6 +5,7 @@ export const orbitron = Orbitron({
     subsets: ['latin'],
     weight: ['700', '900'],
     variable: '--font-orbitron',
+    display: 'swap',
 });
 
 // Display font for headings and UI
@@ -12,4 +13,5 @@ export const jakarta = Plus_Jakarta_Sans({
     subsets: ['latin'],
     weight: ['400', '500', '600', '700', '800'],
     variable: '--font-jakarta',
+    display: 'swap',
 });
