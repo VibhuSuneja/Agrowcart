@@ -5,11 +5,13 @@ import {
     ChevronDown, ChevronUp, CreditCard, MapPin, Package,
     Truck, UserCheck, Calendar, IndianRupee,
     ShieldCheck, ArrowRight, Phone, Navigation2, Sparkles, X,
-    CheckCircle2, MessageSquare
+    CheckCircle2, MessageSquare, Download
 } from 'lucide-react'
 import Image from 'next/image'
 import { getSocket } from '@/lib/socket'
 import { useRouter } from 'next/navigation'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 interface IOrder {
     _id?: string
@@ -74,6 +76,59 @@ function UserOrderCard({ order }: { order: IOrder }) {
         })
         return () => { socket.off("order-status-update") }
     }, [order?._id])
+
+    const downloadInvoice = () => {
+        const doc = new jsPDF()
+
+        // Header
+        doc.setFontSize(20)
+        doc.text("AgrowCart Invoice", 14, 22)
+        doc.setFontSize(10)
+        doc.text(`Order ID: ${order._id}`, 14, 30)
+        doc.text(`Date: ${new Date(order.createdAt!).toLocaleDateString()}`, 14, 35)
+
+        // Customer Details
+        doc.text("Bill To:", 14, 45)
+        doc.setFont("helvetica", "bold")
+        doc.text(order.address.fullName, 14, 50)
+        doc.setFont("helvetica", "normal")
+        doc.text(order.address.fullAddress, 14, 55)
+        doc.text(`Mobile: ${order.address.mobile}`, 14, 60)
+
+        // Table
+        const tableColumn = ["Item", "Quantity", "Unit", "Price", "Total"]
+        const tableRows: any[] = []
+
+        order.items.forEach(item => {
+            const itemData = [
+                item.name,
+                item.quantity,
+                item.unit,
+                item.price,
+                Number(item.price) * item.quantity
+            ]
+            tableRows.push(itemData)
+        })
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 70,
+        })
+
+        // Total
+        const finalY = (doc as any).lastAutoTable.finalY + 10
+        doc.setFontSize(12)
+        doc.setFont("helvetica", "bold")
+        doc.text(`Total Amount: Rs. ${order.totalAmount}`, 14, finalY)
+        doc.setFontSize(10)
+        doc.setFont("helvetica", "normal")
+        doc.text(`Payment Method: ${order.paymentMethod.toUpperCase()}`, 14, finalY + 5)
+        doc.text(`Status: ${status.toUpperCase()}`, 14, finalY + 10)
+
+        // Footer
+        doc.save(`invoice_${order._id}.pdf`)
+    }
 
     return (
         <motion.div
@@ -296,6 +351,13 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                     >
                                         <MessageSquare size={14} />
                                         Chat History
+                                    </button>
+                                    <button
+                                        onClick={downloadInvoice}
+                                        className="flex-1 bg-zinc-800 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all shadow-lg"
+                                    >
+                                        <Download size={14} />
+                                        Invoice
                                     </button>
                                     <button
                                         onClick={() => router.push(`/traceability/${order._id}`)}
