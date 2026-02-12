@@ -86,13 +86,8 @@ export const metadata: Metadata = {
   },
 };
 
+import ClientGlobalChatBot from "@/components/ClientGlobalChatBot";
 import PageProgressBar from "@/components/PageProgressBar";
-
-import dynamic from 'next/dynamic';
-
-const GlobalChatBot = dynamic(() => import("@/components/GlobalChatBot"), {
-  ssr: false,
-});
 
 export default function RootLayout({
   children, }: Readonly<{
@@ -128,7 +123,7 @@ export default function RootLayout({
                 </a>
 
                 <Toaster position="top-right" />
-                <GlobalChatBot />
+                <ClientGlobalChatBot />
                 <BottomNav />
                 <NetworkStatus />
 
