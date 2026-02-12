@@ -48,6 +48,7 @@ export const metadata: Metadata = {
     shortcut: '/icon-192.png',
     apple: '/apple-touch-icon.png',
   },
+  manifest: '/manifest.json',
   openGraph: {
     title: "AgrowCart | AI-Driven Millets Value Chain Platform",
     description: "Connect directly with millet farmers, access AI-powered crop insights, and explore value-added millet products.",
