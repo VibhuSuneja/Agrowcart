@@ -28,7 +28,7 @@ function HeroSection() {
       subtitle: t('hero.subtitle'),
       btnText: t('hero.shopNow'),
       action: () => scrollById('product-grid'), // Requires adding id="product-grid" to product listing
-      bg: "https://plus.unsplash.com/premium_photo-1663012860167-220d9d9c8aca?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      bg: "/images/hero/hero-1.jpg"
     },
     {
       id: 2,
@@ -38,7 +38,7 @@ function HeroSection() {
       subtitle: "Revolutionizing how nutritional Shree Anna (Millets) reach the masses with fair pricing and real-time traceability.",
       btnText: "Track Freshness",
       action: () => router.push('/user/my-orders'),
-      bg: "https://images.unsplash.com/photo-1683553170878-049f180627b0?q=80&w=1450&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      bg: "/images/hero/hero-2.jpg"
     },
     {
       id: 3,
@@ -48,7 +48,7 @@ function HeroSection() {
       subtitle: "Leveraging technology for better Shree Anna crop analysis and market intelligence to double farmer incomes.",
       btnText: "Join Movement",
       action: () => router.push('/register'),
-      bg: "https://plus.unsplash.com/premium_photo-1663091378026-7bee6e1c7247?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      bg: "/images/hero/hero-3.jpg"
     }
   ]
 
@@ -86,7 +86,9 @@ function HeroSection() {
             src={slides[current]?.bg}
             fill
             alt='' // Decorative background
-            priority
+            priority={current === 0}
+            fetchPriority={current === 0 ? "high" : "auto"}
+            sizes="100vw"
             className='object-cover'
           />
           <div className='absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-black/70' aria-hidden="true" />

@@ -4,8 +4,10 @@ import { motion } from 'motion/react'
 import { Wheat, Sun, Droplets, Heart, Shield, Leaf, ArrowRight, Sparkles, Globe, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import MilletHeroBackground from '@/components/three/MilletHero'
-import CardGrain3D from '@/components/three/CardGrain3D'
+import dynamic from 'next/dynamic'
+
+const MilletHeroBackground = dynamic(() => import('@/components/three/MilletHero'), { ssr: false })
+const CardGrain3D = dynamic(() => import('@/components/three/CardGrain3D'), { ssr: false })
 import MilletQuiz from '@/components/MilletQuiz'
 
 const millets = [

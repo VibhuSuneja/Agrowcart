@@ -10,8 +10,8 @@ import {
 import NextImage from 'next/image'
 import { getSocket } from '@/lib/socket'
 import { useRouter } from 'next/navigation'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
+// jsPDF and autoTable moved to dynamic imports in downloadInvoice
+
 
 interface IOrder {
     _id?: string
@@ -78,6 +78,8 @@ function UserOrderCard({ order }: { order: IOrder }) {
     }, [order?._id])
 
     const downloadInvoice = async () => {
+        const { default: jsPDF } = await import('jspdf')
+        const { default: autoTable } = await import('jspdf-autotable')
         const doc = new jsPDF()
 
         // Load Logo

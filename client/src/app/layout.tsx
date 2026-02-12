@@ -22,7 +22,7 @@ import { LanguageProvider } from "@/i18n/LanguageProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import GoogleAds from "@/components/GoogleAds";
 import { Analytics } from "@vercel/analytics/next"
-import { SocketProvider } from "@/context/SocketContext";
+import { LazySocketProvider } from "@/context/LazySocketProvider";
 import CookieConsent from "@/components/CookieConsent";
 import NetworkStatus from "@/components/NetworkStatus";
 import BottomNav from "@/components/BottomNav";
@@ -107,7 +107,7 @@ export default function RootLayout({
         )}
 
         <Provider>
-          <SocketProvider>
+          <LazySocketProvider>
             <StoreProvider>
               <LanguageProvider>
                 <InitUser />
@@ -133,7 +133,7 @@ export default function RootLayout({
                 <Analytics />
               </LanguageProvider>
             </StoreProvider>
-          </SocketProvider>
+          </LazySocketProvider>
           <CookieConsent />
         </Provider>
       </body>
