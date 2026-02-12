@@ -19,12 +19,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
 
-        const prompt = `Predict the market price for ${quantity} kg of ${crop} in ${region}. Return a JSON object with: 
-    - estimatedPrice (number)
-    - priceTrend (string: "up", "down", "stable")
-    - factors (string[])
-    - advice (string)
-    Do not use markdown formatting.`;
+        const prompt = `Analyze current market trends for ${crop} in ${region} region.
+        Quantity: ${quantity} ${quantity > 1000 ? 'tons' : 'kg'}.
+        
+        Task: Predict the estimated market price range and trends.
+        Return EXCLUSIVELY a JSON object with this exact structure:
+        {
+            "estimatedPrice": number (price per unit, e.g., 45),
+            "currency": "INR",
+            "priceTrend": "up" | "down" | "stable",
+            "confidenceScore": number (0-100),
+            "factors": ["string", "string", "string"],
+            "advice": "string (short actionable advice for farmer)"
+        }
+        Do not include markdown formatting (like \`\`\`json). Return raw JSON only.`;
 
         // Caching Logic
         const promptHash = crypto.createHash('md5').update(prompt).digest('hex');
@@ -50,7 +58,13 @@ export async function POST(req: NextRequest) {
             const response = await result.response;
             const text = response.text();
             const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-            const parsedData = JSON.parse(cleanText);
+            let parsedData;
+            try {
+                parsedData = JSON.parse(cleanText);
+            } catch (e) {
+                console.error("Failed to parse JSON from AI:", cleanText);
+                throw new Error("Invalid format from AI");
+            }
 
             // Save to Cache (Expires in 24 hours)
             await AIResponse.findOneAndUpdate(
