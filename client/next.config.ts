@@ -55,10 +55,7 @@ const nextConfig: NextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block'  // Legacy XSS protection
           },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(self), microphone=(self), geolocation=(self), payment=(self)'  // Restricts browser APIs
-          },
+
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'  // Enables DNS prefetching for performance
