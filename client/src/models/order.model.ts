@@ -138,7 +138,6 @@ orderSchema.index({ user: 1 });
 orderSchema.index({ assignedDeliveryBoy: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ createdAt: -1 });
-orderSchema.index({ batchNumber: 1 });
 
 
 const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)
