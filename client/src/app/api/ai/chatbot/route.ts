@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
         if (validTimestamps.length >= limit) {
             return NextResponse.json(
-                { reply: "Whoa there, partner! ðŸšœ You're sending messages faster than a tractor in high gear. Please wait a moment." },
+                { reply: "Whoa there, partner! 🚜 You're sending messages faster than a tractor in high gear. Please wait a moment." },
                 { status: 429 }
             );
         }
@@ -71,7 +71,7 @@ Instructions:
         const text = response.text();
 
         // Fallback if text is empty
-        const reply = text || "I am currently syncing my knowledge base with the latest harvest data. How else can I assist you? ðŸŒ¾";
+        const reply = text || "I am currently syncing my knowledge base with the latest harvest data. How else can I assist you? 🌾";
 
         return NextResponse.json({ reply }, { status: 200 });
 
@@ -79,7 +79,7 @@ Instructions:
         console.error("ChatBot API Error:", error);
         // Fallback message for UI continuity
         return NextResponse.json(
-            { reply: "Our digital farmer is taking a quick break to check the harvest! ðŸŒ¿ Please try asking again in a moment, or browse our fresh millets in the marketplace." },
+            { reply: "Our digital farmer is taking a quick break to check the harvest! 🌿 Please try asking again in a moment, or browse our fresh millets in the marketplace." },
             { status: 200 }
         );
     }
