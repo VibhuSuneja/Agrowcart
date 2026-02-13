@@ -12,12 +12,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         let order;
         // Check if it's a valid MongoDB ID or a Batch Number
         if (orderId.match(/^[0-9a-fA-F]{24}$/)) {
-            order = await Order.findById(orderId).populate("items.product").populate("user", "name");
+            order = await Order.findById(orderId)
+                .populate({ path: "items.product", model: Product })
+                .populate({ path: "user", model: User, select: "name" });
         } else {
             // Case-insensitive search for batch number
             order = await Order.findOne({
                 batchNumber: { $regex: new RegExp(`^${orderId}$`, "i") }
-            }).populate("items.product").populate("user", "name");
+            })
+                .populate({ path: "items.product", model: Product })
+                .populate({ path: "user", model: User, select: "name" });
         }
 
         if (!order) {
