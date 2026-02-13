@@ -215,8 +215,8 @@ function TraceabilityPage() {
                             />
                         </div>
                         <div>
-                            <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Verification ID</div>
-                            <div className="text-xl font-black text-zinc-900">#BXT-{orderId?.toString().slice(-6).toUpperCase()}</div>
+                            <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">{order?.batchNumber ? "Batch Identifier" : "Verification ID"}</div>
+                            <div className="text-xl font-black text-zinc-900">{order?.batchNumber || `#BXT-${orderId?.toString().slice(-6).toUpperCase()}`}</div>
                         </div>
                     </motion.div>
                 </div>

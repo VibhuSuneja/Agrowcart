@@ -35,6 +35,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
             return NextResponse.json({ message: "Order not found" }, { status: 404 });
         }
 
+        // Lazy Persistence: If an old order is missing a batch number, 
+        // save it now to trigger the pre-save hook and persist it permanently.
+        if (!order.batchNumber) {
+            try {
+                // This will trigger the pre("save") hook in order.model.ts
+                await order.save();
+                console.log(`Successfully assigned permanent batch number to legacy order: ${order._id}`);
+            } catch (saveError) {
+                console.error("Failed to auto-persist batch number:", saveError);
+            }
+        }
+
         return NextResponse.json(order);
     } catch (error: any) {
         return NextResponse.json({ message: error.message }, { status: 500 });
