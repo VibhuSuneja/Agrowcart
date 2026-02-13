@@ -69,7 +69,7 @@ Instructions:
                 { role: "system", content: systemPrompt },
                 { role: "user", content: message }
             ],
-            model: "llama3-70b-8192", // Llama 3 on Groq LPUs for sub-second latency
+            model: "llama-3.3-70b-versatile", // Llama 3.3 for sub-second latency
             temperature: 0.7,
             max_tokens: 150,
             top_p: 1,

@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
                     { role: "system", content: "You are a specialized agricultural market analyst. Return raw JSON ONLY." },
                     { role: "user", content: prompt }
                 ],
-                model: "llama3-70b-8192", // High accuracy for numerical reasoning
+                model: "llama-3.3-70b-versatile", // High accuracy for numerical reasoning
                 temperature: 0.2, // Low temperature for stability in JSON output
                 max_tokens: 300,
                 stream: false,

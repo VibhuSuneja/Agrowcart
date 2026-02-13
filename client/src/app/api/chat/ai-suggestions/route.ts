@@ -53,7 +53,7 @@ Rules:
 - Example output: Yes, please leave it at the gate. 🚪, I am coming down now. 🏃‍♂️, Thank you so much! 🙏`
 
         const apiKey = process.env.GEMINI_API_KEY;
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         try {
             const response = await fetch(url, {

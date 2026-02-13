@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
                     { role: "system", content: "You are a senior agricultural economist specializing in Indian millet markets. Return raw JSON ONLY." },
                     { role: "user", content: prompt }
                 ],
-                model: "llama3-70b-8192", // Excellent for economic forecasting
+                model: "llama-3.3-70b-versatile", // Excellent for economic forecasting
                 temperature: 0.3,
                 max_tokens: 400,
                 stream: false,
