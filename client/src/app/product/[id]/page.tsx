@@ -22,6 +22,7 @@ import AIRecipeButton from '@/components/AIRecipeButton'
 import SustainabilityScore from '@/components/SustainabilityScore'
 import ShareModal from '@/components/ShareModal'
 import NegotiationChat from '@/components/NegotiationChat'
+import SimilarProducts from '@/components/SimilarProducts'
 
 function ProductDetailPage() {
     const { id } = useParams()
@@ -402,6 +403,8 @@ function ProductDetailPage() {
 
                             <ReviewList productId={id as string} refreshKey={reviewsRefreshKey} />
                         </div>
+                        {/* Similar Products Section */}
+                        <SimilarProducts currentProductId={id as string} category={product.category} />
                     </div>
                 </div>
             </div>

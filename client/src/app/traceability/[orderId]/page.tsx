@@ -216,7 +216,7 @@ function TraceabilityPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-none"
                         >
-                            Batch <span className="text-green-600">Traceability.</span>
+                            Batch <span className="text-green-600 font-black">{order?.batchNumber || "Traceability."}</span>
                         </motion.h1>
                         <p className="text-zinc-500 max-w-lg font-medium text-lg italic">"Transparency is the soul of trust in agriculture."</p>
                     </div>
@@ -234,8 +234,8 @@ function TraceabilityPage() {
                             />
                         </div>
                         <div>
-                            <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">Verification ID</div>
-                            <div className="text-xl font-black text-zinc-900">#BXT-{orderId?.toString().slice(-6).toUpperCase()}</div>
+                            <div className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">{order?.batchNumber ? "Batch Identifier" : "Verification ID"}</div>
+                            <div className="text-xl font-black text-zinc-900">{order?.batchNumber || `#BXT-${orderId?.toString().slice(-6).toUpperCase()}`}</div>
                         </div>
                     </motion.div>
                 </div>

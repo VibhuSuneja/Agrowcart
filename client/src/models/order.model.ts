@@ -40,6 +40,7 @@ export interface IOrder {
     deliveryOtp: string | null
     deliveryOtpVerification: Boolean
     deliveredAt: Date
+    batchNumber: string
 }
 
 const orderSchema = new mongoose.Schema<IOrder>({
@@ -116,14 +117,28 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     deliveredAt: {
         type: Date
+    },
+    batchNumber: {
+        type: String,
+        unique: true,
+        sparse: true
     }
 }, { timestamps: true })
+
+orderSchema.pre("save", async function (next) {
+    if (!this.batchNumber) {
+        const random = Math.floor(100000 + Math.random() * 900000);
+        this.batchNumber = `BATCH-${random}`;
+    }
+    next();
+});
 
 // FUTURE-READY INDEXES (For high-traffic performance)
 orderSchema.index({ user: 1 });
 orderSchema.index({ assignedDeliveryBoy: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ createdAt: -1 });
+orderSchema.index({ batchNumber: 1 });
 
 
 const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)

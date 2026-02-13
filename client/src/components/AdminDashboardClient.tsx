@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react"
 import { IndianRupee, Package, Truck, Users, LayoutDashboard, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight, Activity, Plus, ClipboardCheck, ArrowRight } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
 import Link from 'next/link'
+import { toast } from 'react-hot-toast'
 
 type propType = {
   earning: {
@@ -18,10 +19,11 @@ type propType = {
   chartData: {
     day: string;
     orders: number;
-  }[]
+  }[],
+  agents?: any[]
 }
 
-function AdminDashboardClient({ earning, stats, chartData }: propType) {
+function AdminDashboardClient({ earning, stats, chartData, agents = [] }: propType) {
   const [filter, setFilter] = useState<"today" | "sevenDays" | "total">("total")
 
   const currentEarning = filter === "today" ? earning.today
@@ -212,6 +214,45 @@ function AdminDashboardClient({ earning, stats, chartData }: propType) {
               </motion.div>
             )
           })}
+        </div>
+
+        {/* Live Fulfillment Network */}
+        <div className='space-y-6 pt-10'>
+          <div className='flex items-center justify-between px-2'>
+            <div className='space-y-1'>
+              <h2 className='text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight'>Fulfillment Network</h2>
+              <p className='text-zinc-500 text-xs font-medium'>Online agents ready for last-mile delivery.</p>
+            </div>
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+            {agents.map((agent, i) => (
+              <motion.div
+                key={agent._id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className='bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 p-6 rounded-[2.5rem] flex items-center gap-4 group hover:border-green-500/30 transition-all cursor-pointer'
+                onClick={() => toast.success(`Agent: ${agent.name}\nStatus: Active\nContact: +91 ${agent.mobile || 'N/A'}`, {
+                  icon: '🛵',
+                  duration: 4000
+                })}
+              >
+                <div className='w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 overflow-hidden relative'>
+                  {agent.image ? (
+                    <img src={agent.image} alt={agent.name} className='w-full h-full object-cover' />
+                  ) : (
+                    <Users size={20} />
+                  )}
+                  <div className='absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-zinc-900 rounded-full' />
+                </div>
+                <div>
+                  <h4 className='text-sm font-black text-zinc-900 dark:text-zinc-100'>{agent.name}</h4>
+                  <p className='text-[10px] font-black uppercase text-zinc-400 tracking-widest'>Active Agent</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
       </div>

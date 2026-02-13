@@ -8,7 +8,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         await connectDb();
         const { orderId } = await params;
 
-        const order = await Order.findById(orderId).populate("items.product");
+        let order;
+        // Check if it's a valid MongoDB ID or a Batch Number
+        if (orderId.match(/^[0-9a-fA-F]{24}$/)) {
+            order = await Order.findById(orderId).populate("items.product");
+        } else {
+            // Case-insensitive search for batch number
+            order = await Order.findOne({
+                batchNumber: { $regex: new RegExp(`^${orderId}$`, "i") }
+            }).populate("items.product");
+        }
 
         if (!order) {
             return NextResponse.json({ message: "Order not found" }, { status: 404 });

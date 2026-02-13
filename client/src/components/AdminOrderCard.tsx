@@ -234,7 +234,15 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                                 </div>
                                 <div>
                                     <p className='text-[10px] font-black uppercase text-blue-400 tracking-widest leading-none'>Handover Partner</p>
-                                    <p className='text-sm font-black text-blue-900 dark:text-blue-100 mt-1'>{order.assignedDeliveryBoy.name}</p>
+                                    <p
+                                        onClick={() => toast.success(`Agent: ${order.assignedDeliveryBoy?.name}\nStatus: Active\nExperience: Premium Partner\nContact: +91 ${order.assignedDeliveryBoy?.mobile || 'N/A'}`, {
+                                            icon: '🧑‍🚀',
+                                            duration: 4000
+                                        })}
+                                        className='text-sm font-black text-blue-900 dark:text-blue-100 mt-1 cursor-help hover:text-blue-600 transition-colors'
+                                    >
+                                        {order.assignedDeliveryBoy.name}
+                                    </p>
                                     <p className='text-[10px] text-blue-600/70 font-bold'>📞 +91 {order.assignedDeliveryBoy.mobile}</p>
                                 </div>
                             </div>

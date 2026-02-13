@@ -10,10 +10,11 @@ async function AdminDashboard() {
   const orders = await Order.find({})
   const users = await User.find({ role: "user" })
   const products = await Product.find({})
+  const agents = await User.find({ role: "deliveryBoy" })
 
   const totalOrders = orders.length
   const totalCustomers = users.length
-  const pendingDeliveries = orders.filter((o) => o.status === "pending").length
+  const pendingDeliveries = orders.filter((o) => o.status === "pending" || o.status === "out of delivery").length
   const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0)
 
   const today = new Date()
@@ -71,6 +72,7 @@ async function AdminDashboard() {
         }}
         stats={stats}
         chartData={chartData}
+        agents={JSON.parse(JSON.stringify(agents))}
       />
     </>
   )

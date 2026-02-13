@@ -57,15 +57,13 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 const peer = new Peer({
                     initiator: isInitiator,
-                    trickle: true, // Switched to trickle for faster/more reliable STUN gathering
+                    trickle: false, // Wait for full SDP to avoid multiple signaling events
                     stream: currentStream,
                     config: {
                         iceServers: [
                             { urls: 'stun:stun.l.google.com:19302' },
                             { urls: 'stun:stun1.l.google.com:19302' },
-                            { urls: 'stun:stun2.l.google.com:19302' },
-                            { urls: 'stun:stun3.l.google.com:19302' },
-                            { urls: 'stun:stun4.l.google.com:19302' }
+                            { urls: 'stun:stun2.l.google.com:19302' }
                         ]
                     }
                 })
@@ -73,7 +71,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                 connectionRef.current = peer
 
                 peer.on('signal', (data: any) => {
-                    console.log(`📡 VoiceCall: Signal [${data.type}]`)
+                    console.log(`📡 VoiceCall: Signal Generated [${data.type}]`)
                     if (isInitiator) {
                         socket.emit('call-user', { userToCall: String(otherUserId), signalData: data, from: String(userId), roomId })
                     } else {
@@ -94,7 +92,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                 })
 
                 peer.on('connect', () => {
-                    console.log("VoiceCall: Peer Connected");
+                    console.log("VoiceCall: Peer Connected - Audio Link Active");
                     setStatus("Connected")
                     setCallAccepted(true)
                     if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -102,17 +100,15 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 peer.on('error', (err: any) => {
                     console.error("VoiceCall: Peer Error:", err);
-                    if (err.code === 'ERR_WEBRTC_SUPPORT') {
-                        setStatus("Browser Incompatible");
-                    } else {
-                        setStatus("Connecting..."); // Retrying via trickle
-                    }
+                    setStatus("Connection Failed");
                 })
 
                 // Listeners setup
                 const handleCallAccepted = (signal: any) => {
-                    console.log("⚡ VoiceCall: Handshake Finalized")
-                    if (!peer.destroyed) peer.signal(signal)
+                    console.log("⚡ VoiceCall: Handshake Finalized [Answer Received]")
+                    if (peer && !peer.destroyed) {
+                        peer.signal(signal);
+                    }
                 }
 
                 const handleEndCall = () => {
@@ -122,24 +118,31 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 if (isInitiator) {
                     socket.on('call-accepted', handleCallAccepted)
-                    // Timeout if no answer in 30s
+                    // Timeout if no answer in 45s (extended for full SDP gathering)
                     timeoutRef.current = setTimeout(() => {
                         if (!callAccepted) {
-                            toast.error("No answer");
+                            toast.error("Call timed out");
                             onEnd();
                         }
-                    }, 30000);
+                    }, 45000);
                 } else if (incomingSignal) {
-                    console.log("📥 VoiceCall: Processing Incoming Offer")
+                    console.log("📥 VoiceCall: Applying Incoming Offer")
                     peer.signal(incomingSignal)
                 }
 
                 socket.on('end-call', handleEndCall);
+                socket.on('call-received', (data: any) => {
+                    if (!isInitiator && !peer.destroyed) {
+                        console.log("📥 VoiceCall: Update Signal Received");
+                        peer.signal(data.signal);
+                    }
+                });
 
                 // Store for cleanup
                 (peer as any)._cleanup = () => {
                     socket.off('call-accepted', handleCallAccepted);
                     socket.off('end-call', handleEndCall);
+                    socket.off('call-received');
                 };
 
             } catch (err) {

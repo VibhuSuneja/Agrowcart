@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from "motion/react"
-import { ArrowLeft, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, MapPin, Navigation, Phone, Search, Truck, User, ShieldCheck, Sparkles, Map as MapIcon, CreditCard as CardIcon } from 'lucide-react'
+import { ArrowLeft, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, MapPin, Navigation, Phone, Search, Truck, User, ShieldCheck, Sparkles, Map as MapIcon, CreditCard as CardIcon, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
@@ -32,6 +32,7 @@ function Checkout() {
     const [savedAddresses, setSavedAddresses] = useState<any[]>([])
     const [showSavedAddresses, setShowSavedAddresses] = useState(false)
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
+    const [editingAddressId, setEditingAddressId] = useState<string | null>(null)
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -73,18 +74,62 @@ function Checkout() {
         setSelectedAddressId(savedAddr._id)
         setShowSavedAddresses(false)
         toast.success("Address selected")
+        setEditingAddressId(null)
+    }
+
+    const handleDeleteAddress = async (e: React.MouseEvent, addrId: string) => {
+        e.stopPropagation()
+        if (!confirm("Are you sure you want to delete this address?")) return
+        try {
+            const res = await axios.delete(`/api/user/address/${addrId}`)
+            if (res.data.success) {
+                toast.success("Address deleted")
+                if (selectedAddressId === addrId) {
+                    setSelectedAddressId(null)
+                }
+                fetchSavedAddresses()
+            }
+        } catch (error) {
+            toast.error("Failed to delete address")
+        }
+    }
+
+    const handleEditAddress = (e: React.MouseEvent, savedAddr: any) => {
+        e.stopPropagation()
+        setAddress({
+            fullName: savedAddr.fullName,
+            mobile: savedAddr.mobile,
+            city: savedAddr.city,
+            state: savedAddr.state,
+            pincode: savedAddr.pincode,
+            fullAddress: savedAddr.fullAddress
+        })
+        setPosition([savedAddr.latitude, savedAddr.longitude])
+        setEditingAddressId(savedAddr._id)
+        setShowSavedAddresses(false)
+        toast.success("Address loaded for editing")
     }
 
     const saveAddress = async () => {
         if (!position) return
         try {
-            await axios.post('/api/user/address', {
-                ...address,
-                latitude: position[0],
-                longitude: position[1],
-                isDefault: savedAddresses.length === 0
-            })
+            if (editingAddressId) {
+                await axios.put(`/api/user/address/${editingAddressId}`, {
+                    ...address,
+                    latitude: position[0],
+                    longitude: position[1],
+                    isDefault: false
+                })
+            } else {
+                await axios.post('/api/user/address', {
+                    ...address,
+                    latitude: position[0],
+                    longitude: position[1],
+                    isDefault: savedAddresses.length === 0
+                })
+            }
             fetchSavedAddresses()
+            setEditingAddressId(null)
         } catch (error) {
             console.error("Failed to save address", error)
         }
@@ -159,7 +204,7 @@ function Checkout() {
             setOrderLoading(true)
 
             // Auto-save address if it's new (not selected from list)
-            if (!selectedAddressId) {
+            if (!selectedAddressId || editingAddressId) {
                 await saveAddress()
             }
 
@@ -194,7 +239,7 @@ function Checkout() {
             setOrderLoading(true)
 
             // Auto-save address if it's new
-            if (!selectedAddressId) {
+            if (!selectedAddressId || editingAddressId) {
                 await saveAddress()
             }
 
@@ -299,7 +344,23 @@ function Checkout() {
                                                 >
                                                     <div className="font-bold text-zinc-900 text-sm">{addr.fullName}</div>
                                                     <div className="text-xs text-zinc-500 mt-1 line-clamp-2">{addr.fullAddress}</div>
-                                                    <div className="text-xs text-zinc-400 mt-2">{addr.city}, {addr.pincode}</div>
+                                                    <div className="text-xs text-zinc-400 mt-2 flex justify-between items-center">
+                                                        <span>{addr.city}, {addr.pincode}</span>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={(e) => handleEditAddress(e, addr)}
+                                                                className="p-1.5 hover:bg-zinc-200 rounded-lg text-zinc-400 hover:text-green-600 transition-colors"
+                                                            >
+                                                                <Navigation size={12} />
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => handleDeleteAddress(e, addr._id)}
+                                                                className="p-1.5 hover:bg-zinc-200 rounded-lg text-zinc-400 hover:text-red-600 transition-colors"
+                                                            >
+                                                                <Trash2 size={12} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
