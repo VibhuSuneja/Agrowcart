@@ -598,6 +598,48 @@ function StartupDashboard() {
 
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-1 gap-6">
+                                        {/* Image Upload Field */}
+                                        <div className="flex flex-col items-center justify-center">
+                                            <label htmlFor="startup-log-image" className="cursor-pointer w-full h-40 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2rem] flex flex-col items-center justify-center hover:bg-purple-50 hover:border-purple-300 transition-all overflow-hidden group relative">
+                                                {newCrop.imagePreview ? (
+                                                    <img src={newCrop.imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <>
+                                                        <Upload className="text-zinc-400 group-hover:text-purple-600 mb-2" size={32} />
+                                                        <span className="text-zinc-400 text-[10px] font-black uppercase tracking-widest">Innovation Photo</span>
+                                                    </>
+                                                )}
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="startup-log-image"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0]
+                                                    if (file) {
+                                                        if (file.size > 5 * 1024 * 1024) {
+                                                            toast.error("Image too large (max 5MB)")
+                                                            return
+                                                        }
+                                                        setNewCrop({
+                                                            ...newCrop,
+                                                            image: file,
+                                                            imagePreview: URL.createObjectURL(file)
+                                                        })
+                                                    }
+                                                }}
+                                            />
+                                            {newCrop.imagePreview && (
+                                                <button
+                                                    onClick={() => setNewCrop({ ...newCrop, image: null, imagePreview: null })}
+                                                    className="mt-2 text-red-500 text-[10px] font-black uppercase tracking-widest hover:underline"
+                                                >
+                                                    Remove Photo
+                                                </button>
+                                            )}
+                                        </div>
+
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <input
                                                 placeholder="Product Name"
@@ -647,6 +689,7 @@ function StartupDashboard() {
                                                     formData.append("unit", newCrop.unit);
                                                     formData.append("farmId", newCrop.farmId);
                                                     formData.append("harvestDate", newCrop.harvestDate);
+                                                    if (newCrop.image) formData.append("image", newCrop.image);
 
                                                     if (editingCrop) {
                                                         formData.append("productId", editingCrop._id);
