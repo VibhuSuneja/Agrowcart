@@ -17,6 +17,7 @@ interface ContractViewerProps {
         content: string
         criticalClauses: Clause[]
         legalFootnote: string
+        isSample?: boolean
     }
     onClose: () => void
 }
@@ -151,7 +152,23 @@ const ContractViewer: React.FC<ContractViewerProps> = ({ data, onClose }) => {
                         {/* Paper Texture Overlay */}
                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
 
-                        <div ref={printRef} className="max-w-3xl mx-auto dark:text-zinc-300">
+                        {data.isSample && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden origin-center">
+                                <span className="text-[12vw] font-black text-zinc-950/5 dark:text-white/5 uppercase tracking-[0.2em] -rotate-45">
+                                    Sample Draft
+                                </span>
+                            </div>
+                        )}
+
+                        <div ref={printRef} className="max-w-3xl mx-auto dark:text-zinc-300 relative z-10">
+                            {data.isSample && (
+                                <div className="mb-10 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3 no-print">
+                                    <AlertTriangle className="text-amber-500" size={20} />
+                                    <p className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                                        This is a sample template. Generate a custom agreement to include your specific details.
+                                    </p>
+                                </div>
+                            )}
                             <div className="prose prose-zinc dark:prose-invert max-w-none">
                                 <ReactMarkdown>
                                     {data.content}

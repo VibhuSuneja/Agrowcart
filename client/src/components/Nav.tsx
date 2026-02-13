@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck, Scale } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -129,6 +129,13 @@ function Nav({ user: propUser }: { user: any }) {
                         <div className='w-8 h-8 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center'><Sparkles size={18} /></div>
                         Shree Anna
                     </Link>
+
+                    {['farmer', 'shg', 'processor', 'startup'].includes(user.role) && (
+                        <Link href="/tools/contract-hub" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                            <div className='w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center'><Scale size={18} /></div>
+                            Institutional Contract Hub
+                        </Link>
+                    )}
 
                     <button
                         onClick={() => {

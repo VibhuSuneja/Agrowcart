@@ -15,37 +15,46 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Missing required contract parameters" }, { status: 400 });
         }
 
-        const prompt = `Generate a professional 'Millet Sourcing Agreement' for the government scheme: ${scheme}.
+        const prompt = `You are a high-end Legal Tech AI specializing in Indian Agricultural Law and Institutional Procurement.
+        Generate a professional 'Institutional Sourcing Agreement' for the government scheme: ${scheme}.
         
         PARTIES:
-        - Producer: ${farmerData.name}, residing at ${farmerData.location} (Role: ${farmerData.role})
-        - Procurement Body: Relevant Government ${scheme} Authority
+        - Producer (First Party): ${farmerData.name}, location: ${farmerData.location} (Role: ${farmerData.role})
+        - Procurement Body (Second Party): Relevant Government ${scheme} Authority
         
-        PRODUCE DETAILS:
-        - Crop: ${produceDetails.name}
-        - Quantity: ${produceDetails.quantity} ${produceDetails.unit}
-        - Price: ₹${produceDetails.price} per ${produceDetails.unit}
+        PRODUCE & TRANSACTION DETAILS:
+        - Commodity: ${produceDetails.name}
+        - Total Quantity: ${produceDetails.quantity} ${produceDetails.unit}
+        - Negotiated Price: ₹${produceDetails.price} per ${produceDetails.unit}
         
-        REQUIREMENTS:
-        1. Use formal legal terminology suitable for Indian agricultural contracts.
-        2. Include sections for: Recitals, Scope of Supply, Quality Standards, Delivery & Logistics, Payment Terms, Dispute Resolution, and Force Majeure.
-        3. Identify 3-4 "Critical Clauses" that are extremely important for the farmer to understand.
+        CONTRACT STRUCTURE REQUIREMENTS:
+        1. Use rigorous, formal legal terminology typical of Indian government contracts (e.g., 'hereinafter referred to', 'indemnification', 'arbitration').
+        2. MANDATORY SECTIONS: 
+           - Recitals (Context of the scheme)
+           - Scope of Supply & Specifications
+           - Quality Assurance & Inspection Protocols
+           - Logistics, Delivery Timelines & Packaging
+           - Multi-stage Payment Terms (Advancement, Realization, Final Settlement)
+           - Warranties & Representations
+           - Dispute Resolution (Conciliation & Arbitration as per Indian laws)
+           - Termination & Force Majeure
+        3. CRITICAL CLAUSES: Identify 4 specific clauses that carry high legal or financial risk for the farmer/SHG (e.g., rejection criteria, delayed payment interest).
         
-        OUTPUT FORMAT (JSON):
+        STRICT OUTPUT FORMAT (JSON ONLY):
         {
-          "contractTitle": "String",
-          "content": "Full markdown-formatted contract text",
+          "contractTitle": "String (Formal Title)",
+          "content": "Full markdown-formatted contract text with H1, H2, bolding, and numbered lists",
           "criticalClauses": [
             {
-              "title": "Clause Title",
-              "originalText": "Snippets from the contract",
-              "plainLanguage": "Simplified explanation for a non-technical farmer",
-              "impact": "High/Medium/Low"
+              "title": "Short Clause Title",
+              "originalText": "Exact snippet from the generated content",
+              "plainLanguage": "Ultra-clear, simple explanation for a rural producer",
+              "impact": "High | Medium | Low"
             }
           ],
-          "legalFootnote": "Standard legal disclaimer"
+          "legalFootnote": "Comprehensive legal disclaimer stating this is an AI-generated draft for negotiation assistance only and does not constitute final legal advice."
         }
-        Do not use markdown blocks outside the JSON.`;
+        Do not include any conversational text or markdown blocks (like \`\`\`json) in your response. Return ONLY the JSON object.`;
 
         if (!process.env.GEMINI_API_KEY) {
             return NextResponse.json({ message: "AI Engine offline. Please check API configuration." }, { status: 500 });
@@ -54,8 +63,17 @@ export async function POST(req: NextRequest) {
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
-        const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-        const parsedData = JSON.parse(cleanText);
+
+        // Robust JSON extraction
+        let parsedData;
+        try {
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            const jsonText = jsonMatch ? jsonMatch[0] : text;
+            parsedData = JSON.parse(jsonText);
+        } catch (parseError) {
+            console.error("JSON Parse Error. Raw text:", text);
+            throw new Error("AI returned invalid contract structure. Please try again.");
+        }
 
         return NextResponse.json(parsedData, { status: 200 });
 

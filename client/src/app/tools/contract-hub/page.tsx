@@ -51,6 +51,7 @@ export default function ContractHubPage() {
     const [selectedCrop, setSelectedCrop] = useState<any>(null)
     const [loadingCrops, setLoadingCrops] = useState(true)
     const [generating, setGenerating] = useState(false)
+    const [previewing, setPreviewing] = useState(false)
     const [contractData, setContractData] = useState<any>(null)
 
     useEffect(() => {
@@ -66,6 +67,33 @@ export default function ContractHubPage() {
         }
         fetchCrops()
     }, [])
+
+    const handlePreviewTemplate = async (scheme: any) => {
+        setGenerating(true)
+        setSelectedScheme(scheme)
+        try {
+            const res = await axios.post('/api/ai/generate-contract', {
+                scheme: scheme.name,
+                farmerData: {
+                    name: "[SAMPLE PRODUCER NAME]",
+                    location: "[SAMPLE LOCATION]",
+                    role: "farmer"
+                },
+                produceDetails: {
+                    name: "[SAMPLE COMMODITY]",
+                    quantity: "100",
+                    unit: "kg",
+                    price: "50"
+                }
+            })
+            setContractData({ ...res.data, isSample: true })
+            toast.success(`Generated Sample Draft for ${scheme.name}`)
+        } catch (error: any) {
+            toast.error("Failed to load template preview")
+        } finally {
+            setGenerating(false)
+        }
+    }
 
     const handleGenerate = async () => {
         if (!selectedScheme || !selectedCrop || !userData) {
@@ -137,7 +165,7 @@ export default function ContractHubPage() {
                                         key={scheme.id}
                                         whileHover={{ y: -5 }}
                                         onClick={() => setSelectedScheme(scheme)}
-                                        className={`p-6 rounded-[2.5rem] cursor-pointer transition-all border-2 relative overflow-hidden group ${selectedScheme?.id === scheme.id
+                                        className={`p-6 rounded-[2.5rem] cursor-pointer transition-all border-2 relative overflow-hidden group flex flex-col justify-between min-h-[220px] ${selectedScheme?.id === scheme.id
                                             ? 'bg-slate-950 border-indigo-500 shadow-2xl'
                                             : 'bg-white dark:bg-white/5 border-zinc-100 dark:border-white/5 bg-zinc-50/50'
                                             }`}
@@ -147,17 +175,36 @@ export default function ContractHubPage() {
                                         <div className="relative z-10 space-y-4">
                                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${selectedScheme?.id === scheme.id ? 'bg-indigo-500 text-white' : 'bg-zinc-100 dark:bg-white/10 text-zinc-400'
                                                 }`}>
-                                                <Briefcase size={24} />
+                                                <Briefcase size={22} />
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black uppercase text-zinc-500 tracking-widest mb-1">{scheme.agency}</p>
+                                                <p className="text-[9px] font-black uppercase text-zinc-400 tracking-widest mb-1">{scheme.agency}</p>
                                                 <h3 className={`font-black text-lg tracking-tight ${selectedScheme?.id === scheme.id ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                                                     {scheme.name}
                                                 </h3>
                                             </div>
-                                            <p className={`text-xs font-medium leading-relaxed ${selectedScheme?.id === scheme.id ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                                            <p className={`text-[11px] font-medium leading-relaxed ${selectedScheme?.id === scheme.id ? 'text-zinc-400' : 'text-zinc-500'}`}>
                                                 {scheme.desc}
                                             </p>
+                                        </div>
+
+                                        <div className="relative z-10 mt-6 pt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handlePreviewTemplate(scheme);
+                                                }}
+                                                className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-colors ${selectedScheme?.id === scheme.id ? 'text-indigo-400 hover:text-white' : 'text-zinc-400 hover:text-indigo-500'
+                                                    }`}
+                                            >
+                                                <FileText size={12} />
+                                                View Sample Draft
+                                            </button>
+                                            {selectedScheme?.id === scheme.id && (
+                                                <div className="w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
+                                                    <ShieldCheck size={12} className="text-white" />
+                                                </div>
+                                            )}
                                         </div>
                                     </motion.div>
                                 ))}
