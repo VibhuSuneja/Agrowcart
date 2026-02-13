@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
   turbopack: {},
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'motion/react', 'date-fns'],
+    serverActions: {
+      bodySizeLimit: '5mb',
+    },
   },
   images: {
     formats: ['image/avif', 'image/webp'],
