@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import AIResponse from "@/models/ai-cache.model";
 import connectDb from "@/lib/db";
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const prompt = `You are a professional chef specializing in Indian Millets. 
         The user has purchased ${productName} (Category: ${category}). 
@@ -69,3 +69,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Failed to generate recipe" }, { status: 500 });
     }
 }
+

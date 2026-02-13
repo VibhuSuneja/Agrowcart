@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
 // Verify Webhook (Required by Meta)
 export async function GET(req: NextRequest) {
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
                 return new NextResponse("Invalid Signature", { status: 401 });
             }
         } else {
-            console.warn("⚠️ WHATSAPP_APP_SECRET missing. Bot is vulnerable to spoofing.");
+            console.warn("âš ï¸ WHATSAPP_APP_SECRET missing. Bot is vulnerable to spoofing.");
         }
 
         // Check if this is a message from WhatsApp
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
                 // 1. Handle Text Messages
                 if (type === "text") {
                     const text = message.text.body;
-                    await sendWhatsAppMessage(from, `👋 Welcome to AgrowCart! \n\nI am your AI Assistant. You can:\n1. 📸 Send a photo of your crop to sell it.\n2. 🏥 Send a photo of a sick leaf for a diagnosis.`);
+                    await sendWhatsAppMessage(from, `ðŸ‘‹ Welcome to AgrowCart! \n\nI am your AI Assistant. You can:\n1. ðŸ“¸ Send a photo of your crop to sell it.\n2. ðŸ¥ Send a photo of a sick leaf for a diagnosis.`);
                 }
 
                 // 2. Handle Image Messages (Crop Upload)
@@ -77,11 +77,11 @@ export async function POST(req: NextRequest) {
                     const imageUrl = await getWhatsAppMediaUrl(imageId);
 
                     // Analyze with Gemini
-                    await sendWhatsAppMessage(from, "🔍 Analyzing your crop... please wait.");
+                    await sendWhatsAppMessage(from, "ðŸ” Analyzing your crop... please wait.");
 
                     const analysis = await analyzeImageWithGemini(imageUrl);
 
-                    await sendWhatsAppMessage(from, `✅ Analysis Complete!\n\nCrop: *${analysis.crop}*\nQuality: *${analysis.quality}*\n\nDo you want to list this on the marketplace for ₹${analysis.price}/kg? (Reply YES)`);
+                    await sendWhatsAppMessage(from, `âœ… Analysis Complete!\n\nCrop: *${analysis.crop}*\nQuality: *${analysis.quality}*\n\nDo you want to list this on the marketplace for â‚¹${analysis.price}/kg? (Reply YES)`);
                 }
             }
         }
@@ -142,3 +142,4 @@ async function analyzeImageWithGemini(imageUrl: string) {
         price: "32"
     };
 }
+

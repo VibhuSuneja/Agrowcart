@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: "POST",
@@ -49,3 +49,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Error generating answer" }, { status: 500 });
     }
 }
+

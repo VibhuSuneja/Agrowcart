@@ -1,21 +1,21 @@
-import connectDb from "@/lib/db";
+﻿import connectDb from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 // HIGH-QUALITY STATIC FALLBACKS (Zero-Cost, Future-Ready)
 const FALLBACK_SUGGESTIONS = {
     user: [
-        "Where are you exactly? 📍",
-        "Please leave it at the gate. 🚪",
-        "I'm coming down now. 🏃‍♂️",
-        "Thank you for the delivery! 🙏",
-        "Is my order coming soon? ⏳"
+        "Where are you exactly? ðŸ“",
+        "Please leave it at the gate. ðŸšª",
+        "I'm coming down now. ðŸƒâ€â™‚ï¸",
+        "Thank you for the delivery! ðŸ™",
+        "Is my order coming soon? â³"
     ],
     delivery_boy: [
-        "I have arrived at your location. 📍",
-        "I am on my way. 🛵",
-        "Please provide the OTP. 🔢",
-        "I'm waiting at the main gate. 🚪",
-        "Thank you, have a great day! 😊"
+        "I have arrived at your location. ðŸ“",
+        "I am on my way. ðŸ›µ",
+        "Please provide the OTP. ðŸ”¢",
+        "I'm waiting at the main gate. ðŸšª",
+        "Thank you, have a great day! ðŸ˜Š"
     ]
 };
 
@@ -44,16 +44,16 @@ Context:
 
 Task:
 Generate exactly 3 short, helpful, and natural reply suggestions.
-👉 Role: ${userRole}
+ðŸ‘‰ Role: ${userRole}
 
 Rules:
 - Keep replies short (max 6 words).
 - Use max one emoji per reply.
 - Return ONLY the suggestions as a comma-separated list.
-- Example output: Yes, please leave it at the gate. 🚪, I am coming down now. 🏃‍♂️, Thank you so much! 🙏`
+- Example output: Yes, please leave it at the gate. ðŸšª, I am coming down now. ðŸƒâ€â™‚ï¸, Thank you so much! ðŸ™`
 
         const apiKey = process.env.GEMINI_API_KEY;
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
         try {
             const response = await fetch(url, {
@@ -97,3 +97,4 @@ Rules:
         return NextResponse.json([], { status: 200 });
     }
 }
+
