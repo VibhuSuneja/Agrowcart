@@ -32,9 +32,23 @@ export async function POST(req: Request) {
 
         await connectDb();
 
+
         if (isDefault) {
             await Address.updateMany({ user: session.user.id }, { isDefault: false });
         }
+
+        const existingAddress = await Address.findOne({
+            user: session.user.id,
+            $or: [
+                { fullAddress: fullAddress },
+                { latitude: latitude, longitude: longitude }
+            ]
+        });
+
+        if (existingAddress) {
+            return NextResponse.json({ success: true, message: "Address selected", address: existingAddress });
+        }
+
 
         const newAddress = await Address.create({
             user: session.user.id,

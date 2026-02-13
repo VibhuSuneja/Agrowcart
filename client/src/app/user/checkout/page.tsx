@@ -110,6 +110,28 @@ function Checkout() {
         }
     }
 
+    const handleLocateFromAddress = async () => {
+        if (!address.fullAddress && !address.city) return toast.error("Please enter address details first");
+        setSearchLoading(true);
+        try {
+            const { OpenStreetMapProvider } = await import("leaflet-geosearch");
+            const provider = new OpenStreetMapProvider();
+            const query = `${address.fullAddress}, ${address.city || ""}, ${address.state || ""}, ${address.pincode || ""}`;
+            const results = await provider.search({ query });
+            if (results && results.length > 0) {
+                setPosition([results[0].y, results[0].x]);
+                toast.success("Map updated to address location!");
+            } else {
+                toast.error("Could not locate address on map");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Geocoding failed");
+        } finally {
+            setSearchLoading(false);
+        }
+    }
+
     useEffect(() => {
         const fetchAddress = async () => {
             if (!position) return
@@ -271,8 +293,8 @@ function Checkout() {
                                                     key={addr._id}
                                                     onClick={() => handleSelectAddress(addr)}
                                                     className={`cursor-pointer p-4 rounded-2xl border-2 transition-all ${selectedAddressId === addr._id
-                                                            ? "border-green-500 bg-green-50"
-                                                            : "border-zinc-100 hover:border-green-200 bg-zinc-50"
+                                                        ? "border-green-500 bg-green-50"
+                                                        : "border-zinc-100 hover:border-green-200 bg-zinc-50"
                                                         }`}
                                                 >
                                                     <div className="font-bold text-zinc-900 text-sm">{addr.fullName}</div>
@@ -296,9 +318,16 @@ function Checkout() {
                                         <input type="text" placeholder="Mobile Number" value={address.mobile} onChange={(e) => setAddress((prev) => ({ ...prev, mobile: e.target.value }))} className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/10 focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
                                     </div>
                                 </div>
-                                <div className='relative group'>
+                                <div className='relative flex-1 group'>
                                     <Home className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-green-500 transition-colors" size={18} />
-                                    <input type="text" placeholder="Full Detailed Address" value={address.fullAddress} onChange={(e) => setAddress((prev) => ({ ...prev, fullAddress: e.target.value }))} className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-4 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/10 focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
+                                    <input type="text" placeholder="Full Detailed Address" value={address.fullAddress} onChange={(e) => setAddress((prev) => ({ ...prev, fullAddress: e.target.value }))} className='w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 pl-12 pr-14 text-zinc-800 placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-green-500/10 focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
+                                    <button
+                                        onClick={handleLocateFromAddress}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-zinc-200/50 hover:bg-green-100/50 text-zinc-500 hover:text-green-600 rounded-xl transition-colors"
+                                        title="Update Map from Address"
+                                    >
+                                        <MapIcon size={16} />
+                                    </button>
                                 </div>
                                 <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
                                     <input type="text" value={address.city} placeholder='City' onChange={(e) => setAddress((prev) => ({ ...prev, city: e.target.value }))} className='bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-zinc-800 focus:bg-white focus:border-green-500 focus:outline-none transition-all font-medium text-sm' />
