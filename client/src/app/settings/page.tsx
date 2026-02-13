@@ -75,7 +75,7 @@ function SettingsPage() {
                 submitData.append('image', selectedImage)
             }
 
-            const res = await axios.post('/api/user/profile-update', submitData)
+            const res = await axios.post('/api/account/edit', submitData)
 
             if (res.status === 200) {
                 const updatedUser = res.data.user
