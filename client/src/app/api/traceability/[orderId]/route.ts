@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDb from "@/lib/db";
 import Order from "@/models/order.model";
 import Product from "@/models/product.model";
+import User from "@/models/user.model";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
     try {
