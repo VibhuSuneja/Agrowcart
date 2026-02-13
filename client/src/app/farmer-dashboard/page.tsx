@@ -227,6 +227,29 @@ function FarmerDashboard() {
                         <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg leading-relaxed">
                             Empowering organic farmers with AI-driven market intelligence, Global standard traceability, and direct access to global marketplaces.
                         </p>
+
+                        <div className="flex flex-wrap gap-4 pt-4">
+                            <Link href="/tools/contract-hub">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="bg-slate-900 dark:bg-primary text-white px-8 py-4 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] sm:text-xs shadow-2xl agrow-glow flex items-center gap-3 border border-white/10"
+                                >
+                                    <Gavel size={18} className="text-primary dark:text-white" />
+                                    <span>Institutional Contract Hub</span>
+                                </motion.button>
+                            </Link>
+                            <Link href="/tools/crop-doctor">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white px-8 py-4 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] sm:text-xs shadow-xl flex items-center gap-3 border border-zinc-200 dark:border-zinc-700"
+                                >
+                                    <Activity size={18} className="text-primary" />
+                                    <span>Crop Health Clinic</span>
+                                </motion.button>
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-6">
