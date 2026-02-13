@@ -42,6 +42,10 @@ function TraceabilityPage() {
     const firstItem = order?.items?.[0]?.product || {}
     const harvestDate = firstItem.harvestDate ? new Date(firstItem.harvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 12, 2024"
 
+    // Robust delivered check: normalize status AND check OTP verification as backup signal
+    const normalizedStatus = (order?.status || '').toString().trim().toLowerCase()
+    const isDelivered = normalizedStatus === 'delivered' || order?.deliveryOtpVerification === true
+
     const timeline = [
         {
             status: "Harvested",
@@ -71,13 +75,13 @@ function TraceabilityPage() {
             bg: "bg-amber-50"
         },
         {
-            status: order?.status === 'delivered' ? "Delivered" : "Out for Delivery",
-            location: order?.status === 'delivered' ? order?.address?.city : (order?.address?.city || "Last Mile Hub"),
-            date: order?.status === 'delivered' ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
-            desc: order?.status === 'delivered' ? "Order successfully verified via OTP and handed over to customer." : "Batch assigned to regional delivery partner for local fulfillment.",
-            icon: order?.status === 'delivered' ? CheckCircle2 : Truck,
-            color: order?.status === 'delivered' ? "text-green-600" : "text-purple-500",
-            bg: order?.status === 'delivered' ? "bg-green-50" : "bg-purple-50"
+            status: isDelivered ? "Delivered" : "Out for Delivery",
+            location: isDelivered ? (order?.address?.city || "Customer Location") : (order?.address?.city || "Last Mile Hub"),
+            date: isDelivered ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
+            desc: isDelivered ? "Order successfully verified via OTP and handed over to customer." : "Batch assigned to regional delivery partner for local fulfillment.",
+            icon: isDelivered ? CheckCircle2 : Truck,
+            color: isDelivered ? "text-green-600" : "text-purple-500",
+            bg: isDelivered ? "bg-green-50" : "bg-purple-50"
         }
     ]
 

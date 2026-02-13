@@ -5,30 +5,61 @@ import { auth } from "@/auth";
 import uploadOnCloudinary from "@/lib/cloudinary";
 import { sanitizeText, sanitizeUserInput } from "@/lib/sanitize";
 
+export async function GET() {
+    return NextResponse.json({
+        message: "Profile update endpoint is active. Use POST to update data.",
+        methods_allowed: ["POST", "PATCH", "OPTIONS", "GET"]
+    }, { status: 200 });
+}
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 204,
+        headers: {
+            'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+    });
+}
+
+export async function PATCH(req: NextRequest) {
+    return POST(req);
+}
+
 export async function POST(req: NextRequest) {
     try {
         await connectDb();
 
         const session = await auth();
-        // Robust check for session and identification info
+
         if (!session?.user?.email) {
-            return NextResponse.json({ message: "Unauthorized - Session missing identifier" }, { status: 401 });
+            return NextResponse.json({ message: "Unauthorized - Please sign in again" }, { status: 401 });
+        }
+
+        // Check content type to ensure it's multipart/form-data
+        const contentType = req.headers.get("content-type") || "";
+        if (!contentType.includes("multipart/form-data")) {
+            // Fallback for JSON requests if needed late, but current client uses FormData
+            try {
+                const body = await req.json();
+                if (body && Object.keys(body).length > 0) {
+                    // Logic for JSON body update could go here if we want to be super robust
+                }
+            } catch (e) { }
         }
 
         const formData = await req.formData();
         const rawName = formData.get("name") as string;
-        const rawBio = formData.get("bio"); // Can be null if not present
+        const rawBio = formData.get("bio");
         const status = formData.get("status") as string;
         const imageFile = formData.get("image") as File | null;
 
         const updateData: any = {};
 
-        // Only update if name is not empty
         if (rawName && rawName.trim()) {
             updateData.name = sanitizeText(rawName.trim());
         }
 
-        // Bio can be empty string (cleared), only skip if null (not in form)
         if (rawBio !== null) {
             updateData.bio = sanitizeUserInput(String(rawBio));
         }
@@ -38,7 +69,6 @@ export async function POST(req: NextRequest) {
             updateData.status = validStatus;
         }
 
-        // Handle Image Upload if file is valid
         if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
             try {
                 const uploadedUrl = await uploadOnCloudinary(imageFile);
@@ -47,12 +77,9 @@ export async function POST(req: NextRequest) {
                 }
             } catch (imgError) {
                 console.error("Cloudinary Upload Error:", imgError);
-                // Continue without image update if upload fails
             }
         }
 
-        // Use findOneAndUpdate with email as primary lookup for maximum reliability
-        // across different session strategies (JWT/ID vs Email)
         const user = await User.findOneAndUpdate(
             { email: session.user.email },
             { $set: updateData },
@@ -60,7 +87,7 @@ export async function POST(req: NextRequest) {
         );
 
         if (!user) {
-            return NextResponse.json({ message: "User account not found" }, { status: 404 });
+            return NextResponse.json({ message: "User account synchronization error" }, { status: 404 });
         }
 
         return NextResponse.json({
@@ -75,7 +102,8 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Update Profile Critical Error:", error);
         return NextResponse.json({
-            message: `Update failure: ${error.message || "Unknown error"}`
+            message: `Update failure: ${error.message || "Internal server error"}`
         }, { status: 500 });
     }
 }
+
