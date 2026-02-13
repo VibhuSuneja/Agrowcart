@@ -39,7 +39,7 @@ function TraceabilityPage() {
         </div>
     )
 
-    if (!order || !order.batchNumber) return (
+    if (!order) return (
         <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center gap-6 p-6">
             <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center text-zinc-300 shadow-xl border border-zinc-100">
                 <History size={48} />
@@ -216,7 +216,7 @@ function TraceabilityPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-none"
                         >
-                            Batch <span className="text-green-600 font-black">{order?.batchNumber || "Traceability."}</span>
+                            {order?.batchNumber ? "Batch" : "Order"} <span className="text-green-600 font-black">{order?.batchNumber || "Traceability."}</span>
                         </motion.h1>
                         <p className="text-zinc-500 max-w-lg font-medium text-lg italic mt-4">"Transparency is the soul of trust in agriculture."</p>
                     </div>
