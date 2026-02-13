@@ -1,6 +1,6 @@
 'use client'
 import AdminOrderCard from '@/components/AdminOrderCard'
-import { getSocket } from '@/lib/socket'
+import { useSocket } from '@/context/SocketContext'
 import dynamic from 'next/dynamic'
 const LogisticsGlobalMap = dynamic(() => import('@/components/LogisticsGlobalMap'), { ssr: false })
 
@@ -10,7 +10,7 @@ import { ArrowLeft, Truck } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 interface IOrder {
   _id?: string
   user: string
@@ -53,6 +53,7 @@ interface IDeliveryPartner {
 }
 
 function ManageOrders() {
+  const { socket } = useSocket()
   const [orders, setOrders] = useState<IOrder[]>()
   const [partners, setPartners] = useState<IDeliveryPartner[]>([])
   const router = useRouter()
@@ -111,19 +112,48 @@ function ManageOrders() {
 
 
   useEffect(() => {
-    const socket = getSocket()
-    socket?.on("new-order", (newOrder) => {
-      setOrders((prev) => [newOrder, ...prev!])
-      toast.success(`Broadcasting New Order from ${newOrder.address?.fullName || 'Customer'}!`, {
+    if (!socket) return
+
+    const handleNewOrder = (newOrder: any) => {
+      setOrders((prev) => [newOrder, ...(prev || [])])
+      toast.success(`New Order from ${newOrder.address?.fullName || 'Customer'}!`, {
         icon: '🛍️',
         duration: 5000
       })
-    })
-    socket.on("order-assigned", ({ orderId, assignedDeliveryBoy }) => {
+
+      // Sound Notification for Admin
+      try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
+        audio.volume = 0.5
+        audio.play().catch(e => console.error('Admin audio play failed', e))
+      } catch (err) {
+        console.error('Admin notification sound failed', err)
+      }
+
+      // TTS Announcement
+      try {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(`New order received from ${newOrder.address?.fullName || 'customer'}`)
+          utterance.rate = 1.0
+          utterance.pitch = 1.0
+          window.speechSynthesis.speak(utterance)
+        }
+      } catch (err) {
+        console.error('Admin TTS failed', err)
+      }
+    }
+
+    const handleOrderAssigned = ({ orderId, assignedDeliveryBoy }: any) => {
       setOrders((prev) => prev?.map((o) => (
         o._id == orderId ? { ...o, assignedDeliveryBoy } : o
       )))
-    })
+    }
+
+    const handleOrderStatusUpdate = ({ orderId, status }: any) => {
+      setOrders((prev) => prev?.map((o) => (
+        o._id == orderId ? { ...o, status } : o
+      )))
+    }
 
     const handleLocationUpdate = (data: any) => {
       setPartners(prev => {
@@ -142,7 +172,6 @@ function ManageOrders() {
             return p
           })
         } else {
-          // If they just went online/moved but aren't in partners list (unlikely based on API call but safe)
           return [...prev, {
             id: data.userId,
             name: data.userName || "Delivery Partner",
@@ -156,14 +185,18 @@ function ManageOrders() {
       })
     }
 
+    socket.on("new-order", handleNewOrder)
+    socket.on("order-assigned", handleOrderAssigned)
+    socket.on("order-status-update", handleOrderStatusUpdate)
     socket.on("update-deliveryBoy-location", handleLocationUpdate)
 
     return () => {
-      socket.off("new-order")
-      socket.off("order-assigned")
+      socket.off("new-order", handleNewOrder)
+      socket.off("order-assigned", handleOrderAssigned)
+      socket.off("order-status-update", handleOrderStatusUpdate)
       socket.off("update-deliveryBoy-location", handleLocationUpdate)
     }
-  }, [])
+  }, [socket])
 
   return (
     <div className='min-h-screen bg-zinc-50 dark:bg-zinc-950 w-full'>

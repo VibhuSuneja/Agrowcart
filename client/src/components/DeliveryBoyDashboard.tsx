@@ -95,6 +95,34 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     return () => navigator.geolocation.clearWatch(watcher)
   }, [userData?._id, socket])
 
+  // Pre-load notification audio on first user interaction (bypasses mobile autoplay policy)
+  const audioRef = React.useRef<HTMLAudioElement | null>(null)
+  const audioUnlockedRef = React.useRef(false)
+
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (audioUnlockedRef.current) return
+      try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
+        audio.volume = 0.01
+        audio.play().then(() => {
+          audio.pause()
+          audio.currentTime = 0
+          audio.volume = 0.6
+          audioRef.current = audio
+          audioUnlockedRef.current = true
+          console.log('🔊 Audio unlocked for notifications')
+        }).catch(() => { })
+      } catch (e) { }
+    }
+    document.addEventListener('click', unlockAudio, { once: true })
+    document.addEventListener('touchstart', unlockAudio, { once: true })
+    return () => {
+      document.removeEventListener('click', unlockAudio)
+      document.removeEventListener('touchstart', unlockAudio)
+    }
+  }, [])
+
   useEffect((): any => {
     if (!socket) return
 
@@ -102,24 +130,48 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       setAssignments((prev) => [...prev, deliveryAssignment])
       toast.success("New Delivery Assignment!")
 
-      // Play notification sound & TTS
+      // Play notification sound (use pre-loaded audio if available)
       try {
-        const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3")
-        audio.play().catch(e => console.error("Audio play failed", e))
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0
+          audioRef.current.play().catch(e => console.error("Audio play failed", e))
+        } else {
+          const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3")
+          audio.volume = 0.6
+          audio.play().catch(e => console.error("Audio play failed", e))
+        }
+      } catch (err) {
+        console.error("Notification sound failed", err)
+      }
 
+      // Vibrate on mobile as fallback
+      try {
+        if ('vibrate' in navigator) {
+          navigator.vibrate([200, 100, 200, 100, 200])
+        }
+      } catch (e) { }
+
+      // TTS
+      try {
         if ('speechSynthesis' in window) {
           const utterance = new SpeechSynthesisUtterance("New delivery mission available");
           window.speechSynthesis.speak(utterance);
         }
       } catch (err) {
-        console.error("Notification failed", err)
+        console.error("TTS failed", err)
       }
     })
     socket.on("order-status-update", ({ orderId, status }) => {
       if (status === "cancelled") {
-        toast.error(`Order #${orderId.slice(-6).toUpperCase()} has been cancelled`)
+        toast.error(`Order #${orderId?.toString().slice(-6).toUpperCase()} has been cancelled`)
         fetchCurrentOrder()
         fetchAssignments()
+        fetchStats()
+      }
+      if (status === "delivered") {
+        // Order was marked delivered (e.g. by OTP verify), refresh active order
+        toast.success(`Order #${orderId?.toString().slice(-6).toUpperCase()} delivered!`)
+        fetchCurrentOrder()
         fetchStats()
       }
     })
