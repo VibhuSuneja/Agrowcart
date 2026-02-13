@@ -72,12 +72,12 @@ function TraceabilityPage() {
         },
         {
             status: order?.status === 'delivered' ? "Delivered" : "Out for Delivery",
-            location: order?.address?.city || "Last Mile Hub",
-            date: order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : "Live Tracking",
-            desc: order?.status === 'delivered' ? "Successfully handed over to verified customer." : "Batch assigned to regional delivery partner for local fulfillment.",
-            icon: Truck,
-            color: "text-purple-500",
-            bg: "bg-purple-50"
+            location: order?.status === 'delivered' ? order?.address?.city : (order?.address?.city || "Last Mile Hub"),
+            date: order?.status === 'delivered' ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
+            desc: order?.status === 'delivered' ? "Order successfully verified via OTP and handed over to customer." : "Batch assigned to regional delivery partner for local fulfillment.",
+            icon: order?.status === 'delivered' ? CheckCircle2 : Truck,
+            color: order?.status === 'delivered' ? "text-green-600" : "text-purple-500",
+            bg: order?.status === 'delivered' ? "bg-green-50" : "bg-purple-50"
         }
     ]
 
@@ -221,8 +221,8 @@ function TraceabilityPage() {
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
-            <Footer />
         </div>
     )
 }

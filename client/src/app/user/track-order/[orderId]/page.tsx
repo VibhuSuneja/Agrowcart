@@ -266,7 +266,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
             <p className='text-xs font-bold text-zinc-500 uppercase tracking-widest'>order#{order?._id?.toString().slice(-6)} <span className='text-green-700 dark:text-green-500 font-black ml-2'>{order?.status}</span></p>
           </div>
           <div className="ml-auto flex gap-2">
-            {order?.assignedDeliveryBoy && (
+            {order?.assignedDeliveryBoy && order?.status !== 'delivered' && (
               <button
                 onClick={startCall}
                 className="p-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-full shadow-lg hover:scale-110 transition-transform"
@@ -274,6 +274,11 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
               >
                 <Phone size={20} />
               </button>
+            )}
+            {order?.status === 'delivered' && (
+              <div className="px-3 py-1 bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-green-200 dark:border-green-500/30">
+                Fulfilled
+              </div>
             )}
           </div>
         </div>
@@ -400,8 +405,21 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
 
 
             <div className='flex gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800'>
-              <input type="text" placeholder='Type a Message...' className='flex-1 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-400 transition-all text-sm font-medium' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
-              <button className='bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-4 rounded-2xl transition-all' onClick={sendMsg}><Send size={20} /></button>
+              <input
+                type="text"
+                placeholder={order?.status === 'delivered' ? 'Mission Completed - Chat Closed' : 'Type a Message...'}
+                className={`flex-1 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none transition-all text-sm font-medium ${order?.status === 'delivered' ? 'cursor-not-allowed opacity-50' : 'focus:ring-2 focus:ring-green-400'}`}
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                disabled={order?.status === 'delivered'}
+              />
+              <button
+                disabled={order?.status === 'delivered' || !newMessage.trim()}
+                className={`p-4 rounded-2xl transition-all ${order?.status === 'delivered' ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed' : 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'}`}
+                onClick={sendMsg}
+              >
+                <Send size={20} />
+              </button>
             </div>
 
           </div>

@@ -38,6 +38,10 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
         const startMedia = async () => {
             try {
+                // Ensure we are in the room for signaling
+                socket.emit('join-room', roomId);
+                console.log(`VoiceCall: Joined Room ${roomId}`);
+
                 console.log("VoiceCall: Requesting media...")
                 const currentStream = await navigator.mediaDevices.getUserMedia({
                     audio: { echoCancellation: true, noiseSuppression: true }
@@ -53,10 +57,16 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 const peer = new Peer({
                     initiator: isInitiator,
-                    trickle: false,
+                    trickle: true, // Switched to trickle for faster/more reliable STUN gathering
                     stream: currentStream,
                     config: {
-                        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }]
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:stun1.l.google.com:19302' },
+                            { urls: 'stun:stun2.l.google.com:19302' },
+                            { urls: 'stun:stun3.l.google.com:19302' },
+                            { urls: 'stun:stun4.l.google.com:19302' }
+                        ]
                     }
                 })
 
@@ -92,7 +102,11 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
 
                 peer.on('error', (err: any) => {
                     console.error("VoiceCall: Peer Error:", err);
-                    setStatus("Connection Failed")
+                    if (err.code === 'ERR_WEBRTC_SUPPORT') {
+                        setStatus("Browser Incompatible");
+                    } else {
+                        setStatus("Connecting..."); // Retrying via trickle
+                    }
                 })
 
                 // Listeners setup
@@ -116,6 +130,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
                         }
                     }, 30000);
                 } else if (incomingSignal) {
+                    console.log("📥 VoiceCall: Processing Incoming Offer")
                     peer.signal(incomingSignal)
                 }
 
@@ -133,9 +148,10 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
             }
         };
 
-        startMedia();
+        const timer = setTimeout(startMedia, 100); // Slight delay to ensure socket state is ready
 
         return () => {
+            clearTimeout(timer);
             isCancelled = true;
             if (timeoutRef.current) clearTimeout(timeoutRef.current)
             if (connectionRef.current) {
@@ -145,7 +161,7 @@ export default function VoiceCall({ roomId, userId, otherUserId, isInitiator, in
             }
             stream?.getTracks().forEach(track => track.stop());
         }
-    }, [socket, isInitiator, roomId, userId, otherUserId]); // Stability achieved. incomingSignal and onEnd removed from deps as they are used via initial/ref.
+    }, [socket, isInitiator, roomId, userId, otherUserId, incomingSignal]);
 
     const stopCall = () => {
         socket?.emit('end-call', { roomId });
