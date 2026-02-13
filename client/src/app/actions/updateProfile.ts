@@ -4,7 +4,6 @@ import connectDb from "@/lib/db";
 import User from "@/models/user.model";
 import { auth } from "@/auth";
 import uploadOnCloudinary from "@/lib/cloudinary";
-import { sanitizeText, sanitizeUserInput } from "@/lib/sanitize";
 
 interface ProfileResult {
     success: boolean;
@@ -15,6 +14,17 @@ interface ProfileResult {
         image: string;
         status: string;
     };
+}
+
+// Simple server-safe sanitization (no DOMPurify needed)
+function cleanText(input: string): string {
+    if (!input || typeof input !== "string") return "";
+    return input
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#x27;")
+        .trim();
 }
 
 export async function updateProfileAction(formData: FormData): Promise<ProfileResult> {
@@ -34,11 +44,11 @@ export async function updateProfileAction(formData: FormData): Promise<ProfileRe
         const updateData: Record<string, string> = {};
 
         if (rawName && rawName.trim()) {
-            updateData.name = sanitizeText(rawName.trim());
+            updateData.name = cleanText(rawName);
         }
 
         if (rawBio !== null && rawBio !== undefined) {
-            updateData.bio = sanitizeUserInput(String(rawBio));
+            updateData.bio = cleanText(String(rawBio));
         }
 
         if (status) {
@@ -54,7 +64,6 @@ export async function updateProfileAction(formData: FormData): Promise<ProfileRe
                 }
             } catch (imgError) {
                 console.error("Cloudinary Upload Error:", imgError);
-                // Continue without image - don't fail the whole update
             }
         }
 
@@ -72,7 +81,6 @@ export async function updateProfileAction(formData: FormData): Promise<ProfileRe
             return { success: false, message: "User not found" };
         }
 
-        // Return plain serializable object (not mongoose doc)
         return {
             success: true,
             message: "Profile updated successfully",
