@@ -14,11 +14,37 @@ const TraceabilityMap: React.FC<TraceabilityMapProps> = ({ status = 'delivered',
     const farmLocation = firstItem.farmId ? `Farm ID: ${firstItem.farmId}` : "Kolar, Karnataka"
     const destinationLocation = order?.address?.city ? `${order.address.city}, ${order.address.state}` : "Your Doorstep"
 
+    // Robust status detection
+    const normalizedStatus = (order?.status || '').toString().toLowerCase().trim()
+    const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
+    const isOutForDelivery = normalizedStatus === 'out of delivery' || normalizedStatus.includes('delivery')
+    const isConfirmed = normalizedStatus === 'confirmed' || isOutForDelivery || isDelivered
+
     const nodes = [
         { id: 'farm', icon: Sprout, label: 'Origin Farm', location: farmLocation, color: 'text-green-500', bg: 'bg-green-50', cx: '10%', cy: '70%', active: true },
         { id: 'lab', icon: ShieldCheck, label: 'Quality Lab', location: 'Bangalore Central', color: 'text-blue-500', bg: 'bg-blue-50', cx: '35%', cy: '30%', active: true },
-        { id: 'logistics', icon: Truck, label: order?.status === 'delivered' ? 'Dispatched' : 'Out for Delivery', location: 'Regional Center', color: 'text-amber-500', bg: 'bg-amber-50', cx: '65%', cy: '60%', active: order?.status !== 'pending' && order?.status !== 'confirmed' },
-        { id: 'buyer', icon: Home, label: order?.status === 'delivered' ? 'Delivered' : 'Destination', location: destinationLocation, color: 'text-purple-500', bg: 'bg-purple-50', cx: '85%', cy: '25%', active: order?.status === 'delivered' },
+        {
+            id: 'logistics',
+            icon: Truck,
+            label: isDelivered ? 'Dispatched' : (isOutForDelivery ? 'Out for Delivery' : 'Logistics Hub'),
+            location: 'Regional Center',
+            color: 'text-amber-500',
+            bg: 'bg-amber-50',
+            cx: '65%',
+            cy: '60%',
+            active: isConfirmed
+        },
+        {
+            id: 'buyer',
+            icon: Home,
+            label: isDelivered ? 'Delivered' : 'Destination',
+            location: destinationLocation,
+            color: 'text-purple-500',
+            bg: 'bg-purple-50',
+            cx: '85%',
+            cy: '25%',
+            active: isDelivered
+        },
     ]
 
     // Animation variants
@@ -53,8 +79,8 @@ const TraceabilityMap: React.FC<TraceabilityMapProps> = ({ status = 'delivered',
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="#22c55e" />
                                 <stop offset="33%" stopColor="#3b82f6" />
-                                <stop offset="66%" stopColor={order?.status === 'delivered' ? "#f59e0b" : "#e2e2e2"} />
-                                <stop offset="100%" stopColor={order?.status === 'delivered' ? "#a855f7" : "#e2e2e2"} />
+                                <stop offset="66%" stopColor={isConfirmed ? "#f59e0b" : "#e2e2e2"} />
+                                <stop offset="100%" stopColor={isDelivered ? "#a855f7" : "#e2e2e2"} />
                             </linearGradient>
                         </defs>
 

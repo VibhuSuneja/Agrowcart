@@ -45,7 +45,7 @@ function TraceabilityPage() {
     // Robust delivered check: normalize status AND check OTP verification as backup signal
     const normalizedStatus = (order?.status || '').toString().trim().toLowerCase()
     const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
-    const isOutForDelivery = normalizedStatus === 'out of delivery'
+    const isOutForDelivery = normalizedStatus === 'out of delivery' || normalizedStatus.includes('delivery') || normalizedStatus.includes('dispatch')
 
     const getTimelineStatus = () => {
         if (isDelivered) return "Delivered"
@@ -85,6 +85,7 @@ function TraceabilityPage() {
         return "bg-amber-50"
     }
 
+    // Base history (Always present)
     const timeline = [
         {
             status: "Harvested",
@@ -106,23 +107,75 @@ function TraceabilityPage() {
         },
         {
             status: "Ordered & Paid",
-            location: order?.address?.city || "Customer Location",
+            location: order?.address?.city || "AgrowCart Central",
             date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Oct 15, 2024",
-            desc: "Secure transaction completed via AgrowCart Secure Payment Gateway.",
+            desc: `Secure transaction completed by ${order?.user?.name || 'Verified Buyer'}.`,
             icon: Warehouse,
             color: "text-amber-500",
             bg: "bg-amber-50"
-        },
-        {
-            status: getTimelineStatus(),
-            location: isDelivered ? (order?.address?.city || "Customer Location") : (order?.address?.city || "Last Mile Hub"),
-            date: isDelivered ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
-            desc: getTimelineDescription(),
-            icon: getTimelineIcon(),
-            color: getTimelineColor(),
-            bg: getTimelineBg()
         }
     ]
+
+    // Progression Logic: Add steps dynamically based on status
+    if (normalizedStatus === 'confirmed' || isOutForDelivery || isDelivered) {
+        timeline.push({
+            status: "Confirmed",
+            location: "Logistics Hub",
+            date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Processing",
+            desc: "Order verified and batch prepared for last-mile delivery.",
+            icon: CheckCircle2,
+            color: "text-blue-600",
+            bg: "bg-blue-50"
+        })
+    }
+
+    if (isOutForDelivery || isDelivered) {
+        timeline.push({
+            status: "Out for Delivery",
+            location: order?.address?.city || "Last Mile Hub",
+            date: "Live Tracking",
+            desc: "Batch assigned to regional delivery partner for fulfillment.",
+            icon: Truck,
+            color: "text-purple-500",
+            bg: "bg-purple-50"
+        })
+    }
+
+    if (isDelivered) {
+        timeline.push({
+            status: "Delivered",
+            location: order?.address?.city || "Customer Location",
+            date: order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString(),
+            desc: "Order successfully delivered and verified via AgrowCart Protocol.",
+            icon: CheckCircle2,
+            color: "text-green-600",
+            bg: "bg-green-50"
+        })
+    }
+
+    // Terminal statuses (Canceled/Refunded)
+    if (normalizedStatus === 'cancelled' || normalizedStatus === 'refunded') {
+        timeline.push({
+            status: normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1),
+            location: "System",
+            date: "Update",
+            desc: `This order has been ${normalizedStatus}.`,
+            icon: History,
+            color: "text-red-500",
+            bg: "bg-red-50"
+        })
+    } else if (normalizedStatus === 'pending') {
+        // Only show processing if specifically pending
+        timeline.push({
+            status: "Processing",
+            location: "AgrowCart Central",
+            date: "Queued",
+            desc: "Order received and pending warehouse confirmation.",
+            icon: Warehouse,
+            color: "text-amber-500",
+            bg: "bg-amber-50"
+        })
+    }
 
     return (
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
