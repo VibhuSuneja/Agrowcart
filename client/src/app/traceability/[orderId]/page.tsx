@@ -124,9 +124,9 @@ function TraceabilityPage() {
         },
         {
             status: "Ordered & Paid",
-            location: order?.address?.city || "Customer Location",
+            location: order?.address?.city || order?.address?.state || "AgrowCart Central",
             date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 15, 2024",
-            desc: "Secure transaction completed via AgrowCart Secure Payment Gateway.",
+            desc: `Batch secured by ${order?.user?.name || 'Verified Buyer'}. Transaction completed via AgrowCart Secure Payment Gateway.`,
             icon: Warehouse,
             color: "text-amber-500",
             bg: "bg-amber-50"
@@ -218,7 +218,17 @@ function TraceabilityPage() {
                         >
                             Batch <span className="text-green-600 font-black">{order?.batchNumber || "Traceability."}</span>
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-lg italic">"Transparency is the soul of trust in agriculture."</p>
+                        {!order?.batchNumber && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border border-amber-100"
+                            >
+                                <History size={12} />
+                                <span>Legacy Order (Pre-Batching System)</span>
+                            </motion.div>
+                        )}
+                        <p className="text-zinc-500 max-w-lg font-medium text-lg italic mt-4">"Transparency is the soul of trust in agriculture."</p>
                     </div>
 
                     <motion.div

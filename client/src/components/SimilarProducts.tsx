@@ -29,12 +29,18 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, cat
     useEffect(() => {
         const fetchSimilar = async () => {
             try {
-                // Fetch all products and filter by category, excluding current product
-                const res = await axios.get('/api/product/get-products')
-                const allProducts = res.data
+                // Correct Endpoint: /api/products
+                const res = await axios.get('/api/products')
+                const allProducts = Array.isArray(res.data) ? res.data : [];
+
+                // Filter by category, excluding current product
+                // Also normalize category for comparison
                 const filtered = allProducts
-                    .filter((p: Product) => p.category === category && p._id !== currentProductId)
-                    .slice(0, 4) // Show top 4 similar products
+                    .filter((p: Product) =>
+                        p._id !== currentProductId &&
+                        (p.category === category || p.category === 'Raw Millets')
+                    )
+                    .slice(0, 4)
                 setSimilar(filtered)
             } catch (error) {
                 console.error("Error fetching similar products", error)
@@ -42,7 +48,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({ currentProductId, cat
                 setLoading(false)
             }
         }
-        if (category && currentProductId) fetchSimilar()
+        if (currentProductId) fetchSimilar()
     }, [category, currentProductId])
 
     if (loading) return (
