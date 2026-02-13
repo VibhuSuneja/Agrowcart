@@ -39,13 +39,31 @@ function TraceabilityPage() {
         </div>
     )
 
+    if (!order) return (
+        <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center gap-6 p-6">
+            <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center text-zinc-300 shadow-xl border border-zinc-100">
+                <History size={48} />
+            </div>
+            <div className="text-center space-y-2">
+                <h1 className="text-3xl font-black text-zinc-900 tracking-tighter">Traceability Data Missing</h1>
+                <p className="text-zinc-500 max-w-xs mx-auto font-medium">We couldn't find the batch history for this order ID. Please check the URL or try again later.</p>
+            </div>
+            <button
+                onClick={() => router.push('/')}
+                className="text-white font-black uppercase tracking-widest text-[10px] px-8 py-4 bg-zinc-900 rounded-2xl hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/10"
+            >
+                Return to AgrowCart
+            </button>
+        </div>
+    )
+
     const firstItem = order?.items?.[0]?.product || {}
     const harvestDate = firstItem.harvestDate ? new Date(firstItem.harvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 12, 2024"
 
     // Robust delivered check: normalize status AND check OTP verification as backup signal
     const normalizedStatus = (order?.status || '').toString().trim().toLowerCase()
     const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
-    const isOutForDelivery = normalizedStatus === 'out of delivery'
+    const isOutForDelivery = normalizedStatus.includes('delivery') && normalizedStatus !== 'delivered' && normalizedStatus !== 'pending'
 
     const getTimelineStatus = () => {
         if (isDelivered) return "Delivered"
@@ -85,7 +103,7 @@ function TraceabilityPage() {
         return "bg-amber-50"
     }
 
-    const timeline = [
+    const timeline: any[] = [
         {
             status: "Harvested",
             location: firstItem.farmId ? `Farm ID: ${firstItem.farmId}` : "Vedic Organic Farm, Kolar",
@@ -98,7 +116,7 @@ function TraceabilityPage() {
         {
             status: "Quality Certified",
             location: "State Millet Lab, Bangalore",
-            date: order?.createdAt ? new Date(new Date(order.createdAt).getTime() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString() : "Oct 14, 2024",
+            date: order?.createdAt ? new Date(new Date(order.createdAt).getTime() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 14, 2024",
             desc: "AI-driven quality analysis confirmed Grade A nutritional profile.",
             icon: ShieldCheck,
             color: "text-blue-500",
@@ -107,22 +125,76 @@ function TraceabilityPage() {
         {
             status: "Ordered & Paid",
             location: order?.address?.city || "Customer Location",
-            date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Oct 15, 2024",
+            date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "Oct 15, 2024",
             desc: "Secure transaction completed via AgrowCart Secure Payment Gateway.",
             icon: Warehouse,
             color: "text-amber-500",
             bg: "bg-amber-50"
-        },
-        {
-            status: getTimelineStatus(),
-            location: isDelivered ? (order?.address?.city || "Customer Location") : (order?.address?.city || "Last Mile Hub"),
-            date: isDelivered ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
-            desc: getTimelineDescription(),
-            icon: getTimelineIcon(),
-            color: getTimelineColor(),
-            bg: getTimelineBg()
         }
     ]
+
+    // Add progression steps based on status
+    if (normalizedStatus === 'confirmed' || isOutForDelivery || isDelivered) {
+        timeline.push({
+            status: "Confirmed",
+            location: "Logistics Hub",
+            date: order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Oct 15, 2024",
+            desc: "Order verified and batch prepared for last-mile logistics.",
+            icon: CheckCircle2,
+            color: "text-blue-600",
+            bg: "bg-blue-50"
+        })
+    }
+
+    if (isOutForDelivery || isDelivered) {
+        timeline.push({
+            status: "Out for Delivery",
+            location: order?.address?.city || "Last Mile Hub",
+            date: "Live Tracking",
+            desc: "Batch assigned to regional delivery partner for local fulfillment.",
+            icon: Truck,
+            color: "text-purple-500",
+            bg: "bg-purple-50"
+        })
+    }
+
+    if (isDelivered) {
+        timeline.push({
+            status: "Delivered",
+            location: order?.address?.city || "Customer Location",
+            date: order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString(),
+            desc: "Order successfully verified via OTP and handed over to customer.",
+            icon: CheckCircle2,
+            color: "text-green-600",
+            bg: "bg-green-50"
+        })
+    }
+
+    // Handle special statuses if not delivered
+    if (!isDelivered && !isOutForDelivery && normalizedStatus !== 'confirmed' && normalizedStatus !== 'pending') {
+        const statusLabel = getTimelineStatus()
+        if (statusLabel !== "Processing") {
+            timeline.push({
+                status: statusLabel,
+                location: order?.address?.city || "System",
+                date: "Update",
+                desc: getTimelineDescription(),
+                icon: getTimelineIcon(),
+                color: getTimelineColor(),
+                bg: getTimelineBg()
+            })
+        }
+    } else if (normalizedStatus === 'pending') {
+        timeline.push({
+            status: "Processing",
+            location: "AgrowCart Central",
+            date: "Queued",
+            desc: "Order received and pending warehouse confirmation.",
+            icon: Warehouse,
+            color: "text-amber-500",
+            bg: "bg-amber-50"
+        })
+    }
 
     return (
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
