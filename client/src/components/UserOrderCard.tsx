@@ -45,6 +45,9 @@ interface IOrder {
     createdAt?: Date
     updatedAt?: Date
     deliveryOtp?: string | null
+    cancellationReason?: string
+    refundedAt?: Date
+    cancelledAt?: Date
 }
 
 function UserOrderCard({ order }: { order: IOrder }) {
@@ -61,6 +64,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
             case "delivered":
                 return "bg-green-50 text-green-600 border-green-100"
             case "cancelled":
+            case "refunded":
                 return "bg-red-50 text-red-600 border-red-100"
             default:
                 return "bg-zinc-50 text-zinc-600 border-zinc-100"
@@ -470,15 +474,34 @@ function UserOrderCard({ order }: { order: IOrder }) {
                     )}
 
 
-                    {status === 'cancelled' && (
-                        <div className="p-6 bg-red-50 border border-red-100 rounded-[2rem] flex items-center gap-6">
-                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-red-600 shadow-sm border border-red-100">
-                                <X size={24} />
+                    {(status === 'cancelled' || status === 'refunded') && (
+                        <div className="p-6 bg-red-50 border border-red-100 rounded-[2rem] space-y-4">
+                            <div className="flex items-center gap-6">
+                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-red-600 shadow-sm border border-red-100">
+                                    <X size={24} />
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-red-700 tracking-tight">Order Cancelled</h4>
+                                    <p className="text-xs text-red-600/70 font-medium">{order.cancellationReason || "This order has been cancelled."}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="font-black text-red-700 tracking-tight">Order Cancelled</h4>
-                                <p className="text-xs text-red-600/70 font-medium">This order has been cancelled by the administration.</p>
-                            </div>
+
+                            {/* Refund Badge */}
+                            {(status === 'refunded' || order.refundedAt) && (
+                                <div className="p-5 bg-green-50 border border-green-200 rounded-[1.5rem] flex items-center gap-5">
+                                    <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-600/20 shrink-0">
+                                        <IndianRupee size={24} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="text-[10px] font-black uppercase text-green-600 tracking-widest">Refund Credited</div>
+                                        <div className="text-xl font-black text-green-700">₹{order.totalAmount} → Wallet</div>
+                                        <p className="text-[10px] text-green-600/70 font-medium">
+                                            {order.refundedAt ? `Refunded on ${new Date(order.refundedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Refund processed'}
+                                            {' · '}Use wallet balance on your next order.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

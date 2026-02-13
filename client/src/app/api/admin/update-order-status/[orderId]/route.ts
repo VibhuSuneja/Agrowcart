@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ orderI
         const previousStatus = order.status;
         order.status = status;
 
-        // Handle Cancellation - Return stock
+        // Handle Cancellation - Return stock & Process Refund
         if (status === "cancelled" && previousStatus !== "cancelled") {
             // Return items to stock
             for (const item of order.items) {
@@ -38,6 +38,56 @@ export async function POST(req: NextRequest, context: { params: Promise<{ orderI
                 await DeliveryAssignment.findByIdAndUpdate(order.assignment, {
                     status: "cancelled"
                 });
+            }
+
+            // Process Refund — credit to user wallet
+            order.cancelledAt = new Date();
+            const refundAmount = order.totalAmount || 0;
+            if (refundAmount > 0) {
+                // Credit wallet balance
+                await User.findByIdAndUpdate(order.user._id || order.user, {
+                    $inc: { walletBalance: refundAmount }
+                });
+
+                order.status = "refunded";
+                order.refundedAt = new Date();
+                order.cancellationReason = `Order cancelled by admin. ₹${refundAmount} refunded to wallet.`;
+
+                // Send Refund Email
+                try {
+                    const customer = order.user;
+                    if (customer?.email) {
+                        const { sendEmail } = await import("@/lib/email");
+                        await sendEmail({
+                            to: customer.email,
+                            subject: `AgrowCart — Refund of ₹${refundAmount} Processed`,
+                            html: `
+                                <div style="font-family: 'Helvetica Neue', sans-serif; max-width: 600px; margin: 0 auto; background: #111; color: #fff; border-radius: 24px; overflow: hidden;">
+                                    <div style="background: linear-gradient(135deg, #16a34a, #059669); padding: 40px 30px; text-align: center;">
+                                        <h1 style="margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">Refund Processed ✅</h1>
+                                        <p style="margin: 8px 0 0; font-size: 14px; opacity: 0.9;">Your money is safe with AgrowCart</p>
+                                    </div>
+                                    <div style="padding: 30px;">
+                                        <p style="font-size: 16px; line-height: 1.6;">Hi <strong>${customer.name || 'Valued Customer'}</strong>,</p>
+                                        <p style="font-size: 14px; color: #a1a1aa; line-height: 1.6;">Your order <strong>#${order._id.toString().slice(-6).toUpperCase()}</strong> has been cancelled and a refund has been processed.</p>
+                                        <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
+                                            <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #71717a; font-weight: 700;">Refund Amount</div>
+                                            <div style="font-size: 36px; font-weight: 900; color: #4ade80; margin: 8px 0;">₹${refundAmount}</div>
+                                            <div style="font-size: 12px; color: #a1a1aa;">Credited to your <strong>AgrowCart Wallet</strong></div>
+                                        </div>
+                                        <p style="font-size: 13px; color: #71717a; line-height: 1.6;">You can use your wallet balance on your next purchase. The balance is available immediately.</p>
+                                        <a href="https://www.agrowcart.com" style="display: block; text-align: center; background: #16a34a; color: white; padding: 14px 24px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px; margin-top: 24px;">Shop Again →</a>
+                                    </div>
+                                    <div style="padding: 20px 30px; text-align: center; border-top: 1px solid #222;">
+                                        <p style="font-size: 11px; color: #52525b; margin: 0;">AgrowCart — India's Sustainable Millet Marketplace</p>
+                                    </div>
+                                </div>
+                            `
+                        });
+                    }
+                } catch (emailErr) {
+                    console.error("Refund email failed:", emailErr);
+                }
             }
         }
 

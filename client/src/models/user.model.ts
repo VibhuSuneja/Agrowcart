@@ -33,6 +33,7 @@ export interface IUser {
     resetTokenExpiry?: Date
     isBanned?: boolean
     isVerified?: boolean
+    walletBalance?: number
 }
 
 const passkeyCredentialSchema = new mongoose.Schema({
@@ -125,6 +126,10 @@ const userSchema = new mongoose.Schema<IUser>({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    walletBalance: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true })
 
