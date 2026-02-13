@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck, Scale } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck, Scale, Gavel } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -294,6 +294,12 @@ function Nav({ user: propUser }: { user: any }) {
                                 <Sparkles size={8} className="text-amber-500 animate-pulse" />
                                 <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest">Shree Anna</span>
                             </Link>
+                            {['farmer', 'shg', 'processor', 'startup'].includes(user.role) && (
+                                <Link href="/tools/contract-hub" className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-all cursor-pointer">
+                                    <Gavel size={8} className="text-primary animate-pulse" />
+                                    <span className="text-[8px] font-black text-primary uppercase tracking-widest">Contract Hub</span>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </Link>
@@ -347,6 +353,11 @@ function Nav({ user: propUser }: { user: any }) {
                     <Link href="/community/forum" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Forum">
                         <MessageSquare size={22} />
                     </Link>
+                    {['farmer', 'shg', 'processor', 'startup'].includes(user.role) && (
+                        <Link href="/tools/contract-hub" className="p-3 text-zinc-500 hover:text-primary dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors" title="Institutional Contract Hub">
+                            <Gavel size={22} />
+                        </Link>
+                    )}
                     <div className="scale-75 origin-right">
                         <GoogleTranslator />
                     </div>

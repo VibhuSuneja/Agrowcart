@@ -206,6 +206,21 @@ function FarmerDashboard() {
 
             <div className="w-[95%] lg:w-[90%] max-w-[1600px] mx-auto space-y-12 md:space-y-20">
 
+                {/* Immediate Quick Access Bar */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-end -mb-8"
+                >
+                    <Link href="/tools/contract-hub" className="group">
+                        <div className="bg-slate-900 dark:bg-primary text-white px-6 py-3 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl flex items-center gap-3 border border-white/10 hover:shadow-primary/20 transition-all">
+                            <Gavel size={16} className="text-primary dark:text-white group-hover:rotate-12 transition-transform" />
+                            Institutional Contract Hub
+                            <ArrowRight size={14} className="opacity-50 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                    </Link>
+                </motion.div>
+
                 {/* Header Section */}
                 <div id="tour-header" className="flex flex-col xl:flex-row xl:items-end justify-between gap-10">
                     <div className="space-y-6">
