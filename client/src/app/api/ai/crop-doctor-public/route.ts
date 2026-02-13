@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         const base64Data = parts[1];
 
         const apiKey = process.env.GEMINI_API_KEY;
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         const prompt = `Analyze this crop image for diseases. 
     Return a STRICT JSON object with these fields:

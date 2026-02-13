@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `You are a professional chef specializing in Indian Millets. 
         The user has purchased ${productName} (Category: ${category}). 

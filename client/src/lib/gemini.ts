@@ -7,9 +7,9 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
-// Best model for massive requests (2.0 Flash has higher throughput)
+// Best model for massive requests (2.5 Flash has higher throughput)
 export const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash-exp",
+    model: "gemini-2.5-flash",
     safetySettings: [
         {
             category: HarmCategory.HARM_CATEGORY_HARASSMENT,

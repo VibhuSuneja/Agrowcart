@@ -1,5 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 const rateLimitMap = new Map<string, number[]>();
 
@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
         const ip = req.headers.get("x-forwarded-for") || "unknown";
         const now = Date.now();
         const windowMs = 60 * 1000; // 1 minute
-        const limit = 5;
+        const limit = 10; // Increased limit for faster interaction
 
         // Get timestamps for this IP, defaulting to empty array
         const timestamps = rateLimitMap.get(ip) || [];
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         validTimestamps.push(now);
         rateLimitMap.set(ip, validTimestamps);
 
-        // Cleanup old entries periodically (optional, but good for memory)
+        // Cleanup old entries periodically
         if (rateLimitMap.size > 1000) {
             for (const [key, val] of rateLimitMap.entries()) {
                 if (val.every(t => now - t > windowMs)) {
@@ -38,50 +38,53 @@ export async function POST(req: NextRequest) {
 
         const { message } = await req.json();
 
-        if (!process.env.GEMINI_API_KEY) {
-            console.error("GEMINI_API_KEY is missing");
-            throw new Error("API Key missing");
+        if (!process.env.GROQ_API_KEY) {
+            console.error("GROQ_API_KEY is missing.");
+            return NextResponse.json(
+                { reply: "Our lightning-fast AI engine is currently fueling up! ⚡ Please ensure GROQ_API_KEY is configured." },
+                { status: 200 }
+            );
         }
 
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Using the latest flagship model for better reliability
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-        const prompt = `You are Agrowcart AI, the official agricultural intelligence for Agrowcart platform.
+        const systemPrompt = `You are Agrowcart AI, the official agricultural intelligence for the Agrowcart platform.
         
 User identifies as someone interested in organic millets.
-User Message: "${message}"
-
-Your Goal: Provide a friendly, expert response (max 2-3 sentences).
+Your Goal: Provide a friendly, expert response (max 2 sentences).
 Platform Values:
-- Dedicated to the "International Year of Millets" initiative.
-- Direct Farmer-to-Consumer / SHG-to-Corporate connectivity.
-- Focus: Foxtail, Ragi, Bajra, Jowar, and other ancient grains.
-- Sustainability: Low water usage, gluten-free, and high nutrition.
+- Dedicated to the "International Year of Millets".
+- Direct Farmer-to-Consumer connectivity.
+- Focus: Foxtail, Ragi, Bajra, Jowar.
+- Sustainability & Nutrition.
 
 Instructions:
-- If asked about prices or stock: Refer them to the Marketplace page.
-- If asked about an order: Direct them to 'My Orders' in their dashboard.
-- If asked about health benefits: Highlight high fiber and mineral content.
-- Formatting: Use **bold** for key terms and markdown lists for multiple items.
-- Tone: Professional, warm, and tech-savvy. Use 1-2 green/farm emojis.`;
+- If asked about prices: Refer to Marketplace.
+- If asked about orders: Direct to Dashboard.
+- Formatting: Use **bold** for key terms.
+- Tone: Professional, warm, tech-savvy. Use 1-2 green emojis.`;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const chatCompletion = await groq.chat.completions.create({
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: message }
+            ],
+            model: "llama3-70b-8192", // Llama 3 on Groq LPUs for sub-second latency
+            temperature: 0.7,
+            max_tokens: 150,
+            top_p: 1,
+            stream: false,
+        });
 
-        // Fallback if text is empty
-        const reply = text || "I am currently syncing my knowledge base with the latest harvest data. How else can I assist you? 🌾";
+        const reply = chatCompletion.choices[0]?.message?.content || "I'm checking the soil moisture levels... how else can I help? 🌾";
 
         return NextResponse.json({ reply }, { status: 200 });
 
     } catch (error: any) {
-        console.error("ChatBot API Error:", error);
-        // Fallback message for UI continuity
+        console.error("ChatBot API Error (Groq):", error);
         return NextResponse.json(
-            { reply: "Our digital farmer is taking a quick break to check the harvest! 🌿 Please try asking again in a moment, or browse our fresh millets in the marketplace." },
+            { reply: "Our digital farmer is taking a quick break to check the harvest! 🌿 Please try asking again in a moment." },
             { status: 200 }
         );
     }
 }
-
