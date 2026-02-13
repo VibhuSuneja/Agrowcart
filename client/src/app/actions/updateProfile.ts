@@ -62,7 +62,7 @@ export async function updateProfileAction(formData: FormData): Promise<ProfileRe
             return { success: false, message: "No fields to update" };
         }
 
-        const user = await User.findOneAndUpdate(
+        const user: any = await User.findOneAndUpdate(
             { email: session.user.email },
             { $set: updateData },
             { new: true, runValidators: true, lean: true }
