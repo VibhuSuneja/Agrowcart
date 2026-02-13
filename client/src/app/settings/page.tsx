@@ -75,7 +75,7 @@ function SettingsPage() {
                 submitData.append('image', selectedImage)
             }
 
-            const res = await axios.post('/api/user/update-metadata', submitData)
+            const res = await axios.post('/api/user/save-profile', submitData)
 
             if (res.status === 200) {
                 const updatedUser = res.data.user
