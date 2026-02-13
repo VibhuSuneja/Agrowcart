@@ -606,7 +606,7 @@ function ProcessorDashboard() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-12 rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-[110]"
+                            className="bg-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] max-w-lg w-full m-4 shadow-3xl relative z-[110] max-h-[90vh] overflow-y-auto custom-scrollbar"
                         >
                             <button
                                 onClick={() => { setShowAddCrop(false); setEditingCrop(null); }}
