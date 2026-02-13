@@ -6,7 +6,7 @@ import { IUser } from '@/models/user.model'
 import { RootState } from '@/redux/store'
 import axios from 'axios'
 import { ArrowLeft, Loader, Send, Sparkle, Smile } from 'lucide-react'
-import EmojiPicker from 'emoji-picker-react'
+import EmojiPicker, { Theme } from 'emoji-picker-react'
 import Nav from "@/components/Nav"
 import VoiceCall from '@/components/VoiceCall'
 import { Phone, PhoneIncoming, X } from 'lucide-react'
@@ -412,7 +412,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
                   <EmojiPicker
                     onEmojiClick={(emojiData) => setNewMessage(prev => prev + emojiData.emoji)}
                     lazyLoadEmojis={true}
-                    theme={userData ? 'dark' : 'light'}
+                    theme={userData ? Theme.DARK : Theme.LIGHT}
                   />
                 </div>
               )}
