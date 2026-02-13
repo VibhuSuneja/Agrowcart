@@ -132,7 +132,14 @@ function BuyerMarketplace() {
         setShowNegotiation(true)
     }
 
-    if (!userData) {
+    useEffect(() => {
+        if (userData && !['buyer', 'processor', 'startup', 'admin'].includes(userData.role)) {
+            toast.error("Corporate access required. Redirecting to standard marketplace.")
+            router.push('/')
+        }
+    }, [userData, router])
+
+    if (!userData || !['buyer', 'processor', 'startup', 'admin'].includes(userData.role)) {
         return (
             <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
                 <Loader className="animate-spin text-blue-600" size={40} />
