@@ -9,19 +9,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         await connectDb();
         const { orderId } = await params;
 
+        if (!orderId) {
+            return NextResponse.json({ message: "Order ID is required" }, { status: 400 });
+        }
+
         let order;
-        // Check if it's a valid MongoDB ID or a Batch Number
-        if (orderId.match(/^[0-9a-fA-F]{24}$/)) {
+        // Check if it's a valid 24-char MongoDB ID or a Batch Number
+        if (/^[0-9a-fA-F]{24}$/.test(orderId)) {
+            // Priority 1: Direct ID Match
             order = await Order.findById(orderId)
-                .populate({ path: "items.product", model: Product })
-                .populate({ path: "user", model: User, select: "name" });
+                .populate("items.product")
+                .populate("user", "name");
         } else {
-            // Case-insensitive search for batch number
+            // Priority 2: Batch Number Search (Case-insensitive)
+            // Escape regex characters
+            const escapedBatchId = orderId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             order = await Order.findOne({
-                batchNumber: { $regex: new RegExp(`^${orderId}$`, "i") }
+                batchNumber: { $regex: new RegExp(`^${escapedBatchId}$`, "i") }
             })
-                .populate({ path: "items.product", model: Product })
-                .populate({ path: "user", model: User, select: "name" });
+                .populate("items.product")
+                .populate("user", "name");
         }
 
         if (!order) {
