@@ -10,36 +10,57 @@ export async function POST(req: NextRequest) {
         await connectDb();
 
         const session = await auth();
-        if (!session?.user) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        // Robust check for session and identification info
+        if (!session?.user?.email) {
+            return NextResponse.json({ message: "Unauthorized - Session missing identifier" }, { status: 401 });
         }
 
         const formData = await req.formData();
         const rawName = formData.get("name") as string;
-        const rawBio = formData.get("bio") as string;
+        const rawBio = formData.get("bio"); // Can be null if not present
         const status = formData.get("status") as string;
         const imageFile = formData.get("image") as File | null;
 
         const updateData: any = {};
-        if (rawName) updateData.name = sanitizeText(rawName);
-        if (rawBio !== null) updateData.bio = sanitizeUserInput(rawBio);
-        if (status) updateData.status = status;
 
-        if (imageFile) {
-            const uploadedUrl = await uploadOnCloudinary(imageFile);
-            if (uploadedUrl) {
-                updateData.image = uploadedUrl;
+        // Only update if name is not empty
+        if (rawName && rawName.trim()) {
+            updateData.name = sanitizeText(rawName.trim());
+        }
+
+        // Bio can be empty string (cleared), only skip if null (not in form)
+        if (rawBio !== null) {
+            updateData.bio = sanitizeUserInput(String(rawBio));
+        }
+
+        if (status) {
+            const validStatus = ["online", "away", "dnd"].includes(status) ? status : "online";
+            updateData.status = validStatus;
+        }
+
+        // Handle Image Upload if file is valid
+        if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
+            try {
+                const uploadedUrl = await uploadOnCloudinary(imageFile);
+                if (uploadedUrl) {
+                    updateData.image = uploadedUrl;
+                }
+            } catch (imgError) {
+                console.error("Cloudinary Upload Error:", imgError);
+                // Continue without image update if upload fails
             }
         }
 
-        const user = await User.findByIdAndUpdate(
-            session.user.id,
+        // Use findOneAndUpdate with email as primary lookup for maximum reliability
+        // across different session strategies (JWT/ID vs Email)
+        const user = await User.findOneAndUpdate(
+            { email: session.user.email },
             { $set: updateData },
-            { new: true }
+            { new: true, runValidators: true }
         );
 
         if (!user) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
+            return NextResponse.json({ message: "User account not found" }, { status: 404 });
         }
 
         return NextResponse.json({
@@ -52,7 +73,9 @@ export async function POST(req: NextRequest) {
             }
         }, { status: 200 });
     } catch (error: any) {
-        console.error("Update Profile Error:", error);
-        return NextResponse.json({ message: `Failed to update profile: ${error.message}` }, { status: 500 });
+        console.error("Update Profile Critical Error:", error);
+        return NextResponse.json({
+            message: `Update failure: ${error.message || "Unknown error"}`
+        }, { status: 500 });
     }
 }
