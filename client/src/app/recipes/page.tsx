@@ -23,6 +23,9 @@ function CommunityRecipes() {
     const [searchQuery, setSearchQuery] = useState('')
 
     const [editingRecipe, setEditingRecipe] = useState<any | null>(null)
+    const [selectedCategory, setSelectedCategory] = useState('All')
+
+    const categories = ['All', 'Vegan', 'Vegetarian', 'Gluten-Free', 'High Protein', 'Low Carb', 'Dairy-Free']
 
     const fetchRecipes = async () => {
         try {
@@ -44,12 +47,18 @@ function CommunityRecipes() {
         setIsModalOpen(true)
     }
 
-    // Filter recipes based on search
-    const filteredRecipes = recipes.filter(recipe =>
-        recipe.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.chef?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.tags?.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    )
+    // Filter recipes based on search and selected category
+    const filteredRecipes = recipes.filter(recipe => {
+        const matchesSearch = recipe.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            recipe.chef?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            recipe.tags?.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+
+        const matchesCategory = selectedCategory === 'All' ||
+            recipe.tags?.some((tag: string) => tag.toLowerCase() === selectedCategory.toLowerCase()) ||
+            recipe.description?.toLowerCase().includes(selectedCategory.toLowerCase())
+
+        return matchesSearch && matchesCategory
+    })
 
     const handleShareClick = () => {
         if (!userData) {
@@ -127,6 +136,27 @@ function CommunityRecipes() {
                     </motion.div>
                 </div>
 
+                {/* Filters */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="flex flex-wrap gap-2 mb-12 overflow-x-auto pb-4 no-scrollbar border-b border-zinc-100"
+                >
+                    {categories.map((category) => (
+                        <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${selectedCategory === category
+                                    ? 'bg-green-600 text-white shadow-lg shadow-green-600/25 scale-105'
+                                    : 'bg-white text-zinc-400 border border-zinc-200 hover:border-green-600 hover:text-green-600'
+                                }`}
+                        >
+                            {category}
+                        </button>
+                    ))}
+                </motion.div>
+
                 {/* Grid */}
                 {loading ? (
                     <div className="flex justify-center py-20">
@@ -182,10 +212,10 @@ function CommunityRecipes() {
                                     <ChefHat size={40} />
                                 </div>
                                 <h3 className="text-2xl font-black text-zinc-900 mb-2">
-                                    {searchQuery ? 'No recipes found' : 'No Recipes Yet'}
+                                    {searchQuery || selectedCategory !== 'All' ? 'No recipes found' : 'No Recipes Yet'}
                                 </h3>
                                 <p className="text-zinc-400">
-                                    {searchQuery ? 'Try a different search term' : 'Be the first to share a millet masterpiece!'}
+                                    {searchQuery || selectedCategory !== 'All' ? 'Try a different search or filter' : 'Be the first to share a millet masterpiece!'}
                                 </p>
                             </div>
                         )}
@@ -215,7 +245,6 @@ function CommunityRecipes() {
             </div>
 
             <ExpertOpinions />
-
             <Footer />
 
             {/* Create/Edit Recipe Modal */}

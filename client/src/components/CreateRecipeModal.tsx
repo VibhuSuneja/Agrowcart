@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { X, Plus, ChefHat, Clock, Flame, Upload, Sparkles, Video, Mic, MicOff, Wand2, Loader2, Square } from 'lucide-react'
+import { X, Plus, ChefHat, Clock, Flame, Upload, Sparkles, Video, Mic, MicOff, Wand2, Loader2, Square, ArrowLeft } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -254,29 +254,39 @@ export default function CreateRecipeModal({ isOpen, onClose, onSuccess, userName
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto p-4 py-8 custom-scrollbar"
                     onClick={onClose}
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                        className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl relative"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
-                        <div className="sticky top-0 bg-white/95 backdrop-blur-md px-8 py-6 border-b border-zinc-100 flex items-center justify-between z-10">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25">
-                                    <ChefHat className="text-white w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-black text-zinc-900">{initialData ? 'Edit Recipe' : 'Share Your Recipe'}</h2>
-                                    <p className="text-zinc-400 text-sm">{initialData ? 'Update your masterpiece' : 'AI-powered recipe creation'}</p>
+                        <div className="sticky top-0 bg-white/95 backdrop-blur-md px-8 py-6 border-b border-zinc-100 flex items-center justify-between z-20 rounded-t-3xl">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={onClose}
+                                    className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center hover:bg-zinc-200 transition group"
+                                    title="Go Back"
+                                >
+                                    <ArrowLeft className="w-5 h-5 text-zinc-600 group-hover:-translate-x-1 transition-transform" />
+                                </button>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
+                                        <ChefHat className="text-white w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-black text-zinc-900">{initialData ? 'Edit Recipe' : 'Share Recipe'}</h2>
+                                        <p className="text-zinc-400 text-[10px] uppercase font-bold tracking-widest">{initialData ? 'Update Masterpiece' : 'AI Powered'}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="w-10 h-10 bg-zinc-100 rounded-xl flex items-center justify-center hover:bg-zinc-200 transition">
-                                <X className="w-5 h-5 text-zinc-600" />
+                            <button onClick={onClose} className="text-xs font-bold text-zinc-400 hover:text-red-500 transition flex items-center gap-1">
+                                <X className="w-4 h-4" />
+                                <span>CLOSE</span>
                             </button>
                         </div>
 

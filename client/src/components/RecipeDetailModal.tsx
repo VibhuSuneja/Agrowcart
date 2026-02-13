@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import Image from 'next/image'
-import { X, Clock, ChefHat, Heart, Flame, Play, Volume2, Pause, Check, Share2 } from 'lucide-react'
+import { X, Clock, ChefHat, Heart, Flame, Play, Volume2, Pause, Check, Share2, ArrowLeft } from 'lucide-react'
 
 interface RecipeDetailModalProps {
     isOpen: boolean
@@ -59,7 +59,7 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
+                    className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-start justify-center overflow-y-auto p-4 py-8"
                     onClick={onClose}
                 >
                     <motion.div
@@ -67,9 +67,19 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+                        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col relative"
                         onClick={e => e.stopPropagation()}
                     >
+                        {/* Custom Header with Back Button */}
+                        <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                            <button
+                                onClick={onClose}
+                                className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:bg-white transition group"
+                                title="Go Back"
+                            >
+                                <ArrowLeft className="w-5 h-5 text-zinc-700 group-hover:-translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                         {/* Hero Image/Video */}
                         <div className="relative h-64 md:h-80 flex-shrink-0">
                             {recipe.video && isPlayingVideo ? (
@@ -97,6 +107,7 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:bg-white transition"
+                                title="Close"
                             >
                                 <X className="w-5 h-5 text-zinc-700" />
                             </button>
@@ -153,8 +164,8 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
 
                                     <div className="flex items-center gap-2">
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${recipe.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-600' :
-                                                recipe.difficulty === 'Medium' ? 'bg-orange-50 text-orange-600' :
-                                                    'bg-red-50 text-red-600'
+                                            recipe.difficulty === 'Medium' ? 'bg-orange-50 text-orange-600' :
+                                                'bg-red-50 text-red-600'
                                             }`}>
                                             <Flame size={18} />
                                         </div>
@@ -168,8 +179,8 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
                                         <button
                                             onClick={onLike}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition ${isLiked
-                                                    ? 'bg-red-50 text-red-600'
-                                                    : 'bg-zinc-100 text-zinc-600 hover:bg-red-50 hover:text-red-600'
+                                                ? 'bg-red-50 text-red-600'
+                                                : 'bg-zinc-100 text-zinc-600 hover:bg-red-50 hover:text-red-600'
                                                 }`}
                                         >
                                             <Heart size={18} className={isLiked ? 'fill-current' : ''} />
@@ -255,13 +266,13 @@ export default function RecipeDetailModal({ isOpen, onClose, recipe, onLike, isL
                                                         key={i}
                                                         onClick={() => toggleStep(i)}
                                                         className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition ${checkedSteps.includes(i)
-                                                                ? 'bg-green-50 border border-green-200'
-                                                                : 'bg-zinc-50 hover:bg-zinc-100'
+                                                            ? 'bg-green-50 border border-green-200'
+                                                            : 'bg-zinc-50 hover:bg-zinc-100'
                                                             }`}
                                                     >
                                                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm transition ${checkedSteps.includes(i)
-                                                                ? 'bg-green-500 text-white'
-                                                                : 'bg-zinc-200 text-zinc-600'
+                                                            ? 'bg-green-500 text-white'
+                                                            : 'bg-zinc-200 text-zinc-600'
                                                             }`}>
                                                             {checkedSteps.includes(i) ? <Check size={14} /> : i + 1}
                                                         </div>
