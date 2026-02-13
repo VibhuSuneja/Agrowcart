@@ -7,6 +7,9 @@ import { RootState } from '@/redux/store'
 import axios from 'axios'
 import { ArrowLeft, Loader, Send, Sparkle } from 'lucide-react'
 import Nav from "@/components/Nav"
+import VoiceCall from '@/components/VoiceCall'
+import { Phone, PhoneIncoming, X } from 'lucide-react'
+import { useSocket } from '@/context/SocketContext'
 
 import { useParams, useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from "motion/react"
@@ -73,6 +76,14 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
     longitude: 0
   })
 
+  // Call State
+  const { socket } = useSocket()
+  const [isCalling, setIsCalling] = useState(false)
+  const [receivingCall, setReceivingCall] = useState(false)
+  const [incomingSignal, setIncomingSignal] = useState<any>(null)
+  const [callRoomId, setCallRoomId] = useState("")
+  const [otherPartyId, setOtherPartyId] = useState("")
+
   useEffect(() => {
     const getOrder = async () => {
       try {
@@ -129,10 +140,20 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
       }
     })
 
+    socket.on("incoming-call-alert", (data: any) => {
+      if (data.roomId === orderId || data.roomId === `call:${orderId}`) {
+        setReceivingCall(true)
+        setIncomingSignal(data.signal)
+        setCallRoomId(data.roomId)
+        setOtherPartyId(data.from)
+      }
+    })
+
     return () => {
       socket.off("update-deliveryBoy-location")
       socket.off("order-assigned")
       socket.off("order-status-updated")
+      socket.off("incoming-call-alert")
     }
   }, [orderId, order])
 
@@ -150,6 +171,24 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
       socket.off("send-message")
     }
   }, [orderId])
+
+  const startCall = () => {
+    if (!order?.assignedDeliveryBoy?._id) return
+    setCallRoomId(`call:${orderId}`)
+    setOtherPartyId(order.assignedDeliveryBoy._id.toString())
+    setIsCalling(true)
+  }
+
+  const handleCallEnd = () => {
+    setIsCalling(false)
+    setReceivingCall(false)
+    setIncomingSignal(null)
+  }
+
+  const answerCall = () => {
+    setReceivingCall(false)
+    setIsCalling(true)
+  }
 
   const sendMsg = () => {
     const socket = getSocket()
@@ -226,8 +265,67 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
             <h2 className='text-xl font-black text-zinc-900 dark:text-zinc-100'>Track Order</h2>
             <p className='text-xs font-bold text-zinc-500 uppercase tracking-widest'>order#{order?._id?.toString().slice(-6)} <span className='text-green-700 dark:text-green-500 font-black ml-2'>{order?.status}</span></p>
           </div>
-
+          <div className="ml-auto flex gap-2">
+            {order?.assignedDeliveryBoy && (
+              <button
+                onClick={startCall}
+                className="p-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-full shadow-lg hover:scale-110 transition-transform"
+                title="Call Delivery Partner"
+              >
+                <Phone size={20} />
+              </button>
+            )}
+          </div>
         </div>
+
+        <AnimatePresence>
+          {receivingCall && !isCalling && (
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+              className="fixed top-24 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[200] bg-zinc-900 text-white p-4 rounded-3xl shadow-2xl flex items-center justify-between border border-zinc-700 mx-auto"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-green-500 rounded-full animate-bounce">
+                  <PhoneIncoming size={20} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">Delivery Partner Calling</h4>
+                  <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wide">Live Audio Link</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setReceivingCall(false)} className="p-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors">
+                  <X size={18} />
+                </button>
+                <button onClick={answerCall} className="p-2 bg-green-500 rounded-xl hover:bg-green-600 transition-colors">
+                  <Phone size={18} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {isCalling && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[1001] bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <div className="w-full max-w-sm h-[500px] bg-zinc-900 rounded-[3rem] overflow-hidden shadow-3xl">
+                <VoiceCall
+                  roomId={callRoomId}
+                  userId={userData?._id?.toString()!}
+                  otherUserId={otherPartyId}
+                  isInitiator={!incomingSignal}
+                  incomingSignal={incomingSignal}
+                  onEnd={handleCallEnd}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className='px-4 mt-6 space-y-4'>
           <div className='rounded-[2.5rem] overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-2xl bg-white dark:bg-zinc-900 p-1'>
             <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation}>
@@ -302,7 +400,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
 
 
             <div className='flex gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800'>
-              <input type="text" placeholder='Type a Message...' className='flex-1 bg-zinc-50 dark:bg-zinc-950 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-400 transition-all text-sm font-medium' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+              <input type="text" placeholder='Type a Message...' className='flex-1 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-green-400 transition-all text-sm font-medium' value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
               <button className='bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-4 rounded-2xl transition-all' onClick={sendMsg}><Send size={20} /></button>
             </div>
 

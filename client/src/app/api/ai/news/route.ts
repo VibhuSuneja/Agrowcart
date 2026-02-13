@@ -1,8 +1,32 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
+import { aiRateLimit, getClientIdentifier, rateLimitResponse } from "@/lib/rateLimit";
+
+// Global In-Memory Cache (for massive concurrency handling)
+interface CachedNews {
+    data: any;
+    expiry: number;
+}
+const newsCache = new Map<string, CachedNews>();
+const CACHE_TTL = 30 * 60 * 1000; // 30 Minutes
 
 export async function POST(req: NextRequest) {
     try {
-        const { language } = await req.json();
+        const id = getClientIdentifier(req);
+        const limitResult = aiRateLimit.check(id);
+
+        if (!limitResult.success) {
+            return rateLimitResponse(limitResult.resetIn);
+        }
+
+        const { language = 'English' } = await req.json();
+
+        // 1. Check Cache First (The "Massive User" Defense)
+        const cached = newsCache.get(language);
+        if (cached && cached.expiry > Date.now()) {
+            console.log(`🚀 Serving Cached News [${language}]`);
+            return NextResponse.json({ news: cached.data, source: 'cache' });
+        }
+
         const date = new Date().toLocaleDateString('en-IN', { dateStyle: 'full' });
 
         const prompt = `
@@ -78,7 +102,13 @@ export async function POST(req: NextRequest) {
 
         const news = JSON.parse(text);
 
-        return NextResponse.json({ news }, { status: 200 });
+        // 2. Update Cache for subsequent "Massive Users"
+        newsCache.set(language, {
+            data: news,
+            expiry: Date.now() + CACHE_TTL
+        });
+
+        return NextResponse.json({ news, source: 'ai' }, { status: 200 });
 
     } catch (error) {
         console.error("News AI Error:", error);

@@ -6,14 +6,19 @@ import { MapPin, Sprout, ShieldCheck, Truck, Home } from 'lucide-react'
 
 interface TraceabilityMapProps {
     status?: string
+    order?: any
 }
 
-const TraceabilityMap: React.FC<TraceabilityMapProps> = ({ status = 'delivered' }) => {
+const TraceabilityMap: React.FC<TraceabilityMapProps> = ({ status = 'delivered', order }) => {
+    const firstItem = order?.items?.[0]?.product || {}
+    const farmLocation = firstItem.farmId ? `Farm ID: ${firstItem.farmId}` : "Kolar, Karnataka"
+    const destinationLocation = order?.address?.city ? `${order.address.city}, ${order.address.state}` : "Your Doorstep"
+
     const nodes = [
-        { id: 'farm', icon: Sprout, label: 'Origin Farm', location: 'Kolar, Karnataka', color: 'text-green-500', bg: 'bg-green-50', cx: '10%', cy: '70%' },
+        { id: 'farm', icon: Sprout, label: 'Origin Farm', location: farmLocation, color: 'text-green-500', bg: 'bg-green-50', cx: '10%', cy: '70%' },
         { id: 'lab', icon: ShieldCheck, label: 'Quality Lab', location: 'Bangalore Central', color: 'text-blue-500', bg: 'bg-blue-50', cx: '40%', cy: '30%' },
         { id: 'logistics', icon: Truck, label: 'Logistics Hub', location: 'Regional Center', color: 'text-amber-500', bg: 'bg-amber-50', cx: '70%', cy: '60%' },
-        { id: 'buyer', icon: Home, label: 'Destination', location: 'Your Doorstep', color: 'text-purple-500', bg: 'bg-purple-50', cx: '90%', cy: '20%' },
+        { id: 'buyer', icon: Home, label: 'Destination', location: destinationLocation, color: 'text-purple-500', bg: 'bg-purple-50', cx: '90%', cy: '20%' },
     ]
 
     // Animation variants

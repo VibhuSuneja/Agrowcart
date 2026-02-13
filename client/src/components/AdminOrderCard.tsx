@@ -1,16 +1,19 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
-import { motion } from "motion/react"
-import { ChevronDown, ChevronUp, CreditCard, MapPin, Package, Phone, Truck, User, UserCheck, MessageSquareX, Trash2, IndianRupee } from 'lucide-react'
+import { motion, AnimatePresence } from "motion/react"
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
+import { ChevronDown, ChevronUp, CreditCard, MapPin, Package, Phone, Truck, User, UserCheck, MessageSquareX, Trash2, IndianRupee, X, PhoneIncoming } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
 import axios from 'axios'
 
 import { IUser } from '@/models/user.model'
 import { getSocket } from '@/lib/socket'
+import { useSocket } from '@/context/SocketContext'
 import dynamic from 'next/dynamic'
 const LiveMap = dynamic(() => import('./LiveMap'), { ssr: false })
+import VoiceCall from './VoiceCall'
 
 interface IOrder {
     _id?: string
@@ -46,11 +49,20 @@ interface IOrder {
     updatedAt?: Date
 }
 function AdminOrderCard({ order }: { order: IOrder }) {
+    const { userData } = useSelector((state: RootState) => state.user)
     const [expanded, setExpanded] = useState(false)
     const [status, setStatus] = useState<string>("pending")
     const [showTrack, setShowTrack] = useState(false)
     const [liveLocation, setLiveLocation] = useState<{ latitude: number, longitude: number } | null>(null)
     const statusOptions = ["pending", "out of delivery", "cancelled"]
+
+    // Call State
+    const { socket } = useSocket()
+    const [isCalling, setIsCalling] = useState(false)
+    const [receivingCall, setReceivingCall] = useState(false)
+    const [incomingSignal, setIncomingSignal] = useState<any>(null)
+    const [callRoomId, setCallRoomId] = useState("")
+    const [otherPartyId, setOtherPartyId] = useState("")
 
     const updateStatus = async (orderId: string, status: string) => {
         try {
@@ -88,7 +100,20 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                 setStatus(data.status)
             }
         })
-        return () => socket.off("order-status-update")
+
+        socket.on("incoming-call-alert", (data: any) => {
+            if (data.roomId === order._id || data.roomId === `call:${order._id}`) {
+                setReceivingCall(true)
+                setIncomingSignal(data.signal)
+                setCallRoomId(data.roomId)
+                setOtherPartyId(data.from)
+            }
+        })
+
+        return () => {
+            socket.off("order-status-update")
+            socket.off("incoming-call-alert")
+        }
     }, [])
 
     useEffect(() => {
@@ -108,12 +133,78 @@ function AdminOrderCard({ order }: { order: IOrder }) {
         }
     }, [showTrack, order.assignedDeliveryBoy?._id])
 
+    const startCall = () => {
+        if (!order.assignedDeliveryBoy?._id) return
+        setCallRoomId(`call:${order._id}`)
+        setOtherPartyId(order.assignedDeliveryBoy._id.toString())
+        setIsCalling(true)
+    }
+
+    const handleCallEnd = () => {
+        setIsCalling(false)
+        setReceivingCall(false)
+        setIncomingSignal(null)
+    }
+
+    const answerCall = () => {
+        setReceivingCall(false)
+        setIsCalling(true)
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-zinc-900 shadow-md hover:shadow-lg border border-zinc-100 dark:border-zinc-800 rounded-[2rem] p-6 transition-all"
+            className="bg-white dark:bg-zinc-900 shadow-md hover:shadow-lg border border-zinc-100 dark:border-zinc-800 rounded-[2rem] p-6 transition-all relative"
         >
+            <AnimatePresence>
+                {receivingCall && !isCalling && (
+                    <motion.div
+                        initial={{ y: -50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -50, opacity: 0 }}
+                        className="absolute inset-x-6 top-6 z-50 bg-zinc-900 text-white p-4 rounded-3xl shadow-2xl flex items-center justify-between border border-zinc-700"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-3 bg-green-500 rounded-full animate-bounce">
+                                <PhoneIncoming size={20} />
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm">Delivery Partner Calling</h4>
+                                <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wide">Live Audio Link</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
+                            <button onClick={() => setReceivingCall(false)} className="p-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors">
+                                <X size={18} />
+                            </button>
+                            <button onClick={answerCall} className="p-2 bg-green-500 rounded-xl hover:bg-green-600 transition-colors">
+                                <Phone size={18} />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+
+                {isCalling && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
+                    >
+                        <div className="w-full max-w-sm h-[500px] bg-zinc-900 rounded-[3rem] overflow-hidden shadow-3xl">
+                            <VoiceCall
+                                roomId={callRoomId}
+                                userId={userData?._id?.toString() || "admin"}
+                                otherUserId={otherPartyId}
+                                isInitiator={!incomingSignal}
+                                incomingSignal={incomingSignal}
+                                onEnd={handleCallEnd}
+                            />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <div className='flex flex-col md:flex-row justify-between gap-6'>
                 <div className='flex-1'>
                     <div className='flex items-center gap-2 mb-2'>
@@ -148,7 +239,10 @@ function AdminOrderCard({ order }: { order: IOrder }) {
                                 </div>
                             </div>
 
-                            <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className='bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-600/20'>Call</a>
+                            <button onClick={startCall} className='bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-600/20 flex items-center gap-2'>
+                                <Phone size={12} />
+                                Socket Call
+                            </button>
                         </div>
                         {status === "out of delivery" && (
                             <button

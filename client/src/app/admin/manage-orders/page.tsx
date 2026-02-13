@@ -7,6 +7,7 @@ const LogisticsGlobalMap = dynamic(() => import('@/components/LogisticsGlobalMap
 import { IUser } from '@/models/user.model'
 import axios from 'axios'
 import { ArrowLeft, Truck } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -57,37 +58,55 @@ function ManageOrders() {
   const router = useRouter()
 
   useEffect(() => {
-    const getOrders = async () => {
+    const getData = async () => {
       try {
-        const result = await axios.get("/api/admin/get-orders")
-        setOrders(result.data)
+        const [ordersRes, usersRes] = await Promise.all([
+          axios.get("/api/admin/get-orders"),
+          axios.get("/api/admin/get-users")
+        ])
 
-        // Extract partners from orders
+        setOrders(ordersRes.data)
+
         const partnerMap = new Map<string, IDeliveryPartner>()
-        result.data.forEach((o: IOrder) => {
+
+        // First, seed with all delivery partners
+        const allUsers = usersRes.data
+        allUsers.forEach((u: any) => {
+          if (u.role === "deliveryBoy") {
+            partnerMap.set(u._id.toString(), {
+              id: u._id.toString(),
+              name: u.name,
+              location: {
+                latitude: u.location?.coordinates?.[1] || 0,
+                longitude: u.location?.coordinates?.[0] || 0,
+              },
+              activeOrderCount: 0
+            })
+          }
+        })
+
+        // Then, update active counts from orders
+        ordersRes.data.forEach((o: IOrder) => {
           if (o.assignedDeliveryBoy && o.assignedDeliveryBoy._id && o.status === "out of delivery") {
             const pid = o.assignedDeliveryBoy._id.toString()
             if (partnerMap.has(pid)) {
               partnerMap.get(pid)!.activeOrderCount++
-            } else {
-              partnerMap.set(pid, {
-                id: pid,
-                name: o.assignedDeliveryBoy.name,
-                location: {
+              // Also use order's location if user location is 0
+              if (partnerMap.get(pid)!.location.latitude === 0) {
+                partnerMap.get(pid)!.location = {
                   latitude: o.assignedDeliveryBoy.location?.coordinates?.[1] || 0,
                   longitude: o.assignedDeliveryBoy.location?.coordinates?.[0] || 0,
-                },
-                activeOrderCount: 1
-              })
+                }
+              }
             }
           }
         })
-        setPartners(Array.from(partnerMap.values()))
+        setPartners(Array.from(partnerMap.values()).filter(p => p.location.latitude !== 0))
       } catch (error) {
-        console.log(error)
+        console.log("Error fetching admin data:", error)
       }
     }
-    getOrders()
+    getData()
   }, [])
 
 
@@ -95,6 +114,10 @@ function ManageOrders() {
     const socket = getSocket()
     socket?.on("new-order", (newOrder) => {
       setOrders((prev) => [newOrder, ...prev!])
+      toast.success(`Broadcasting New Order from ${newOrder.address?.fullName || 'Customer'}!`, {
+        icon: '🛍️',
+        duration: 5000
+      })
     })
     socket.on("order-assigned", ({ orderId, assignedDeliveryBoy }) => {
       setOrders((prev) => prev?.map((o) => (
@@ -103,18 +126,34 @@ function ManageOrders() {
     })
 
     const handleLocationUpdate = (data: any) => {
-      setPartners(prev => prev.map(p => {
-        if (p.id === data.userId) {
-          return {
-            ...p,
+      setPartners(prev => {
+        const existing = prev.find(p => p.id === data.userId)
+        if (existing) {
+          return prev.map(p => {
+            if (p.id === data.userId) {
+              return {
+                ...p,
+                location: {
+                  latitude: data.location.coordinates?.[1] ?? data.location.latitude,
+                  longitude: data.location.coordinates?.[0] ?? data.location.longitude,
+                }
+              }
+            }
+            return p
+          })
+        } else {
+          // If they just went online/moved but aren't in partners list (unlikely based on API call but safe)
+          return [...prev, {
+            id: data.userId,
+            name: data.userName || "Delivery Partner",
             location: {
               latitude: data.location.coordinates?.[1] ?? data.location.latitude,
               longitude: data.location.coordinates?.[0] ?? data.location.longitude,
-            }
-          }
+            },
+            activeOrderCount: 0
+          }]
         }
-        return p
-      }))
+      })
     }
 
     socket.on("update-deliveryBoy-location", handleLocationUpdate)
@@ -138,7 +177,7 @@ function ManageOrders() {
           </div>
           <div className="flex items-center gap-2 bg-green-50 dark:bg-green-500/10 px-4 py-2 rounded-full border border-green-100 dark:border-green-500/20">
             <Truck size={14} className="text-green-600 dark:text-green-400" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-green-700 dark:text-green-400">{partners.length} Agents Live</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-green-700 dark:text-green-400">{partners.length} Agents Online</span>
           </div>
         </div>
       </div>

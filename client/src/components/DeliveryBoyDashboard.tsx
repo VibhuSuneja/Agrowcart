@@ -8,7 +8,8 @@ import dynamic from 'next/dynamic'
 const LiveMap = dynamic(() => import('./LiveMap'), { ssr: false })
 import DeliveryChat from './DeliveryChat'
 import { motion, AnimatePresence } from 'motion/react'
-import { Loader, Truck, Navigation2, CheckCircle2, MessageSquare, IndianRupee, MapPin, Package, RefreshCcw, Bell, X, ShieldCheck } from 'lucide-react'
+import { Loader, Truck, Navigation2, CheckCircle2, MessageSquare, IndianRupee, MapPin, Package, RefreshCcw, Bell, X, ShieldCheck, Phone, PhoneIncoming, Activity } from 'lucide-react'
+import VoiceCall from './VoiceCall'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
 import toast from 'react-hot-toast'
 
@@ -55,6 +56,14 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   const [userLocation, setUserLocation] = useState<ILocation>({ latitude: 0, longitude: 0 })
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState<ILocation>({ latitude: 0, longitude: 0 })
   const [realTimeEarning, setRealTimeEarning] = useState(earning)
+  const [isMissionSuccess, setIsMissionSuccess] = useState(false)
+
+  // Call State
+  const [isCalling, setIsCalling] = useState(false)
+  const [receivingCall, setReceivingCall] = useState(false)
+  const [incomingSignal, setIncomingSignal] = useState<any>(null)
+  const [callRoomId, setCallRoomId] = useState("")
+  const [callerId, setCallerId] = useState("")
 
   const fetchStats = async () => {
     try {
@@ -114,9 +123,18 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
         fetchStats()
       }
     })
+
+    socket.on("incoming-call-alert", (data: any) => {
+      setReceivingCall(true)
+      setIncomingSignal(data.signal)
+      setCallRoomId(data.roomId)
+      setCallerId(data.from)
+    })
+
     return () => {
       socket.off("new-assignment")
       socket.off("order-status-update")
+      socket.off("incoming-call-alert")
     }
   }, [socket])
 
@@ -200,21 +218,13 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
       await axios.post("/api/delivery/otp/verify", { orderId: activeOrder?.order?._id, otp })
       toast.success("Delivery Successful!")
 
-      // Clear ALL state immediately to remove the active delivery screen
-      setActiveOrder(null)
-      setAssignments([])
-      setShowOtpBox(false)
-      setOtp("")
-      setOtpError("")
-      setUserLocation({ latitude: 0, longitude: 0 })
+      // Instead of clearing everything, show success state to allow post-delivery chat
+      setIsMissionSuccess(true)
 
-      // Small delay to ensure backend has fully updated the assignment status
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // Re-fetch to ensure sync with backend
-      await fetchCurrentOrder()
-      await fetchAssignments()
-      await fetchStats()
+      // Small delay to ensure backend has fully updated
+      setTimeout(async () => {
+        await fetchStats()
+      }, 1000)
 
     } catch (error) {
       setOtpError("Incorrect OTP provided")
@@ -222,6 +232,33 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
     } finally {
       setVerifyOtpLoading(false)
     }
+  }
+
+  const finishMission = async () => {
+    // Clear ALL state to remove the active delivery screen
+    setActiveOrder(null)
+    setAssignments([])
+    setShowOtpBox(false)
+    setOtp("")
+    setOtpError("")
+    setUserLocation({ latitude: 0, longitude: 0 })
+    setIsMissionSuccess(false)
+
+    // Re-fetch to ensure sync with backend
+    await fetchCurrentOrder()
+    await fetchAssignments()
+    await fetchStats()
+  }
+
+  const handleCallEnd = () => {
+    setIsCalling(false)
+    setIncomingSignal(null)
+    setReceivingCall(false)
+  }
+
+  const answerCall = () => {
+    setReceivingCall(false)
+    setIsCalling(true)
   }
 
   if (!activeOrder && assignments.length === 0) {
@@ -288,7 +325,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
               >
                 <div className="flex flex-col items-center">
                   <Activity size={20} className="mb-1" />
-                  <span className="text-[10px] uppercase tracking-widest leading-none">Go Online</span>
+                  <span className="text-[10px] uppercase tracking-widest leading-none text-zinc-900">Go Online</span>
                 </div>
               </motion.button>
             </div>
@@ -301,18 +338,66 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   if (activeOrder && userLocation) {
     return (
       <div className='min-h-screen bg-zinc-50 pt-[120px] pb-20'>
+        <AnimatePresence>
+          {receivingCall && !isCalling && (
+            <motion.div
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              className="fixed top-24 left-1/2 -translate-x-1/2 w-80 bg-zinc-900 text-white p-4 rounded-3xl shadow-2xl z-[10000] flex items-center justify-between border border-zinc-700"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-green-500 rounded-full animate-bounce">
+                  <PhoneIncoming size={20} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">Incoming Call</h4>
+                  <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wide">Customer Support</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setReceivingCall(false)} className="p-2 bg-red-500 rounded-xl hover:bg-red-600 transition-colors">
+                  <X size={18} />
+                </button>
+                <button onClick={answerCall} className="p-2 bg-green-500 rounded-xl hover:bg-green-600 transition-colors">
+                  <Phone size={18} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {isCalling && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[10001] bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <div className="w-full max-w-sm h-[500px] bg-zinc-900 rounded-[3rem] overflow-hidden shadow-3xl">
+                <VoiceCall
+                  roomId={callRoomId}
+                  userId={userData?._id?.toString()!}
+                  otherUserId={callerId}
+                  isInitiator={!incomingSignal}
+                  incomingSignal={incomingSignal}
+                  onEnd={handleCallEnd}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <TutorialGuide steps={DELIVERY_TOUR_STEPS} tourName="delivery_v1" />
         <div className='w-[95%] md:w-[85%] mx-auto max-w-4xl space-y-8'>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px]">
-                <Activity size={14} className="animate-pulse" />
-                <span>Active Delivery Protocol</span>
+              <div className={`flex items-center gap-2 ${isMissionSuccess ? 'text-green-600' : 'text-blue-600'} font-bold uppercase tracking-[0.2em] text-[10px]`}>
+                <Activity size={14} className={isMissionSuccess ? "" : "animate-pulse"} />
+                <span>{isMissionSuccess ? "Mission Accomplished" : "Active Delivery Protocol"}</span>
               </div>
-              <h1 className='text-4xl font-black text-zinc-900 tracking-tight'>Live Mission</h1>
+              <h1 className='text-4xl font-black text-zinc-900 tracking-tight'>{isMissionSuccess ? "Mission Success" : "Live Mission"}</h1>
             </div>
             <div className="bg-white px-4 py-2 rounded-2xl shadow-sm border border-zinc-100 flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
+              <div className={`w-2 h-2 ${isMissionSuccess ? 'bg-zinc-300' : 'bg-green-500 animate-ping'} rounded-full`} />
               <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">ID: #{activeOrder?.order?._id?.toString()?.slice(-6).toUpperCase() || 'N/A'}</span>
             </div>
           </div>
@@ -332,9 +417,26 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                 className="bg-white p-8 rounded-[3rem] shadow-2xl shadow-zinc-900/5 border border-zinc-100 space-y-8"
               >
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-zinc-400 font-bold uppercase tracking-widest text-[10px]">
-                    <MapPin size={16} />
-                    <span>Drop-off Point</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 text-zinc-400 font-bold uppercase tracking-widest text-[10px]">
+                      <MapPin size={16} />
+                      <span>Drop-off Point</span>
+                    </div>
+                    {activeOrder?.order?.user && (
+                      <button
+                        onClick={() => {
+                          setCallRoomId(`call:${activeOrder.order._id}`)
+                          setCallerId(activeOrder.order.user) // Reusing callerId for destination
+                          setIsCalling(true)
+                          // initiator true if signal is null
+                          setIncomingSignal(null)
+                        }}
+                        className="p-3 bg-zinc-900 text-white rounded-2xl shadow-lg hover:scale-110 transition-transform flex items-center gap-2"
+                      >
+                        <Phone size={14} />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Call</span>
+                      </button>
+                    )}
                   </div>
                   <p className="text-lg font-bold text-zinc-900 leading-tight">{activeOrder?.order?.address?.fullAddress}</p>
                 </div>
@@ -369,7 +471,7 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                         </div>
                         <input
                           type="text"
-                          className='w-full py-5 bg-white border border-zinc-200 rounded-2xl text-center text-2xl font-black tracking-[1em] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all'
+                          className='w-full py-5 bg-white border border-zinc-200 rounded-2xl text-center text-2xl font-black tracking-[1em] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-zinc-900'
                           placeholder='0000'
                           maxLength={4}
                           onChange={(e) => setOtp(e.target.value)}
@@ -386,10 +488,18 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
                     )}
                   </AnimatePresence>
 
-                  {activeOrder?.order?.deliveryOtpVerification && (
-                    <div className='p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100 text-center flex flex-col items-center gap-3'>
-                      <CheckCircle2 size={48} className="text-emerald-500" />
-                      <span className='text-emerald-700 font-black uppercase tracking-widest text-xs'>Success Verification</span>
+                  {(activeOrder?.order?.deliveryOtpVerification || isMissionSuccess) && (
+                    <div className='space-y-4'>
+                      <div className='p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100 text-center flex flex-col items-center gap-3'>
+                        <CheckCircle2 size={48} className="text-emerald-500" />
+                        <span className='text-emerald-700 font-black uppercase tracking-widest text-xs'>Delivery Verified</span>
+                      </div>
+                      <button
+                        onClick={finishMission}
+                        className='w-full py-5 bg-zinc-900 text-white font-black rounded-2xl shadow-xl'
+                      >
+                        Finish & Return
+                      </button>
                     </div>
                   )}
                 </div>
@@ -479,24 +589,6 @@ function DeliveryBoyDashboard({ earning }: { earning: number }) {
   )
 }
 
-function Activity(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
-  )
-}
 
 export default DeliveryBoyDashboard
 

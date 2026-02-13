@@ -1,7 +1,15 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
+import { aiRateLimit, getClientIdentifier, rateLimitResponse } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
     try {
+        const id = getClientIdentifier(req);
+        const limitResult = aiRateLimit.check(id);
+
+        if (!limitResult.success) {
+            return rateLimitResponse(limitResult.resetIn);
+        }
+
         const body = await req.json();
         const { image } = body;
 

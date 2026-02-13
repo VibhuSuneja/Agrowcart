@@ -131,7 +131,7 @@ function TraceabilityPage() {
                     transition={{ delay: 0.2 }}
                     className="mb-16"
                 >
-                    <TraceabilityMap />
+                    <TraceabilityMap order={order} />
                 </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
