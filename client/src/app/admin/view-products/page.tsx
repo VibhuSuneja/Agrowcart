@@ -189,7 +189,7 @@ function ViewProducts() {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 40, opacity: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-7 relative border border-gray-100 dark:border-zinc-800"
+                            className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-7 relative border border-gray-100 dark:border-zinc-800 max-h-[90vh] overflow-y-auto overflow-x-hidden"
                         >
                             <div className='flex justify-between items-center mb-4'>
                                 <h2 className='text-2xl font-bold text-green-700 dark:text-green-500'>Edit Product</h2>
@@ -217,13 +217,13 @@ function ViewProducts() {
                                     className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-gray-100 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none' />
 
                                 <select
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white'
+                                    className='w-full border border-gray-300 dark:border-zinc-700 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100'
                                     value={editing.category}
                                     onChange={(e) => setEditing({ ...editing, category: e.target.value })}
                                 >
-                                    <option>Select Category</option>
+                                    <option className='dark:bg-zinc-800'>Select Category</option>
                                     {categories.map((c, i) => (
-                                        <option key={i} value={c}>{c}</option>
+                                        <option key={i} value={c} className='dark:bg-zinc-800'>{c}</option>
                                     ))}
                                 </select>
                                 <input
@@ -231,35 +231,35 @@ function ViewProducts() {
                                     placeholder='Price'
                                     value={editing.price}
                                     onChange={(e) => setEditing({ ...editing, price: e.target.value })}
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
+                                    className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
                                     min="0"
                                     step="1"
                                 />
                                 <select
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white'
+                                    className='w-full border border-gray-300 dark:border-zinc-700 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none bg-white dark:bg-zinc-800 text-gray-900 dark:text-zinc-100'
                                     value={editing.unit}
                                     onChange={(e) => setEditing({ ...editing, unit: e.target.value })}
                                 >
-                                    <option>Select Category</option>
+                                    <option className='dark:bg-zinc-800'>Select Unit</option>
                                     {units.map((u, i) => (
-                                        <option key={i} value={u}>{u}</option>
+                                        <option key={i} value={u} className='dark:bg-zinc-800'>{u}</option>
                                     ))}
                                 </select>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest pl-1">Stock Level (0 = Out of Stock)</label>
+                                    <label className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest pl-1">Stock Level (0 = Out of Stock)</label>
                                     <input
                                         type="number"
                                         placeholder='Stock Inventory'
                                         value={editing.stock || 0}
                                         onChange={(e) => setEditing({ ...editing, stock: Number(e.target.value) })}
-                                        className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
+                                        className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none'
                                     />
                                 </div>
                                 <textarea
                                     placeholder='Scientific Knowledge (3-4 lines)'
                                     value={editing.scientificBenefits}
                                     onChange={(e) => setEditing({ ...editing, scientificBenefits: e.target.value })}
-                                    className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none resize-none'
+                                    className='w-full bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-zinc-100 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 outline-none resize-none'
                                     rows={4}
                                 />
                                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl space-y-3">
@@ -273,28 +273,28 @@ function ViewProducts() {
                                         </button>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">FSSAI License</label>
+                                        <label className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">FSSAI License</label>
                                         <input
                                             value={editing.fssaiLicense || ''}
                                             onChange={(e) => setEditing({ ...editing, fssaiLicense: e.target.value })}
-                                            className="w-full bg-white border border-zinc-200 rounded-lg p-2 text-sm font-bold"
+                                            className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2 text-sm font-bold text-gray-900 dark:text-zinc-100"
                                             placeholder="No license provided"
                                         />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Origin State</label>
+                                        <label className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Origin State</label>
                                         <input
                                             value={editing.originState || 'Haryana'}
                                             onChange={(e) => setEditing({ ...editing, originState: e.target.value })}
-                                            className="w-full bg-white border border-zinc-200 rounded-lg p-2 text-sm font-bold"
+                                            className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2 text-sm font-bold text-gray-900 dark:text-zinc-100"
                                         />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Origin City</label>
+                                        <label className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Origin City</label>
                                         <input
                                             value={editing.originCity || ''}
                                             onChange={(e) => setEditing({ ...editing, originCity: e.target.value })}
-                                            className="w-full bg-white border border-zinc-200 rounded-lg p-2 text-sm font-bold"
+                                            className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-2 text-sm font-bold text-gray-900 dark:text-zinc-100"
                                             placeholder="Enter City"
                                         />
                                     </div>
