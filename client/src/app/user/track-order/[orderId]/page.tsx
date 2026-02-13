@@ -5,7 +5,8 @@ import { getSocket } from '@/lib/socket'
 import { IUser } from '@/models/user.model'
 import { RootState } from '@/redux/store'
 import axios from 'axios'
-import { ArrowLeft, Loader, Send, Sparkle } from 'lucide-react'
+import { ArrowLeft, Loader, Send, Sparkle, Smile } from 'lucide-react'
+import EmojiPicker from 'emoji-picker-react'
 import Nav from "@/components/Nav"
 import VoiceCall from '@/components/VoiceCall'
 import { Phone, PhoneIncoming, X } from 'lucide-react'
@@ -61,6 +62,7 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
   const [order, setOrder] = useState<IOrder>()
   const router = useRouter()
   const [newMessage, setNewMessage] = useState("")
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [messages, setMessages] = useState<IMessage[]>()
   const chatBoxRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
@@ -404,13 +406,29 @@ function TrackOrder({ params }: { params: { orderId: string } }) {
             </div>
 
 
-            <div className='flex gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800'>
+            <div className='flex gap-2 mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800 relative'>
+              {showEmojiPicker && (
+                <div className="absolute bottom-20 left-0 z-50">
+                  <EmojiPicker
+                    onEmojiClick={(emojiData) => setNewMessage(prev => prev + emojiData.emoji)}
+                    lazyLoadEmojis={true}
+                    theme={userData ? 'dark' : 'light'}
+                  />
+                </div>
+              )}
+              <button
+                className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 rounded-2xl hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                <Smile size={20} />
+              </button>
               <input
                 type="text"
                 placeholder={order?.status === 'delivered' ? 'Mission Completed - Chat Closed' : 'Type a Message...'}
                 className={`flex-1 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-800 px-5 py-3 rounded-2xl outline-none transition-all text-sm font-medium ${order?.status === 'delivered' ? 'cursor-not-allowed opacity-50' : 'focus:ring-2 focus:ring-green-400'}`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                onFocus={() => setShowEmojiPicker(false)}
                 disabled={order?.status === 'delivered'}
               />
               <button

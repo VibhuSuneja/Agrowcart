@@ -44,7 +44,46 @@ function TraceabilityPage() {
 
     // Robust delivered check: normalize status AND check OTP verification as backup signal
     const normalizedStatus = (order?.status || '').toString().trim().toLowerCase()
-    const isDelivered = normalizedStatus === 'delivered' || order?.deliveryOtpVerification === true
+    const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
+    const isOutForDelivery = normalizedStatus === 'out of delivery'
+
+    const getTimelineStatus = () => {
+        if (isDelivered) return "Delivered"
+        if (isOutForDelivery) return "Out for Delivery"
+        if (normalizedStatus === 'confirmed') return "Confirmed"
+        if (normalizedStatus === 'cancelled') return "Cancelled"
+        if (normalizedStatus === 'refunded') return "Refunded"
+        return "Processing"
+    }
+
+    const getTimelineDescription = () => {
+        if (isDelivered) return "Order successfully verified via OTP and handed over to customer."
+        if (isOutForDelivery) return "Batch assigned to regional delivery partner for local fulfillment."
+        if (normalizedStatus === 'confirmed') return "Order confirmed and being prepared for dispatch."
+        if (normalizedStatus === 'cancelled') return "Order cancelled."
+        if (normalizedStatus === 'refunded') return "Order refunded."
+        return "Order received and pending confirmation."
+    }
+
+    const getTimelineIcon = () => {
+        if (isDelivered) return CheckCircle2
+        if (isOutForDelivery) return Truck
+        return Warehouse
+    }
+
+    const getTimelineColor = () => {
+        if (isDelivered) return "text-green-600"
+        if (isOutForDelivery) return "text-purple-500"
+        if (normalizedStatus === 'cancelled' || normalizedStatus === 'refunded') return "text-red-500"
+        return "text-amber-500"
+    }
+
+    const getTimelineBg = () => {
+        if (isDelivered) return "bg-green-50"
+        if (isOutForDelivery) return "bg-purple-50"
+        if (normalizedStatus === 'cancelled' || normalizedStatus === 'refunded') return "bg-red-50"
+        return "bg-amber-50"
+    }
 
     const timeline = [
         {
@@ -75,13 +114,13 @@ function TraceabilityPage() {
             bg: "bg-amber-50"
         },
         {
-            status: isDelivered ? "Delivered" : "Out for Delivery",
+            status: getTimelineStatus(),
             location: isDelivered ? (order?.address?.city || "Customer Location") : (order?.address?.city || "Last Mile Hub"),
             date: isDelivered ? (order?.deliveredAt ? new Date(order.deliveredAt).toLocaleDateString() : new Date().toLocaleDateString()) : "Live Tracking",
-            desc: isDelivered ? "Order successfully verified via OTP and handed over to customer." : "Batch assigned to regional delivery partner for local fulfillment.",
-            icon: isDelivered ? CheckCircle2 : Truck,
-            color: isDelivered ? "text-green-600" : "text-purple-500",
-            bg: isDelivered ? "bg-green-50" : "bg-purple-50"
+            desc: getTimelineDescription(),
+            icon: getTimelineIcon(),
+            color: getTimelineColor(),
+            bg: getTimelineBg()
         }
     ]
 
