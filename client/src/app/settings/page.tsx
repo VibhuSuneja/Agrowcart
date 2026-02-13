@@ -7,6 +7,7 @@ import { RootState } from '@/redux/store'
 import { setUserData } from '@/redux/userSlice'
 import PasskeyManager from '@/components/PasskeyManager'
 import axios from 'axios'
+import { updateProfileAction } from '@/app/actions/updateProfile'
 import { Loader2, ShieldCheck, User, Camera, Edit3, Save, Circle, CheckCircle2, X, Info } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSession } from 'next-auth/react'
@@ -75,10 +76,10 @@ function SettingsPage() {
                 submitData.append('image', selectedImage)
             }
 
-            const res = await axios.post('/api/user/update-metadata', submitData)
+            const result = await updateProfileAction(submitData)
 
-            if (res.status === 200) {
-                const updatedUser = res.data.user
+            if (result.success && result.user) {
+                const updatedUser = result.user
 
                 // Update local redux state
                 dispatch(setUserData({
@@ -97,10 +98,12 @@ function SettingsPage() {
                 toast.success('Profile updated successfully!')
                 setIsEditing(false)
                 setSelectedImage(null)
+            } else {
+                toast.error(result.message || 'Failed to update profile')
             }
         } catch (error: any) {
             console.error('Update profile error:', error)
-            toast.error(error.response?.data?.message || 'Failed to update profile')
+            toast.error('Failed to update profile')
         } finally {
             setSaving(false)
         }
