@@ -5,29 +5,6 @@ import { auth } from "@/auth";
 import uploadOnCloudinary from "@/lib/cloudinary";
 import { sanitizeText, sanitizeUserInput } from "@/lib/sanitize";
 
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
-    return NextResponse.json({
-        message: "Profile update endpoint is active. Use POST to update data.",
-        methods_allowed: ["POST", "PATCH", "OPTIONS", "GET"]
-    }, { status: 200 });
-}
-
-export async function OPTIONS() {
-    return new NextResponse(null, {
-        status: 204,
-        headers: {
-            'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-    });
-}
-
-export async function PATCH(req: NextRequest) {
-    return POST(req);
-}
-
 export async function POST(req: NextRequest) {
     try {
         await connectDb();
@@ -42,7 +19,6 @@ export async function POST(req: NextRequest) {
         const updateData: any = {};
 
         if (contentType.includes("multipart/form-data")) {
-            // Handle FormData (from settings page)
             const formData = await req.formData();
             const rawName = formData.get("name") as string;
             const rawBio = formData.get("bio");
@@ -73,7 +49,6 @@ export async function POST(req: NextRequest) {
                 }
             }
         } else {
-            // Handle JSON body
             try {
                 const body = await req.json();
                 if (body.name && typeof body.name === 'string') {

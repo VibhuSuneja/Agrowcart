@@ -67,36 +67,15 @@ function SettingsPage() {
     const handleSave = async () => {
         try {
             setSaving(true)
-
-            let imageUrl = userData?.image
-
-            // 1. Upload Image First (if selected)
+            const submitData = new FormData()
+            submitData.append('name', formData.name)
+            submitData.append('bio', formData.bio)
+            submitData.append('status', formData.status)
             if (selectedImage) {
-                const uploadData = new FormData()
-                uploadData.append('file', selectedImage)
-
-                try {
-                    const uploadRes = await axios.post('/api/upload/avatar', uploadData, {
-                        headers: { 'Content-Type': 'multipart/form-data' }
-                    })
-                    if (uploadRes.status === 200 && uploadRes.data.url) {
-                        imageUrl = uploadRes.data.url
-                    }
-                } catch (err) {
-                    toast.error("Image upload failed, saving text only.")
-                    console.error("Image upload error", err)
-                }
+                submitData.append('image', selectedImage)
             }
 
-            // 2. Update Profile Data (JSON)
-            const payload = {
-                name: formData.name,
-                bio: formData.bio,
-                status: formData.status,
-                image: imageUrl
-            }
-
-            const res = await axios.post('/api/user/v2/update', payload)
+            const res = await axios.post('/api/user/update-metadata', submitData)
 
             if (res.status === 200) {
                 const updatedUser = res.data.user
