@@ -8,7 +8,7 @@ import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
     Zap, X, MapPin, ArrowRight, ShieldCheck, History, Info, Gavel,
-    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users
+    Calendar, Fingerprint, Activity, LineChart as ChartIcon, Package, Upload, Trash2, Send, Users, Edit3
 } from 'lucide-react'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -96,6 +96,7 @@ function SHGDashboard() {
     const [analysisResult, setAnalysisResult] = useState<any>(null)
     const [analyzing, setAnalyzing] = useState(false)
     const [isAuthentic, setIsAuthentic] = useState(false)
+    const [editingProductId, setEditingProductId] = useState<string | null>(null)
     const t = useTranslations('imageAuthenticity')
 
     const handleVoiceCommand = (command: string) => {
@@ -130,6 +131,23 @@ function SHGDashboard() {
         } catch (error) {
             toast.error("Failed to delete Listing")
         }
+    }
+
+    const handleEdit = (crop: any) => {
+        setEditingProductId(crop._id)
+        setNewCrop({
+            name: crop.name,
+            quantity: crop.quantity.toString(),
+            price: crop.price.toString(),
+            category: crop.category,
+            unit: crop.unit || 'kg',
+            farmId: crop.farmId,
+            harvestDate: crop.harvestDate,
+            image: null,
+            imagePreview: crop.image || null
+        })
+        setIsAuthentic(true) // Assumed verified if already listed
+        setShowAddCrop(true)
     }
 
     const handlePredict = async (e: React.FormEvent) => {
@@ -631,7 +649,16 @@ function SHGDashboard() {
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
                             className="bg-green-600 text-white px-10 py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm flex items-center gap-3 shadow-2xl shadow-green-900/20"
-                            onClick={() => setShowAddCrop(true)}
+                            onClick={() => {
+                                setEditingProductId(null)
+                                setNewCrop({
+                                    name: '', quantity: '', price: '', category: 'Raw Millets', unit: 'kg',
+                                    farmId: 'SHG-' + Math.floor(Math.random() * 9000 + 1000),
+                                    harvestDate: new Date().toISOString().split('T')[0], image: null, imagePreview: null
+                                })
+                                setIsAuthentic(false)
+                                setShowAddCrop(true)
+                            }}
                         >
                             <Plus size={20} />
                             <span>Add Community Produce</span>
@@ -691,16 +718,28 @@ function SHGDashboard() {
                                             </div>
                                         </div>
 
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteCrop(crop._id)
-                                            }}
-                                            className="absolute top-4 right-4 bg-white p-2 rounded-full text-zinc-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100 shadow-sm z-10"
-                                            title="Remove Record"
-                                        >
-                                            <Trash2 size={20} />
-                                        </button>
+                                        <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all z-10">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEdit(crop)
+                                                }}
+                                                className="bg-white p-2 rounded-full text-zinc-400 hover:bg-blue-50 hover:text-blue-500 transition-all shadow-sm"
+                                                title="Edit Record"
+                                            >
+                                                <Edit3 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteCrop(crop._id)
+                                                }}
+                                                className="bg-white p-2 rounded-full text-zinc-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-sm"
+                                                title="Remove Record"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </motion.div>
                                 ))}
                             </div>
@@ -741,8 +780,8 @@ function SHGDashboard() {
                                     <Fingerprint size={12} />
                                     <span>SHG Collective Protocol</span>
                                 </div>
-                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">Aggregate Produce</h3>
-                                <p className="text-zinc-500 font-medium">Log community collections into the marketplace.</p>
+                                <h3 className="text-4xl font-black text-zinc-900 tracking-tighter mb-2">{editingProductId ? 'Edit Aggregate' : 'Aggregate Produce'}</h3>
+                                <p className="text-zinc-500 font-medium">{editingProductId ? 'Modify community collection details.' : 'Log community collections into the marketplace.'}</p>
                             </div>
 
                             <div className="space-y-6">
@@ -888,6 +927,9 @@ function SHGDashboard() {
                                             try {
                                                 setLoading(true)
                                                 const formData = new FormData();
+                                                if (editingProductId) {
+                                                    formData.append("productId", editingProductId);
+                                                }
                                                 formData.append("name", newCrop.name);
                                                 formData.append("quantity", newCrop.quantity);
                                                 formData.append("price", newCrop.price);
@@ -897,13 +939,21 @@ function SHGDashboard() {
                                                 formData.append("harvestDate", newCrop.harvestDate);
                                                 if (newCrop.image) formData.append("image", newCrop.image);
 
-                                                const res = await axios.post('/api/farmer/add-product', formData)
-                                                setCrops([...crops, res.data.product])
+                                                if (editingProductId) {
+                                                    const res = await axios.post('/api/farmer/update-product', formData)
+                                                    setCrops(crops.map(c => c._id === editingProductId ? res.data.product : c))
+                                                    toast.success('Collection Record Updated!')
+                                                } else {
+                                                    const res = await axios.post('/api/farmer/add-product', formData)
+                                                    setCrops([...crops, res.data.product])
+                                                    toast.success('Collective Record Logged!')
+                                                }
+
                                                 setShowAddCrop(false)
+                                                setEditingProductId(null)
                                                 setIsAuthentic(false)
-                                                toast.success('Collective Record Logged!')
                                             } catch (error: any) {
-                                                toast.error('Logging failed')
+                                                toast.error(editingProductId ? 'Update failed' : 'Logging failed')
                                             } finally {
                                                 setLoading(false)
                                             }
@@ -912,8 +962,8 @@ function SHGDashboard() {
                                 >
                                     {loading ? <Loader className="animate-spin" /> : (
                                         <>
-                                            <span>Broadcast to Network</span>
-                                            <Send className="w-5 h-5 text-green-400" />
+                                            <span>{editingProductId ? 'Update Harvest Record' : 'Broadcast to Network'}</span>
+                                            {editingProductId ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Send className="w-5 h-5 text-green-400" />}
                                         </>
                                     )}
                                 </motion.button>
