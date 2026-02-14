@@ -50,7 +50,7 @@ export default function VoiceAssistant({ onCommand }: VoiceAssistantProps) {
     }
 
     return (
-        <div className="fixed bottom-6 left-6 z-[9999]">
+        <div className="fixed bottom-28 md:bottom-6 left-6 z-[9999]">
             <AnimatePresence>
                 {isListening && (
                     <motion.div

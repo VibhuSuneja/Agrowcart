@@ -68,12 +68,46 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 joinedRoomsRef.current.forEach(room => {
                     socketInstance.emit("join-room", room)
                 })
+
+                // Join Admin room if role is admin
+                if (session.user.role === 'admin') {
+                    console.log("SocketProvider: Admin Room Joined")
+                    socketInstance.emit("join-room", "admin")
+                }
             }
         })
 
         socketInstance.on("disconnect", () => {
             console.warn("🟡 SocketProvider: Disconnected")
             setIsConnected(false)
+        })
+
+        // Order Notification Listener (Admin Only)
+        socketInstance.on("new-order", (newOrder) => {
+            if (session?.user?.role === 'admin') {
+                console.log("📦 SocketProvider: Global Order Notification", newOrder)
+                // 1. Play Order Chime
+                try {
+                    const chime = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
+                    chime.volume = 0.5;
+                    chime.play().catch(() => { });
+                } catch (e) { }
+
+                // 2. Beautiful Success Toast
+                toast.success(`New order received from ${newOrder.address?.fullName || 'Customer'}!`, {
+                    icon: '🛍️',
+                    duration: 6000,
+                    position: 'top-right'
+                })
+
+                // 3. TTS Announcement
+                try {
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(`New order from ${newOrder.address?.fullName || 'customer'}`)
+                        window.speechSynthesis.speak(utterance)
+                    }
+                } catch (e) { }
+            }
         })
 
         // Global Listeners

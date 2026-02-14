@@ -10,6 +10,8 @@ import { ArrowLeft, Truck } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 import React, { useEffect, useState, useRef } from 'react'
 interface IOrder {
   _id?: string
@@ -57,6 +59,22 @@ function ManageOrders() {
   const [orders, setOrders] = useState<IOrder[]>()
   const [partners, setPartners] = useState<IDeliveryPartner[]>([])
   const router = useRouter()
+  const { userData } = useSelector((state: RootState) => state.user)
+
+  useEffect(() => {
+    if (userData && userData.role !== 'admin') {
+      router.push('/')
+      toast.error("Access Denied: Administrative Clearance Required", {
+        icon: '🚫',
+        style: {
+          borderRadius: '1rem',
+          background: '#18181b',
+          color: '#fff',
+          border: '1px solid #ef4444'
+        }
+      })
+    }
+  }, [userData, router])
 
   useEffect(() => {
     const getData = async () => {
@@ -116,31 +134,6 @@ function ManageOrders() {
 
     const handleNewOrder = (newOrder: any) => {
       setOrders((prev) => [newOrder, ...(prev || [])])
-      toast.success(`New Order from ${newOrder.address?.fullName || 'Customer'}!`, {
-        icon: '🛍️',
-        duration: 5000
-      })
-
-      // Sound Notification for Admin
-      try {
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
-        audio.volume = 0.5
-        audio.play().catch(e => console.error('Admin audio play failed', e))
-      } catch (err) {
-        console.error('Admin notification sound failed', err)
-      }
-
-      // TTS Announcement
-      try {
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(`New order received from ${newOrder.address?.fullName || 'customer'}`)
-          utterance.rate = 1.0
-          utterance.pitch = 1.0
-          window.speechSynthesis.speak(utterance)
-        }
-      } catch (err) {
-        console.error('Admin TTS failed', err)
-      }
     }
 
     const handleOrderAssigned = ({ orderId, assignedDeliveryBoy }: any) => {

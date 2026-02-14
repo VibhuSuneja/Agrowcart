@@ -2,18 +2,31 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import DeliveryBoyDashboard from '@/components/DeliveryBoyDashboard'
 
 function DeliveryDashboardPage() {
+    const router = useRouter()
     const { userData } = useSelector((state: RootState) => state.user)
 
     // Role-based access control
-    if (userData && userData.role !== 'deliveryBoy') {
-        redirect('/')
-    }
+    React.useEffect(() => {
+        if (userData && userData.role !== 'deliveryBoy') {
+            router.push('/')
+            toast.error("Access Denied: Logistics clearance required", {
+                icon: '🚫',
+                style: {
+                    borderRadius: '1rem',
+                    background: '#18181b',
+                    color: '#fff',
+                    border: '1px solid #ef4444'
+                }
+            })
+        }
+    }, [userData, router])
 
     return (
         <div className="min-h-screen bg-zinc-50">

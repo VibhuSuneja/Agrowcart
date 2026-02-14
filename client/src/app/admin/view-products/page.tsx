@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/product.model'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 const categories = [
     "Raw Millets",
     "Millet Rice",
@@ -21,6 +23,23 @@ const units = [
 ]
 function ViewProducts() {
     const router = useRouter()
+    const { userData } = useSelector((state: RootState) => state.user)
+
+    useEffect(() => {
+        if (userData && userData.role !== 'admin') {
+            router.push('/')
+            toast.error("Access Denied: Administrative Clearance Required", {
+                icon: '🚫',
+                style: {
+                    borderRadius: '1rem',
+                    background: '#18181b',
+                    color: '#fff',
+                    border: '1px solid #ef4444'
+                }
+            })
+        }
+    }, [userData, router])
+
     const [products, setProducts] = useState<IProduct[]>()
     const [search, setSearch] = useState("")
     const [editing, setEditing] = useState<IProduct | null>(null)

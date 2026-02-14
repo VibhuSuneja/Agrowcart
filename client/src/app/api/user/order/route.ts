@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         })
 
 
-        await emitEventHandler("new-order", newOrder)
+        await emitEventHandler("new-order", newOrder, undefined, "admin")
 
         // Send order confirmation email
         if (user.email) {

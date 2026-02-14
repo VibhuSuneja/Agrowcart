@@ -1,12 +1,14 @@
 'use client'
 import { ArrowLeft, Loader, Plus, PlusCircle, Upload } from 'lucide-react'
 import Link from 'next/link'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react'
 import { motion } from "motion/react"
 import Image from 'next/image'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 const categories = [
     "Raw Millets",
@@ -23,6 +25,23 @@ const units = [
 ]
 function AddProduct() {
     const router = useRouter()
+    const { userData } = useSelector((state: RootState) => state.user)
+
+    useEffect(() => {
+        if (userData && userData.role !== 'admin') {
+            router.push('/')
+            toast.error("Access Denied: Administrative Clearance Required", {
+                icon: '🚫',
+                style: {
+                    borderRadius: '1rem',
+                    background: '#18181b',
+                    color: '#fff',
+                    border: '1px solid #ef4444'
+                }
+            })
+        }
+    }, [userData, router])
+
     const [name, setName] = useState("")
     const [category, setCategory] = useState("")
     const [unit, setUnit] = useState("")

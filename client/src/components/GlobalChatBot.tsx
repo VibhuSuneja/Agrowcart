@@ -8,6 +8,8 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { signOut, useSession } from 'next-auth/react'
+import { createPortal } from 'react-dom'
 
 interface IChatMessage {
     id: string
@@ -31,6 +33,7 @@ function GlobalChatBot() {
     const [isListening, setIsListening] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const { data: session } = useSession()
     const router = useRouter()
 
     const startListening = () => {
@@ -66,8 +69,21 @@ function GlobalChatBot() {
             if (transcript.includes("navigate to marketplace") || transcript.includes("go to marketplace")) {
                 toast.success("Navigating to Marketplace...")
                 speak("Taking you to the marketplace.")
-                router.push('/marketplace') // Assuming correct route is /user/marketplace or /marketplace? Checking typical structure.
-                // Assuming /user/marketplace based on checkout being /user/checkout
+                router.push('/marketplace')
+                setIsOpen(false)
+                return
+            }
+
+            if (transcript.includes("navigate to dashboard") || transcript.includes("go to dashboard")) {
+                toast.success("Navigating to Dashboard...")
+                speak("Opening your personalized dashboard.")
+
+                const role = (session?.user as any)?.role || 'user'
+                const dashboardRoute = ['farmer', 'shg', 'processor', 'startup', 'deliveryBoy'].includes(role)
+                    ? `/${role.replace('Boy', '')}-dashboard`
+                    : role === 'admin' ? '/admin' : '/marketplace'
+
+                router.push(dashboardRoute)
                 setIsOpen(false)
                 return
             }
@@ -167,7 +183,7 @@ function GlobalChatBot() {
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-[9999]">
+        <div className="fixed bottom-28 md:bottom-6 right-6 z-[9999]">
             <AnimatePresence mode="wait">
                 {isOpen && (
                     <motion.div

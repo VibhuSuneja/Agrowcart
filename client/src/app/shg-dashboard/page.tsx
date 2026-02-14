@@ -4,6 +4,7 @@ import axios from 'axios'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { RootState } from '@/redux/store'
 import {
     Loader, TrendingUp, DollarSign, Plus, Sparkles, Sprout, Briefcase,
@@ -78,7 +79,24 @@ const CATEGORIES = [
 ]
 
 function SHGDashboard() {
+    const router = useRouter()
     const { userData } = useSelector((state: RootState) => state.user)
+
+    useEffect(() => {
+        if (userData && userData.role !== 'shg' && userData.role !== 'admin') {
+            router.push('/')
+            toast.error("Access Denied: Collective Hub requires SHG credentials", {
+                icon: '🚫',
+                style: {
+                    borderRadius: '1rem',
+                    background: '#18181b',
+                    color: '#fff',
+                    border: '1px solid #ef4444'
+                }
+            })
+        }
+    }, [userData, router])
+
     const [region, setRegion] = useState('')
     const [quantity, setQuantity] = useState('')
     const [crop, setCrop] = useState('')

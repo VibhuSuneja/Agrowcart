@@ -5,6 +5,9 @@ import { Users, Search, Ban, CheckCircle, ShieldCheck, Mail, Smartphone, ShieldA
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 interface IUser {
     _id: string;
@@ -18,6 +21,24 @@ interface IUser {
 }
 
 export default function UserManagementPage() {
+    const router = useRouter()
+    const { userData } = useSelector((state: RootState) => state.user)
+
+    useEffect(() => {
+        if (userData && userData.role !== 'admin') {
+            router.push('/')
+            toast.error("Access Denied: Administrative Clearance Required", {
+                icon: '🚫',
+                style: {
+                    borderRadius: '1rem',
+                    background: '#18181b',
+                    color: '#fff',
+                    border: '1px solid #ef4444'
+                }
+            })
+        }
+    }, [userData, router])
+
     const [users, setUsers] = useState<IUser[]>([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
@@ -111,8 +132,8 @@ export default function UserManagementPage() {
                                 key={role}
                                 onClick={() => setRoleFilter(role)}
                                 className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${roleFilter === role
-                                        ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg"
-                                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200"
+                                    ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg"
+                                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200"
                                     }`}
                             >
                                 {role}
@@ -193,8 +214,8 @@ export default function UserManagementPage() {
                                             onClick={() => handleToggleBan(user._id)}
                                             disabled={user.role === 'admin'}
                                             className={`flex items-center justify-center gap-2 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${user.isBanned
-                                                    ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20'
-                                                    : 'bg-red-500/10 text-red-600 hover:bg-red-500/20'
+                                                ? 'bg-green-500/10 text-green-600 hover:bg-green-500/20'
+                                                : 'bg-red-500/10 text-red-600 hover:bg-red-500/20'
                                                 } disabled:opacity-30 disabled:grayscale`}
                                         >
                                             {user.isBanned ? <><CheckCircle size={14} /> Unban Access</> : <><Ban size={14} /> Ban Identity</>}
@@ -204,8 +225,8 @@ export default function UserManagementPage() {
                                             onClick={() => handleToggleVerify(user._id)}
                                             disabled={user.isBanned}
                                             className={`flex items-center justify-center gap-2 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${user.isVerified
-                                                    ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                                                    : 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20'
+                                                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                                                : 'bg-blue-500/10 text-blue-600 hover:bg-blue-500/20'
                                                 } disabled:opacity-30`}
                                         >
                                             {user.isVerified ? <><ShieldCheck size={14} /> Verified</> : <><ShieldAlert size={14} /> Verify Account</>}

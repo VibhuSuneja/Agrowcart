@@ -1,5 +1,5 @@
 'use client'
-import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, Settings, Sparkles, ShieldCheck, Scale, Gavel } from 'lucide-react'
+import { Boxes, ClipboardCheck, Cross, Leaf, LogOut, Menu, Package, Plus, PlusCircle, Search, ShoppingCartIcon, User, X, ChefHat, TrendingUp, MessageSquare, Trash2, ArrowLeft, ArrowRight, Settings, Sparkles, ShieldCheck, Scale, Gavel } from 'lucide-react'
 
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -57,11 +57,13 @@ function Nav({ user: propUser }: { user: any }) {
     const handleSearch = (e: FormEvent) => {
         e.preventDefault()
         const query = search.trim()
+        const targetPath = pathname === '/marketplace' ? '/marketplace' : '/'
+
         if (!query) {
-            return router.push("/")
+            return router.push(targetPath)
         }
 
-        router.push(`/?q=${encodeURIComponent(query)}`)
+        router.push(`${targetPath}?q=${encodeURIComponent(query)}`)
         setSearch("")
         setSearchBarOpen(false)
     }
@@ -101,6 +103,13 @@ function Nav({ user: propUser }: { user: any }) {
                         </div>
                     </div>
 
+                    <div className="mt-8 flex items-center gap-2 lg:hidden">
+                        <div className="scale-90 origin-left">
+                            <GoogleTranslator />
+                        </div>
+                        <TextToSpeech />
+                    </div>
+
                     <button
                         className='absolute top-4 right-4 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all'
                         onClick={() => setMenuOpen(false)}
@@ -124,6 +133,18 @@ function Nav({ user: propUser }: { user: any }) {
                     <Link href="/community/forum" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
                         <div className='w-8 h-8 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center'><MessageSquare size={18} /></div>
                         Discussion Forum
+                    </Link>
+                    <Link href="/marketplace" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center'><Boxes size={18} /></div>
+                        Marketplace
+                    </Link>
+                    <Link href="/tools/crop-doctor" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center'><PlusCircle size={18} /></div>
+                        AI Crop Doctor
+                    </Link>
+                    <Link href="/logistics" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                        <div className='w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center'><Package size={18} /></div>
+                        Logistics
                     </Link>
                     <Link href="/shree-anna" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-amber-500/10 active:text-amber-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
                         <div className='w-8 h-8 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center'><Sparkles size={18} /></div>
@@ -171,6 +192,10 @@ function Nav({ user: propUser }: { user: any }) {
                             <Link href="/user/my-orders" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
                                 <div className='w-8 h-8 rounded-full bg-yellow-500/10 text-yellow-400 flex items-center justify-center'><Package size={18} /></div>
                                 My Orders
+                            </Link>
+                            <Link href="/settings" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-zinc-500/10 text-zinc-400 flex items-center justify-center'><Settings size={18} /></div>
+                                Settings
                             </Link>
                         </>
                     )}
@@ -366,6 +391,16 @@ function Nav({ user: propUser }: { user: any }) {
 
                 <div className="h-6 w-px bg-zinc-200 dark:bg-white/10 mx-1 hidden lg:block"></div>
 
+                {user.role === 'user' && (
+                    <button
+                        onClick={() => setSearchBarOpen(!searchBarOpen)}
+                        className='p-2 text-zinc-600 dark:text-zinc-300 lg:hidden rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors relative z-[110]'
+                        aria-label="Search"
+                    >
+                        {searchBarOpen ? <X size={22} /> : <Search size={22} />}
+                    </button>
+                )}
+
                 <PWAInstallButton />
 
                 <div className='relative' ref={profileDropDown}>
@@ -492,6 +527,36 @@ function Nav({ user: propUser }: { user: any }) {
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Mobile Search Overlay */}
+            <AnimatePresence>
+                {searchBarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="absolute top-20 left-0 w-full bg-white dark:bg-[#0b1613] border-b border-zinc-100 dark:border-white/10 p-4 lg:hidden shadow-2xl z-[90]"
+                    >
+                        <form onSubmit={handleSearch} className="relative max-w-lg mx-auto">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search organic harvests..."
+                                className="w-full bg-zinc-100 dark:bg-white/5 rounded-2xl pl-11 pr-14 py-3.5 text-sm font-bold outline-none border border-transparent focus:border-primary/20 transition-all"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-white rounded-xl shadow-lg shadow-primary/20"
+                            >
+                                <ArrowRight size={16} />
+                            </button>
+                        </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Mobile Sidebar Triggered by setMenuOpen */}
             {sideBar}

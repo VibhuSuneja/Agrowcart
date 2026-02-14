@@ -9,7 +9,6 @@ import Image from 'next/image'
 import axios from 'axios'
 
 import { IUser } from '@/models/user.model'
-import { getSocket } from '@/lib/socket'
 import { useSocket } from '@/context/SocketContext'
 import dynamic from 'next/dynamic'
 const LiveMap = dynamic(() => import('./LiveMap'), { ssr: false })
@@ -94,7 +93,8 @@ function AdminOrderCard({ order }: { order: IOrder }) {
     }, [order])
 
     useEffect((): any => {
-        const socket = getSocket()
+        if (!socket) return
+
         socket.on("order-status-update", (data) => {
             if (data.orderId.toString() == order?._id!.toString()) {
                 setStatus(data.status)
@@ -117,8 +117,8 @@ function AdminOrderCard({ order }: { order: IOrder }) {
     }, [])
 
     useEffect(() => {
-        if (!showTrack || !order.assignedDeliveryBoy?._id) return
-        const socket = getSocket()
+        if (!showTrack || !order.assignedDeliveryBoy?._id || !socket) return
+
         const handleLocationUpdate = (data: any) => {
             if (data.userId === order.assignedDeliveryBoy?._id?.toString()) {
                 setLiveLocation({
