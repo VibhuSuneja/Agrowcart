@@ -56,7 +56,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         }
 
         // 5. Execute with Population and .lean() for serialization safety
-        let orderData;
+        let orderData: any;
         try {
             orderData = await orderQuery
                 .populate({ path: "user", model: User, select: "name email image" })
