@@ -10,6 +10,7 @@ import {
 import NextImage from 'next/image'
 import { getSocket } from '@/lib/socket'
 import { useRouter } from 'next/navigation'
+import { QRCodeSVG } from 'qrcode.react'
 // jsPDF and autoTable moved to dynamic imports in downloadInvoice
 
 
@@ -343,11 +344,12 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                                 <Sparkles size={14} className="text-amber-400" />
                                                 View Batch Traceability
                                             </button>
-                                            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-zinc-200 overflow-hidden p-1 shrink-0">
-                                                <img
-                                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
-                                                    alt="Scan"
-                                                    className="w-full h-full object-contain"
+                                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-zinc-200 shrink-0 shadow-sm relative overflow-hidden">
+                                                <QRCodeSVG
+                                                    value={`https://agrowcart.com/traceability/${order._id}`}
+                                                    size={100}
+                                                    className="w-full h-full"
+                                                    level="M"
                                                 />
                                             </div>
                                         </div>
@@ -366,11 +368,12 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                                     <Sparkles size={14} className="text-amber-400" />
                                                     View Batch Traceability
                                                 </button>
-                                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shrink-0">
-                                                    <img
-                                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
-                                                        alt="Scan"
-                                                        className="w-full h-full object-contain"
+                                                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center p-2 shrink-0 shadow-sm relative overflow-hidden">
+                                                    <QRCodeSVG
+                                                        value={`https://agrowcart.com/traceability/${order._id}`}
+                                                        size={100}
+                                                        className="w-full h-full"
+                                                        level="M"
                                                     />
                                                 </div>
                                             </div>
@@ -461,11 +464,12 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                         <Sparkles size={14} className="text-amber-400" />
                                         Trace Lifecycle
                                     </button>
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 border border-green-100 shrink-0">
-                                        <img
-                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
-                                            alt="Scan"
-                                            className="w-full h-full object-contain"
+                                    <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-green-100 shrink-0 shadow-md relative overflow-hidden">
+                                        <QRCodeSVG
+                                            value={`https://agrowcart.com/traceability/${order._id}`}
+                                            size={100}
+                                            className="w-full h-full"
+                                            level="M"
                                         />
                                     </div>
                                 </div>
