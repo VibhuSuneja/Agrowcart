@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { model } from "@/lib/gemini";
+// import Groq from "groq-sdk";
 import AIResponse from "@/models/ai-cache.model";
 import crypto from "crypto";
 import { auth } from "@/auth";
+import { getFallbackInsight } from "@/lib/ai-fallback-dataset"; // Import fallback dataset logic
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,12 +31,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(JSON.parse(cached.response), { status: 200 });
         }
 
-        if (!process.env.GROQ_API_KEY) {
-            console.error("GROQ_API_KEY missing");
-            throw new Error("API configuration error");
-        }
 
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
         const prompt = `Provide precise market demand forecasting for ${crop} for the next 6 months in the Indian market.
         
@@ -47,25 +44,16 @@ export async function POST(req: NextRequest) {
         Return raw JSON only. No markdown formatting.`;
 
         try {
-            const chatCompletion = await groq.chat.completions.create({
-                messages: [
-                    { role: "system", content: "You are a senior agricultural economist specializing in Indian millet markets. Return raw JSON ONLY." },
-                    { role: "user", content: prompt }
-                ],
-                model: "llama-3.3-70b-versatile", // Excellent for economic forecasting
-                temperature: 0.3,
-                max_tokens: 400,
-                stream: false,
-            });
-
-            const text = chatCompletion.choices[0]?.message?.content || "";
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
             const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
             let parsedData;
             try {
                 parsedData = JSON.parse(cleanText);
             } catch (e) {
-                console.error("Groq Market Insight JSON Parse Error:", cleanText);
+                console.error("Gemini Market Insight JSON Parse Error:", cleanText);
                 throw new Error("Invalid format from AI");
             }
 
@@ -84,12 +72,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(parsedData, { status: 200 });
 
         } catch (aiError: any) {
-            console.warn("Groq Market Insight failed, using fallback:", aiError.message);
-            const fallbackInsight = {
-                demandTrend: "High Demand",
-                forecast: "Current climate trends and government 'Shree Anna' promotions are driving consistent demand for millets in urban processing clusters.",
-                highDemandRegions: ["Karnataka", "Maharashtra", "Tamil Nadu"]
-            };
+            console.warn("Gemini Market Insight failed, using fallback:", aiError.message);
+            const fallbackInsight = getFallbackInsight(crop);
             return NextResponse.json(fallbackInsight, { status: 200 });
         }
     } catch (error: any) {
