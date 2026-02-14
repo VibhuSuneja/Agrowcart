@@ -3,15 +3,20 @@ import connectDb from "@/lib/db";
 import Order from "@/models/order.model";
 import Product from "@/models/product.model";
 import User from "@/models/user.model";
+import DeliveryAssignment from "@/models/deliveryAssignment.model";
 
-// CRITICAL: Force dynamic rendering — prevents Next.js from caching stale order status
+// CRITICAL: Ensure all models are registered in the Mongoose instance
+// This prevents "Schema not found" errors during population in edge cases
+const _ = { Order, Product, User, DeliveryAssignment };
+
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
     try {
         await connectDb();
-        const { orderId } = await params;
+        const rawParams = await params;
+        const orderId = rawParams?.orderId?.trim();
 
         if (!orderId) {
             return NextResponse.json({ message: "Order ID is required" }, { status: 400 });
@@ -23,17 +28,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
             // Priority 1: Direct ID Match
             order = await Order.findById(orderId)
                 .populate("items.product")
-                .populate("user", "name")
+                .populate("user", "name email image")
                 .populate("assignedDeliveryBoy", "name mobile");
         } else {
             // Priority 2: Batch Number Search (Case-insensitive)
-            // Escape regex characters
             const escapedBatchId = orderId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             order = await Order.findOne({
                 batchNumber: { $regex: new RegExp(`^${escapedBatchId}$`, "i") }
             })
                 .populate("items.product")
-                .populate("user", "name")
+                .populate("user", "name email image")
                 .populate("assignedDeliveryBoy", "name mobile");
         }
 
@@ -41,15 +45,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
             return NextResponse.json({ message: "Order not found" }, { status: 404 });
         }
 
-        // Lazy Persistence: If an old order is missing a batch number, 
-        // save it now to trigger the pre-save hook and persist it permanently.
+        // Lazy Persistence for legacy orders
         if (!order.batchNumber) {
             try {
-                // This will trigger the pre("save") hook in order.model.ts
                 await order.save();
-                console.log(`Successfully assigned permanent batch number to legacy order: ${order._id}`);
             } catch (saveError) {
-                console.error("Failed to auto-persist batch number:", saveError);
+                console.error("Non-blocking save error:", saveError);
             }
         }
 
@@ -60,6 +61,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
             }
         });
     } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        console.error("TRACEABILITY_API_ERROR:", error);
+        return NextResponse.json({
+            message: "Failed to fetch traceability data",
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
 }

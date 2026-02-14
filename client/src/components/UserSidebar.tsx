@@ -23,7 +23,7 @@ const sidebarItems = [
     { name: 'My Orders', href: '/user/my-orders', icon: Package },
     { name: 'Saved Recipes', href: '/user/recipes', icon: UtensilsCrossed },
     // { name: 'Addresses', href: '/user/addresses', icon: MapPin },
-    { name: 'Community', href: '/community', icon: MessageSquare },
+    { name: 'Community', href: '/community/forum', icon: MessageSquare },
 ]
 
 export default function UserSidebar() {
@@ -43,8 +43,8 @@ export default function UserSidebar() {
                                     key={item.name}
                                     href={item.href}
                                     className={`flex items-center gap-4 px-6 py-4 rounded-2xl transition-all group ${isActive
-                                            ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-xl shadow-zinc-900/20'
-                                            : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white'
+                                        ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-xl shadow-zinc-900/20'
+                                        : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white'
                                         }`}
                                 >
                                     <item.icon size={20} className={`${isActive ? 'text-emerald-400 dark:text-emerald-600' : 'text-zinc-400 group-hover:text-emerald-500'} transition-colors`} />
