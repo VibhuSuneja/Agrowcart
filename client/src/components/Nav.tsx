@@ -17,6 +17,7 @@ import GlobalCallListener from './GlobalCallListener'
 import { useTranslations } from '@/i18n/LanguageProvider'
 import { orbitron } from '@/lib/fonts'
 import PWAInstallButton from './PWAInstallButton'
+import AdminNotificationBell from './AdminNotificationBell'
 
 interface IUser {
     _id?: string
@@ -402,6 +403,9 @@ function Nav({ user: propUser }: { user: any }) {
                 )}
 
                 <PWAInstallButton />
+
+                {/* Admin Order Notification Bell */}
+                {user.role === 'admin' && <AdminNotificationBell />}
 
                 <div className='relative' ref={profileDropDown}>
                     <motion.div

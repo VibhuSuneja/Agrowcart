@@ -255,7 +255,7 @@ function FarmerDashboard() {
                             animate={{ opacity: 1, y: 0 }}
                             className='text-5xl sm:text-6xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.85]'
                         >
-                            Grow. <span className="text-zinc-300 dark:text-zinc-600">Predict.</span> <br />Scale.
+                            Grow. <span className="text-zinc-400 dark:text-zinc-600">Predict.</span> <br />Scale.
                         </motion.h1>
                         <p className="text-zinc-500 dark:text-zinc-400 max-w-xl font-medium text-lg leading-relaxed">
                             Empowering organic farmers with AI-driven market intelligence, Global standard traceability, and direct access to global marketplaces.
@@ -294,7 +294,7 @@ function FarmerDashboard() {
                                 <Activity size={32} />
                             </div>
                             <div>
-                                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Yield Integrity</div>
+                                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 mb-1">Yield Integrity</div>
                                 <div className="text-3xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">98.4%</div>
                             </div>
                         </div>
@@ -398,11 +398,15 @@ function FarmerDashboard() {
                                             <div className="flex items-center gap-5">
                                                 <div className="bg-white/5 p-5 rounded-[1.5rem] flex-1 border border-white/5">
                                                     <div className="text-[9px] text-zinc-500 font-black uppercase tracking-[0.3em] mb-1">Price Sentiment</div>
-                                                    <div className="text-primary font-black uppercase tracking-[0.1em] text-sm">Bullish Trend</div>
+                                                    <div className={`font-black uppercase tracking-[0.1em] text-sm ${prediction.priceTrend === 'bullish' ? 'text-primary' :
+                                                            prediction.priceTrend === 'bearish' ? 'text-red-500' : 'text-amber-500'
+                                                        }`}>
+                                                        {prediction.priceTrend?.toUpperCase()} TREND
+                                                    </div>
                                                 </div>
                                                 <div className="bg-white/5 p-5 rounded-[1.5rem] flex-1 border border-white/5">
                                                     <div className="text-[9px] text-zinc-500 font-black uppercase tracking-[0.3em] mb-1">AI Confidence</div>
-                                                    <div className="text-white font-black uppercase tracking-[0.1em] text-sm">92.8% Verified</div>
+                                                    <div className="text-white font-black uppercase tracking-[0.1em] text-sm">{prediction.confidenceScore}% Verified</div>
                                                 </div>
                                             </div>
                                             <p className="text-zinc-400 font-medium leading-relaxed italic border-l-4 border-primary/40 pl-6 text-sm">
@@ -467,14 +471,14 @@ function FarmerDashboard() {
                             <div className="relative z-10 space-y-12">
                                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                                     <div className="space-y-4">
-                                        <div className="flex items-center gap-2 text-primary font-bold uppercase tracking-[0.4em] text-[10px]">
+                                        <div className="flex items-center gap-2 text-white/70 font-bold uppercase tracking-[0.4em] text-[10px]">
                                             <Briefcase size={14} />
                                             <span>Economic Empowerment</span>
                                         </div>
-                                        <h3 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.85]">
-                                            Direct Support <br /><span className="text-zinc-300 dark:text-zinc-700">Protocols</span>
+                                        <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-[0.85]">
+                                            Direct Support <br /><span className="text-white/60">Protocols</span>
                                         </h3>
-                                        <p className="text-zinc-500 dark:text-zinc-400 font-medium text-lg max-w-xl">
+                                        <p className="text-white/70 font-medium text-lg max-w-xl">
                                             Access exclusive government mandates and premium institutional contracts tailored for organic millet production.
                                         </p>
                                     </div>
@@ -515,16 +519,16 @@ function FarmerDashboard() {
                                         >
                                             <div className="space-y-6">
                                                 <div className="flex items-center justify-between">
-                                                    <div className="bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/20">
+                                                    <div className="bg-white/20 text-white text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/30">
                                                         {scheme.premium}
                                                     </div>
-                                                    <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                                                    <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center text-white/60 group-hover:bg-white group-hover:text-green-700 transition-all shadow-sm">
                                                         <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-0.5 transition-transform" />
                                                     </div>
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <h4 className="font-black text-2xl text-slate-900 dark:text-white tracking-tight">{scheme.title}</h4>
-                                                    <p className="text-sm text-zinc-500 font-medium leading-relaxed">{scheme.desc}</p>
+                                                    <h4 className="font-black text-2xl text-white tracking-tight">{scheme.title}</h4>
+                                                    <p className="text-sm text-white/70 font-medium leading-relaxed">{scheme.desc}</p>
                                                 </div>
                                             </div>
                                         </motion.div>

@@ -4,7 +4,8 @@ import { motion } from 'motion/react'
 import {
     ShieldCheck, MapPin, History, Sprout,
     Warehouse, Truck, CheckCircle2, QrCode,
-    Fingerprint, ArrowLeft, Info, Calendar
+    Fingerprint, ArrowLeft, Info, Calendar,
+    UserCheck
 } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 import Nav from '@/components/Nav'
@@ -12,6 +13,9 @@ import Footer from '@/components/Footer'
 import TraceabilityMap from '@/components/TraceabilityMap'
 
 import axios from 'axios'
+import { useSocket } from '@/context/SocketContext'
+import { RefreshCcw, Bell } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 function TraceabilityPage() {
     const router = useRouter()
@@ -19,19 +23,48 @@ function TraceabilityPage() {
     const [order, setOrder] = React.useState<any>(null)
     const [loading, setLoading] = React.useState(true)
 
-    React.useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                const res = await axios.get(`/api/traceability/${orderId}`)
-                setOrder(res.data)
-            } catch (error) {
-                console.error(error)
-            } finally {
-                setLoading(false)
-            }
+    const { socket } = useSocket()
+
+    const fetchOrder = async () => {
+        try {
+            const res = await axios.get(`/api/traceability/${orderId}`)
+            setOrder(res.data)
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
         }
+    }
+
+    React.useEffect(() => {
         if (orderId) fetchOrder()
     }, [orderId])
+
+    // Real-time status updates via Socket
+    React.useEffect(() => {
+        if (!socket || !orderId) return
+
+        const handleStatusUpdate = (data: any) => {
+            if (data.orderId.toString() === orderId.toString()) {
+                toast.success(`Batch status updated: ${data.status.toUpperCase()}`, {
+                    icon: '📦',
+                    style: {
+                        borderRadius: '16px',
+                        background: '#18181b',
+                        color: '#fff',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }
+                })
+                fetchOrder() // Re-fetch to get all updated fields (deliveredAt, etc.)
+            }
+        }
+
+        socket.on("order-status-update", handleStatusUpdate)
+        return () => {
+            socket.off("order-status-update", handleStatusUpdate)
+        }
+    }, [socket, orderId])
 
     if (loading) return (
         <div className="min-h-screen bg-white flex items-center justify-center">
@@ -199,6 +232,30 @@ function TraceabilityPage() {
                         >
                             Batch <span className="text-green-600">Traceability.</span>
                         </motion.h1>
+                        <div className="flex items-center gap-3">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className={`px-4 py-2 rounded-2xl border ${getTimelineBg()} ${getTimelineColor()} border-current/20 flex items-center gap-2 shadow-lg shadow-current/5`}
+                            >
+                                <div className="w-2 h-2 rounded-full bg-current animate-pulse" />
+                                <span className="text-xs font-black uppercase tracking-widest">
+                                    {getTimelineStatus()}
+                                </span>
+                            </motion.div>
+
+                            <button
+                                onClick={() => {
+                                    setLoading(true)
+                                    fetchOrder()
+                                    toast.success("Updating batch data...")
+                                }}
+                                className="p-2 text-zinc-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all group"
+                                title="Refresh data"
+                            >
+                                <RefreshCcw size={18} className="group-active:rotate-180 transition-transform duration-500" />
+                            </button>
+                        </div>
                         <p className="text-zinc-500 max-w-lg font-medium text-lg italic">"Transparency is the soul of trust in agriculture."</p>
                     </div>
 
@@ -292,6 +349,29 @@ function TraceabilityPage() {
                                 <span className="text-xs font-black uppercase tracking-widest">Verified Fresh</span>
                             </div>
                         </div>
+
+                        {order?.assignedDeliveryBoy && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="bg-blue-600 p-8 rounded-[3rem] text-white space-y-4 relative overflow-hidden shadow-xl shadow-blue-500/20"
+                            >
+                                <div className="absolute top-0 right-0 p-4 opacity-10">
+                                    <Truck size={64} />
+                                </div>
+                                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                                    <UserCheck size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-black uppercase tracking-widest text-blue-100">Delivery Partner</h4>
+                                    <p className="text-xl font-black mt-1">{order.assignedDeliveryBoy.name}</p>
+                                    <div className="mt-4 flex items-center gap-2 bg-white/10 w-fit px-3 py-1.5 rounded-lg border border-white/10">
+                                        <Bell size={12} className="text-blue-200" />
+                                        <span className="text-[10px] font-black tracking-widest">+91 {order.assignedDeliveryBoy.mobile}</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
 
                         <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-xl shadow-green-900/5 space-y-6">
                             <div className="flex items-center gap-3">

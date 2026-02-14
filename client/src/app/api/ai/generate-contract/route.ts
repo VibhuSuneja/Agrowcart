@@ -62,26 +62,35 @@ export async function POST(req: NextRequest) {
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const text = response.text();
+        let text = response.text();
 
         // Robust JSON extraction
-        let parsedData;
-        try {
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const jsonText = jsonMatch ? jsonMatch[0] : text;
-            parsedData = JSON.parse(jsonText);
-        } catch (parseError) {
-            console.error("JSON Parse Error. Raw text:", text);
-            throw new Error("AI returned invalid contract structure. Please try again.");
+        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        const firstBrace = text.indexOf('{');
+        const lastBrace = text.lastIndexOf('}');
+
+        if (firstBrace === -1 || lastBrace === -1) {
+            throw new Error("Invalid AI response format");
         }
+
+        const jsonText = text.substring(firstBrace, lastBrace + 1);
+        const parsedData = JSON.parse(jsonText);
 
         return NextResponse.json(parsedData, { status: 200 });
 
     } catch (error: any) {
         console.error("Contract Generation Error:", error);
-        return NextResponse.json(
-            { message: `Failed to generate contract: ${error.message || "Internal server error"}` },
-            { status: 500 }
-        );
+
+        // Safety Fallback
+        if (error.message?.toLowerCase().includes("safety") || error.message?.toLowerCase().includes("blocked")) {
+            return NextResponse.json({
+                contractTitle: "Draft Sourcing Agreement (Standard Template)",
+                content: "# Institutional Sourcing Agreement\n\n## 1. PREAMBLE\nStandard negotiate draft...",
+                criticalClauses: [{ title: "Standard Quality", originalText: "Produce must meet grades", plainLanguage: "Quality matters", impact: "High" }],
+                legalFootnote: "SAFETY FALLBACK: Standardized legal template provided."
+            }, { status: 200 });
+        }
+
+        return NextResponse.json({ message: `Contract Error: ${error.message}` }, { status: 500 });
     }
 }

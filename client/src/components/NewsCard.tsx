@@ -46,22 +46,22 @@ export default function NewsCard() {
     const date = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
 
     return (
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-zinc-100 h-full flex flex-col">
+        <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-xl border border-zinc-100 dark:border-white/5 h-full flex flex-col">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <div className="flex items-center gap-2 text-red-500 font-black uppercase tracking-[0.3em] text-[10px] mb-2">
                         <Newspaper size={14} />
                         <span>Daily Insights</span>
                     </div>
-                    <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Farmer's News</h3>
-                    <p className="text-zinc-400 text-xs font-medium">{date}</p>
+                    <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Farmer's News</h3>
+                    <p className="text-zinc-400 dark:text-zinc-500 text-xs font-medium">{date}</p>
                 </div>
 
                 <div className="flex gap-2">
                     <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        className="bg-zinc-50 border border-zinc-200 text-xs font-bold rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-red-500/20"
+                        className="bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-xs font-bold rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-red-500/20 text-zinc-900 dark:text-white"
                     >
                         {LANGUAGES.map(l => (
                             <option key={l.code} value={l.code}>{l.label}</option>
@@ -85,7 +85,7 @@ export default function NewsCard() {
                             className="group cursor-pointer"
                             onClick={() => item.url && window.open(item.url, '_blank')}
                         >
-                            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-zinc-50 transition-all border border-transparent hover:border-zinc-100 group relative">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-zinc-50 dark:hover:bg-white/5 transition-all border border-transparent hover:border-zinc-100 dark:hover:border-white/10 group relative">
                                 <span className={`shrink-0 w-2 h-2 mt-2 rounded-full ${item.tag === 'Policy' ? 'bg-blue-500' :
                                     item.tag === 'Market' ? 'bg-green-500' : 'bg-orange-500'
                                     }`} />
@@ -98,10 +98,10 @@ export default function NewsCard() {
                                         </span>
                                         <ExternalLink size={12} className="text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
-                                    <h4 className="font-bold text-zinc-800 leading-tight mb-1 group-hover:text-red-600 transition-colors">
+                                    <h4 className="font-bold text-zinc-800 dark:text-zinc-200 leading-tight mb-1 group-hover:text-red-600 transition-colors">
                                         {item.headline}
                                     </h4>
-                                    <p className="text-xs text-zinc-500 leading-relaxed font-medium">
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
                                         {item.summary}
                                     </p>
                                 </div>

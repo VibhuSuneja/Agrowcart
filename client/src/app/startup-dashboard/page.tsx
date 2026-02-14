@@ -199,7 +199,7 @@ function StartupDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 pb-20 pt-[110px] md:pt-[120px] selection:bg-purple-100 selection:text-purple-900">
+        <div className="min-h-screen bg-zinc-50 dark:bg-background-dark pb-20 pt-[110px] md:pt-[120px] selection:bg-purple-100 selection:text-purple-900 text-zinc-900 dark:text-white">
             <Nav user={userData as any} />
             <VoiceAssistant onCommand={handleVoiceCommand} />
             <div className="w-[95%] md:w-[90%] xl:w-[85%] 2xl:max-w-[1400px] mx-auto space-y-8 md:space-y-12">
@@ -210,7 +210,7 @@ function StartupDashboard() {
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center gap-2 text-purple-600 font-black uppercase tracking-[0.3em] text-[10px] bg-purple-50 w-fit px-3 py-1 rounded-lg border border-purple-100"
+                            className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-black uppercase tracking-[0.3em] text-[10px] bg-purple-50 dark:bg-purple-900/20 w-fit px-3 py-1 rounded-lg border border-purple-100 dark:border-purple-900/40"
                         >
                             <Rocket size={14} className="animate-pulse" />
                             <span>Agri-Innovation Hub</span>
@@ -218,21 +218,21 @@ function StartupDashboard() {
                         <motion.h1
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter leading-[0.9] sm:leading-none'
+                            className='text-4xl sm:text-5xl md:text-6xl font-black text-zinc-900 dark:text-white tracking-tighter leading-[0.9] sm:leading-none'
                         >
-                            Disrupt. <span className="text-zinc-400">Scale.</span> <br />Impact.
+                            Disrupt. <span className="text-zinc-400 dark:text-zinc-500">Scale.</span> <br />Impact.
                         </motion.h1>
-                        <p className="text-zinc-500 max-w-lg font-medium text-base md:text-lg">Deploy next-gen agricultural solutions and secure partnerships through the marketplace.</p>
+                        <p className="text-zinc-500 dark:text-zinc-400 max-w-lg font-medium text-base md:text-lg">Deploy next-gen agricultural solutions and secure partnerships through the marketplace.</p>
                     </div>
 
                     <div className="flex gap-4 items-end">
-                        <div className="bg-white p-4 rounded-3xl shadow-xl shadow-purple-900/5 border border-zinc-100 flex items-center gap-4 h-fit">
-                            <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600">
+                        <div className="bg-white dark:bg-zinc-900 p-4 rounded-3xl shadow-xl shadow-purple-900/5 border border-zinc-100 dark:border-zinc-800 flex items-center gap-4 h-fit">
+                            <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center text-purple-600 dark:text-purple-400">
                                 <Lightbulb size={24} />
                             </div>
                             <div>
-                                <div className="text-[10px] font-black uppercase text-zinc-400">Innovation Score</div>
-                                <div className="text-xl font-black text-zinc-900">92/100</div>
+                                <div className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500">Innovation Score</div>
+                                <div className="text-xl font-black text-zinc-900 dark:text-white">92/100</div>
                             </div>
                         </div>
                         <motion.button

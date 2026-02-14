@@ -48,13 +48,13 @@ export default function DemandHeatmap() {
                         <MapPin size={24} />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-zinc-900 tracking-tight">Regional Demand</h3>
-                        <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{data.length > 0 ? 'Active Market Interest' : 'AI Predicted Interest'}</p>
+                        <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Regional Demand</h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest">{data.length > 0 ? 'Active Market Interest' : 'AI Predicted Interest'}</p>
                     </div>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 bg-zinc-50 px-3 py-1 rounded-full border border-zinc-100">
+                <div className="hidden sm:flex items-center gap-2 bg-zinc-50 dark:bg-white/5 px-3 py-1 rounded-full border border-zinc-100 dark:border-white/10">
                     <TrendingUp className="text-green-600" size={12} />
-                    <span className="text-[10px] font-black text-zinc-600 uppercase">Live Pulse</span>
+                    <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-400 uppercase">Live Pulse</span>
                 </div>
             </div>
 
