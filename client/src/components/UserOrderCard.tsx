@@ -339,10 +339,10 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                         <div className="flex gap-2 mt-4">
                                             <button
                                                 onClick={() => router.push(`/traceability/${order._id}`)}
-                                                className="flex-1 bg-zinc-800 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all border border-white/5"
+                                                className="flex-1 bg-zinc-800 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all border border-white/5 min-w-0"
                                             >
-                                                <Sparkles size={14} className="text-amber-400" />
-                                                View Batch Traceability
+                                                <Sparkles size={14} className="text-amber-400 shrink-0" />
+                                                <span className="truncate">View Batch Traceability</span>
                                             </button>
                                             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-zinc-200 shrink-0 shadow-sm relative overflow-hidden">
                                                 <QRCodeSVG
@@ -363,10 +363,10 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => router.push(`/traceability/${order._id}`)}
-                                                    className="flex-1 bg-white/10 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
+                                                    className="flex-1 bg-white/10 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10 min-w-0"
                                                 >
-                                                    <Sparkles size={14} className="text-amber-400" />
-                                                    View Batch Traceability
+                                                    <Sparkles size={14} className="text-amber-400 shrink-0" />
+                                                    <span className="truncate">View Batch Traceability</span>
                                                 </button>
                                                 <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center p-2 shrink-0 shadow-sm relative overflow-hidden">
                                                     <QRCodeSVG
@@ -442,35 +442,39 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => router.push(`/user/track-order/${order._id}`)}
-                                        className="flex-1 bg-white/10 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
-                                    >
-                                        <MessageSquare size={14} />
-                                        Chat History
-                                    </button>
-                                    <button
-                                        onClick={downloadInvoice}
-                                        className="flex-1 bg-zinc-800 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all shadow-lg"
-                                    >
-                                        <Download size={14} />
-                                        Invoice
-                                    </button>
-                                    <button
-                                        onClick={() => router.push(`/traceability/${order._id}`)}
-                                        className="flex-1 bg-green-600 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
-                                    >
-                                        <Sparkles size={14} className="text-amber-400" />
-                                        Trace Lifecycle
-                                    </button>
-                                    <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-green-100 shrink-0 shadow-md relative overflow-hidden">
-                                        <QRCodeSVG
-                                            value={`https://agrowcart.com/traceability/${order._id}`}
-                                            size={100}
-                                            className="w-full h-full"
-                                            level="M"
-                                        />
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex gap-3 w-full">
+                                        <button
+                                            onClick={() => router.push(`/user/track-order/${order._id}`)}
+                                            className="flex-1 bg-white/10 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10 min-w-0"
+                                        >
+                                            <MessageSquare size={14} className="shrink-0" />
+                                            <span className="truncate">Chat History</span>
+                                        </button>
+                                        <button
+                                            onClick={downloadInvoice}
+                                            className="flex-1 bg-zinc-800 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all shadow-lg min-w-0"
+                                        >
+                                            <Download size={14} className="shrink-0" />
+                                            <span className="truncate">Invoice</span>
+                                        </button>
+                                    </div>
+                                    <div className="flex gap-3 w-full">
+                                        <button
+                                            onClick={() => router.push(`/traceability/${order._id}`)}
+                                            className="flex-1 bg-green-600 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10 min-w-0"
+                                        >
+                                            <Sparkles size={14} className="text-amber-400 shrink-0" />
+                                            <span className="truncate">Trace Lifecycle</span>
+                                        </button>
+                                        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-green-100 shrink-0 shadow-md relative overflow-hidden">
+                                            <QRCodeSVG
+                                                value={`https://agrowcart.com/traceability/${order._id}`}
+                                                size={100}
+                                                className="w-full h-full"
+                                                level="M"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
