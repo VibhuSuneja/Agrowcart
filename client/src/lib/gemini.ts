@@ -7,9 +7,9 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
-// Best model for massive requests (2.0 Flash is the modern stable successor)
+// Best model for massive requests (2.5 Flash has higher throughput and stability)
 export const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
 }, { apiVersion: "v1" });
 
 // Apply shared configuration for the app
