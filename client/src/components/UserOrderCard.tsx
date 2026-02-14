@@ -73,7 +73,7 @@ function UserOrderCard({ order }: { order: IOrder }) {
 
     useEffect(() => {
         const socket = getSocket()
-        socket.on("order-status-update", (data) => {
+        socket.on("order-status-update", (data: any) => {
             if (data.orderId.toString() === order?._id?.toString()) {
                 setStatus(data.status)
             }
@@ -439,34 +439,33 @@ function UserOrderCard({ order }: { order: IOrder }) {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-wrap gap-3 mt-4">
+                                <div className="flex gap-2">
                                     <button
                                         onClick={() => router.push(`/user/track-order/${order._id}`)}
-                                        className="flex-1 bg-white/10 text-white min-w-[120px] px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
+                                        className="flex-1 bg-white/10 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
                                     >
                                         <MessageSquare size={14} />
                                         Chat History
                                     </button>
                                     <button
                                         onClick={downloadInvoice}
-                                        className="flex-1 bg-zinc-800 text-white min-w-[120px] px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all shadow-lg"
+                                        className="flex-1 bg-zinc-800 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-zinc-700 transition-all shadow-lg"
                                     >
                                         <Download size={14} />
                                         Invoice
                                     </button>
                                     <button
                                         onClick={() => router.push(`/traceability/${order._id}`)}
-                                        className="flex-1 bg-green-600 text-white min-w-[140px] px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
+                                        className="flex-1 bg-green-600 text-white px-4 py-4 rounded-xl font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-2 hover:bg-green-700 transition-all shadow-lg shadow-green-900/10"
                                     >
                                         <Sparkles size={14} className="text-amber-400" />
                                         Trace Lifecycle
                                     </button>
-                                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center p-1.5 border-4 border-zinc-800 shadow-2xl shrink-0 group/qr hover:scale-110 transition-transform cursor-pointer overflow-hidden">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 border border-green-100 shrink-0">
                                         <img
-                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
-                                            alt="Scan QR"
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`https://agrowcart.com/traceability/${order._id}`)}`}
+                                            alt="Scan"
                                             className="w-full h-full object-contain"
-                                            title="Scan to Trace Batch"
                                         />
                                     </div>
                                 </div>

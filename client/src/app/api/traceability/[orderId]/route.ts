@@ -59,9 +59,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         let orderData: any;
         try {
             orderData = await orderQuery
-                .populate({ path: "user", model: User, select: "name email image" })
-                .populate({ path: "items.product", model: Product })
-                .populate({ path: "assignedDeliveryBoy", model: User, select: "name mobile" })
+                .populate({ path: "user", model: "User", select: "name image" })
+                .populate({ path: "items.product", model: "Product" })
+                .populate({ path: "assignedDeliveryBoy", model: "User", select: "name mobile" })
                 .lean()
                 .exec();
 

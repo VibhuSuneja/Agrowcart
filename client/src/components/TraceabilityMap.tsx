@@ -17,7 +17,7 @@ const TraceabilityMap: React.FC<TraceabilityMapProps> = ({ status = 'delivered',
     // Robust status detection
     const normalizedStatus = (order?.status || '').toString().toLowerCase().trim()
     const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
-    const isOutForDelivery = normalizedStatus === 'out of delivery' || normalizedStatus.includes('delivery')
+    const isOutForDelivery = normalizedStatus === 'out for delivery' || normalizedStatus.includes('delivery')
     const isConfirmed = normalizedStatus === 'confirmed' || isOutForDelivery || isDelivered
 
     const nodes = [

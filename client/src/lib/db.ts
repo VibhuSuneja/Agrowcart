@@ -6,30 +6,25 @@ if (!mongodbUrl) {
     throw new Error("db error")
 }
 
-
-
-let cached = global.mongoose
+let cached = (global as any).mongoose
 if (!cached) {
-    cached = global.mongoose = { conn: null, promise: null }
+    cached = (global as any).mongoose = { conn: null, promise: null }
 }
 
 const connectDb = async () => {
     if (cached.conn) {
-
         return cached.conn
     }
 
     if (!cached.promise) {
-
         cached.promise = mongoose.connect(mongodbUrl).then((conn) => conn.connection)
     }
     try {
         const conn = await cached.promise
+        cached.conn = conn
         return conn
     } catch (error) {
-        cached.promise = null // Reset promise so next attempt can retry
-        console.error("MONGODB_CONNECTION_ERROR:", error)
-        throw error
+        console.log(error)
     }
 
 }

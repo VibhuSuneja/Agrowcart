@@ -1,11 +1,11 @@
 'use client'
 import React from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import {
     ShieldCheck, MapPin, History, Sprout,
     Warehouse, Truck, CheckCircle2, QrCode,
     Fingerprint, ArrowLeft, Info, Calendar,
-    UserCheck, Sparkles, Package, User, Database, ArrowRight, RefreshCcw, Bell
+    UserCheck, RefreshCcw, Bell
 } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 import Nav from '@/components/Nav'
@@ -15,13 +15,11 @@ import TraceabilityMap from '@/components/TraceabilityMap'
 import axios from 'axios'
 import { useSocket } from '@/context/SocketContext'
 import toast from 'react-hot-toast'
-import Link from 'next/link'
-import { getSocket } from '@/lib/socket'
-
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 function TraceabilityPage() {
+    const { userData } = useSelector((state: RootState) => state.user)
     const router = useRouter()
     const { orderId } = useParams()
     const [order, setOrder] = React.useState<any>(null)
@@ -81,16 +79,13 @@ function TraceabilityPage() {
 
     // Robust delivered check: normalize status AND check OTP verification as backup signal
     const normalizedStatus = (order?.status || '').toString().trim().toLowerCase()
-    const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true || !!order?.deliveredAt
-    const isOutForDelivery = normalizedStatus === 'out of delivery' || normalizedStatus === 'shipped' || !!order?.assignment || !!order?.assignedDeliveryBoy
-    const isConfirmed = normalizedStatus === 'confirmed'
-    const isCancelled = normalizedStatus === 'cancelled'
-    const isRefunded = normalizedStatus === 'refunded'
-    const isPending = normalizedStatus === 'pending'
+    const isDelivered = normalizedStatus === 'delivered' || normalizedStatus === 'completed' || order?.deliveryOtpVerification === true
+    const isOutForDelivery = normalizedStatus === 'out of delivery' || normalizedStatus.includes('delivery') || normalizedStatus.includes('dispatch')
 
     const getTimelineStatus = () => {
         if (isDelivered) return "Delivered"
         if (isOutForDelivery) return "Out for Delivery"
+        if (normalizedStatus === 'confirmed') return "Confirmed"
         if (normalizedStatus === 'cancelled') return "Cancelled"
         if (normalizedStatus === 'refunded') return "Refunded"
         return "Processing"
@@ -219,6 +214,7 @@ function TraceabilityPage() {
 
     return (
         <div className="min-h-screen bg-zinc-50 selection:bg-green-100 selection:text-green-900">
+            <Nav user={userData as any} />
             <div className="pt-32 pb-20 w-[95%] md:w-[85%] lg:w-[70%] mx-auto">
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-8">
@@ -271,12 +267,11 @@ function TraceabilityPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-white p-6 rounded-[2.5rem] shadow-2xl shadow-green-900/5 border border-zinc-100 flex items-center gap-6"
                     >
-                        <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center text-zinc-900 overflow-hidden border-4 border-zinc-100 shadow-xl group-hover:scale-105 transition-transform cursor-pointer">
+                        <div className="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center text-zinc-900 overflow-hidden border border-zinc-100">
                             <img
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://agrowcart.com/traceability/${orderId}`)}`}
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://agrowcart.com/traceability/${orderId}`)}`}
                                 alt="Scan QR"
-                                className="w-full h-full object-contain p-2"
-                                title="Scan to verify batch"
+                                className="w-12 h-12 object-contain"
                             />
                         </div>
                         <div>
