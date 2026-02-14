@@ -6,96 +6,109 @@ import User from "@/models/user.model";
 import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import mongoose from "mongoose";
 
-// Robust model registration
-const models = { Order, Product, User, DeliveryAssignment };
+// FORCE REGISTER MODELS - Critical for Next.js Route Handlers to prevent "Schema not found"
+const modelRegistry = { Order, User, Product, DeliveryAssignment };
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
-    console.log("TRACEABILITY_API_INVOKED");
+    console.log("[TRACEABILITY_API] Start Execution");
+
     try {
+        // 1. Connect to Database with specific check
         try {
             await connectDb();
-            console.log("TRACEABILITY_DB_OK");
-        } catch (dbErr: any) {
-            console.error("TRACEABILITY_DB_FAIL:", dbErr.message);
-            throw new Error(`Database connection failed: ${dbErr.message}`);
+            console.log("[TRACEABILITY_API] Database Connected");
+        } catch (dbError: any) {
+            console.error("[TRACEABILITY_API] DB Connection Failure:", dbError.message);
+            return NextResponse.json({ message: "Database connection failed", error: dbError.message }, { status: 500 });
         }
 
-        const rawParams = await params;
-        const orderId = rawParams?.orderId?.trim();
+        // 2. Resolve Parameters
+        const resolvedParams = await params;
+        const orderId = resolvedParams?.orderId?.trim();
 
         if (!orderId) {
-            return NextResponse.json({ message: "Order ID is required" }, { status: 400 });
+            return NextResponse.json({ message: "Order ID is missing from request" }, { status: 400 });
         }
 
-        const isValidId = mongoose.Types.ObjectId.isValid(orderId);
-        let query;
+        // 3. Ensure Models are ready in this context
+        // This is a safety loop to ensure Mongoose hasn't "lost" the models due to hot-reloading
+        Object.entries(modelRegistry).forEach(([name, model]) => {
+            if (!mongoose.models[name]) {
+                mongoose.model(name, (model as any).schema);
+            }
+        });
 
-        if (isValidId) {
-            query = Order.findById(orderId);
+        // 4. Resolve Query (Direct ID or Batch Number)
+        const isObjectId = mongoose.Types.ObjectId.isValid(orderId);
+        let orderQuery;
+
+        if (isObjectId) {
+            console.log("[TRACEABILITY_API] Searching by ObjectID:", orderId);
+            orderQuery = Order.findById(orderId);
         } else {
-            const escapedBatchId = orderId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            query = Order.findOne({
-                batchNumber: { $regex: new RegExp(`^${escapedBatchId}$`, "i") }
-            });
+            console.log("[TRACEABILITY_API] Searching by Batch Number:", orderId);
+            // Case-insensitive regex match for the batch number
+            const escapedId = orderId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            orderQuery = Order.findOne({ batchNumber: { $regex: new RegExp(`^${escapedId}$`, "i") } });
         }
 
-        console.log("EXECUTING_TRACEABILITY_QUERY:", { orderId, isValidId });
-
-        // Force register models in current context (safety)
-        const __reg = [Order, Product, User, DeliveryAssignment];
-
-        let order;
+        // 5. Execute with Population and .lean() for serialization safety
+        let orderData;
         try {
-            order = await query
-                .populate({ path: "items.product", model: Product })
+            orderData = await orderQuery
                 .populate({ path: "user", model: User, select: "name email image" })
+                .populate({ path: "items.product", model: Product })
                 .populate({ path: "assignedDeliveryBoy", model: User, select: "name mobile" })
                 .lean()
                 .exec();
-            console.log("QUERY_EXEC_OK", order ? "Found" : "Null");
-        } catch (queryErr: any) {
-            console.error("QUERY_OR_POPULATE_FAIL:", queryErr.message);
-            throw new Error(`Query/Populate failed: ${queryErr.message}`);
+
+            console.log("[TRACEABILITY_API] Query executed successfully:", orderData ? "Record Found" : "No Record");
+        } catch (queryError: any) {
+            console.error("[TRACEABILITY_API] Query/Populate Failure:", queryError.message);
+            return NextResponse.json({ message: "Query processing failed", error: queryError.message }, { status: 500 });
         }
 
-        if (!order) {
-            return NextResponse.json({ message: "Order not found" }, { status: 404 });
+        if (!orderData) {
+            return NextResponse.json({ message: "Order not found in data-store" }, { status: 404 });
         }
 
-        // Lazy Persistence for legacy orders (using updateOne)
-        if (!(order as any).batchNumber) {
+        // 6. Handle Legacy Batch Registration
+        // If an order exists but has no batch number, we auto-generate it (lazy migration)
+        if (!orderData.batchNumber) {
             try {
-                const random = Math.floor(100000 + Math.random() * 900000);
-                const generatedBatch = `BATCH-${random}`;
-                await Order.updateOne({ _id: (order as any)._id }, { batchNumber: generatedBatch });
-                (order as any).batchNumber = generatedBatch;
-            } catch (saveError: any) {
-                console.error("BATCH_GEN_ERROR:", saveError.message);
+                const generatedBatch = `BATCH-${Math.floor(100000 + Math.random() * 900000)}`;
+                await Order.updateOne({ _id: orderData._id }, { $set: { batchNumber: generatedBatch } });
+                orderData.batchNumber = generatedBatch;
+                console.log("[TRACEABILITY_API] Legacy Batch migrated:", generatedBatch);
+            } catch (migrateErr: any) {
+                console.warn("[TRACEABILITY_API] Batch migration failed (non-blocking):", migrateErr.message);
             }
         }
 
-        // Extremely safe serialization
-        const safeData = JSON.parse(JSON.stringify(order));
+        // 7. Success Response with strict serialization
+        const serialized = JSON.parse(JSON.stringify(orderData));
 
-        return NextResponse.json(safeData, {
+        return NextResponse.json(serialized, {
             status: 200,
             headers: {
-                'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
                 'Pragma': 'no-cache',
+                'Expires': '0',
             }
         });
-    } catch (error: any) {
-        console.error("TRACEABILITY_CRITICAL_FAILURE:", {
-            msg: error.message,
-            stack: error.stack
+
+    } catch (criticalError: any) {
+        console.error("[TRACEABILITY_API] CRIT_FAIL:", {
+            error: criticalError.message,
+            stack: criticalError.stack
         });
 
         return NextResponse.json({
-            message: "Traceability API Failure",
-            error: error.message,
+            message: "A critical error occurred in the traceability engine",
+            error: criticalError.message
         }, { status: 500 });
     }
 }
