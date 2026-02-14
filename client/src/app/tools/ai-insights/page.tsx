@@ -18,7 +18,9 @@ import { useRouter } from 'next/navigation'
 
 interface Prediction {
     estimatedPrice: number
-    priceTrend: "up" | "down" | "stable"
+    currency: string
+    confidenceScore: number
+    priceTrend: "bullish" | "bearish" | "stable"
     factors: string[]
     advice: string
 }
@@ -192,13 +194,13 @@ export default function AIInsightsPage() {
                                             <div className="flex gap-4">
                                                 <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex-1">
                                                     <p className="text-[10px] text-zinc-500 font-bold uppercase mb-1">Price Trend</p>
-                                                    <p className={`text-sm font-black uppercase ${prediction.priceTrend === 'up' ? 'text-green-400' : prediction.priceTrend === 'down' ? 'text-red-400' : 'text-blue-400'}`}>
+                                                    <p className={`text-sm font-black uppercase ${prediction.priceTrend === 'bullish' ? 'text-green-400' : prediction.priceTrend === 'bearish' ? 'text-red-400' : 'text-blue-400'}`}>
                                                         {prediction.priceTrend}
                                                     </p>
                                                 </div>
                                                 <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex-1">
                                                     <p className="text-[10px] text-zinc-500 font-bold uppercase mb-1">AI Confidence</p>
-                                                    <p className="text-sm font-black uppercase text-white">94% Accurate</p>
+                                                    <p className="text-sm font-black uppercase text-white">{prediction.confidenceScore}% Verified</p>
                                                 </div>
                                             </div>
                                         </div>
