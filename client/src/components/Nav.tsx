@@ -194,6 +194,10 @@ function Nav({ user: propUser }: { user: any }) {
                                 <div className='w-8 h-8 rounded-full bg-yellow-500/10 text-yellow-400 flex items-center justify-center'><Package size={18} /></div>
                                 My Orders
                             </Link>
+                            <Link href="/profile" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
+                                <div className='w-8 h-8 rounded-full bg-zinc-500/10 text-zinc-400 flex items-center justify-center'><User size={18} /></div>
+                                My Profile
+                            </Link>
                             <Link href="/settings" className='flex items-center gap-4 px-4 py-3.5 rounded-2xl hover:bg-white/5 active:bg-green-500/10 active:text-green-400 transition-all font-semibold text-zinc-300' onClick={() => setMenuOpen(false)}>
                                 <div className='w-8 h-8 rounded-full bg-zinc-500/10 text-zinc-400 flex items-center justify-center'><Settings size={18} /></div>
                                 Settings
@@ -433,8 +437,8 @@ function Nav({ user: propUser }: { user: any }) {
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 className='absolute right-0 mt-4 w-72 glass-panel rounded-[2rem] shadow-2xl p-4 z-[1000] border border-white/20'
                             >
-                                <div className='flex items-center gap-4 p-4 mb-4 bg-primary/10 dark:bg-white/5 rounded-[1.5rem] border border-primary/10'>
-                                    <div className='w-12 h-12 relative rounded-xl bg-white shadow-lg overflow-hidden flex items-center justify-center'>
+                                <Link href="/profile" className='flex items-center gap-4 p-4 mb-4 bg-primary/10 dark:bg-white/5 rounded-[1.5rem] border border-primary/10 hover:bg-primary/20 transition-all cursor-pointer group/profile' onClick={() => setOpen(false)}>
+                                    <div className='w-12 h-12 relative rounded-xl bg-white shadow-lg overflow-hidden flex items-center justify-center group-hover/profile:scale-105 transition-transform'>
                                         {user.image ? <Image src={user.image} alt='user' fill className='object-cover' /> : <User className="text-primary" />}
                                     </div>
                                     <div className="absolute -bottom-1 -right-1">
@@ -447,9 +451,9 @@ function Nav({ user: propUser }: { user: any }) {
                                             {user.name}
                                             {user.isVerified && <ShieldCheck size={12} className="text-blue-500 fill-blue-500" />}
                                         </div>
-                                        <div className='text-[10px] text-primary font-black uppercase tracking-[0.2em]'>{user.role} Hub</div>
+                                        <div className='text-[10px] text-primary font-black uppercase tracking-[0.2em] group-hover/profile:translate-x-1 transition-transform'>View Profile</div>
                                     </div>
-                                </div>
+                                </Link>
 
                                 <div className="space-y-1.5">
                                     {['farmer', 'shg', 'processor'].includes(user.role) && (
