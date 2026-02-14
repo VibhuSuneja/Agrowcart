@@ -4,10 +4,10 @@ import Order from "@/models/order.model";
 import Product from "@/models/product.model";
 import User from "@/models/user.model";
 import DeliveryAssignment from "@/models/deliveryAssignment.model";
+import mongoose from "mongoose";
 
-// CRITICAL: Ensure all models are registered in the Mongoose instance
-// This prevents "Schema not found" errors during population in edge cases
-const _ = { Order, Product, User, DeliveryAssignment };
+// Robust model registration
+const models = { Order, Product, User, DeliveryAssignment };
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -15,6 +15,17 @@ export const revalidate = 0;
 export async function GET(req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
     try {
         await connectDb();
+
+        // Ensure models are registered in the current connection's model cache
+        // This is a safety measure for serverless environments
+        if (mongoose.connection.readyState === 1) {
+            Object.values(models).forEach(m => {
+                if (m.modelName && !mongoose.models[m.modelName]) {
+                    mongoose.model(m.modelName, m.schema);
+                }
+            });
+        }
+
         const rawParams = await params;
         const orderId = rawParams?.orderId?.trim();
 
@@ -23,34 +34,60 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
         }
 
         let order;
-        // Check if it's a valid 24-char MongoDB ID or a Batch Number
-        if (/^[0-9a-fA-F]{24}$/.test(orderId)) {
+        // Accurate check for MongoDB ObjectId
+        const isValidId = mongoose.Types.ObjectId.isValid(orderId);
+
+        if (isValidId) {
             // Priority 1: Direct ID Match
             order = await Order.findById(orderId)
-                .populate("items.product")
-                .populate("user", "name email image")
-                .populate("assignedDeliveryBoy", "name mobile");
+                .populate({
+                    path: "items.product",
+                    model: "Product"
+                })
+                .populate({
+                    path: "user",
+                    model: "User",
+                    select: "name email image"
+                })
+                .populate({
+                    path: "assignedDeliveryBoy",
+                    model: "User",
+                    select: "name mobile"
+                });
         } else {
             // Priority 2: Batch Number Search (Case-insensitive)
             const escapedBatchId = orderId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             order = await Order.findOne({
                 batchNumber: { $regex: new RegExp(`^${escapedBatchId}$`, "i") }
             })
-                .populate("items.product")
-                .populate("user", "name email image")
-                .populate("assignedDeliveryBoy", "name mobile");
+                .populate({
+                    path: "items.product",
+                    model: "Product"
+                })
+                .populate({
+                    path: "user",
+                    model: "User",
+                    select: "name email image"
+                })
+                .populate({
+                    path: "assignedDeliveryBoy",
+                    model: "User",
+                    select: "name mobile"
+                });
         }
 
         if (!order) {
             return NextResponse.json({ message: "Order not found" }, { status: 404 });
         }
 
-        // Lazy Persistence for legacy orders
+        // Lazy Persistence for legacy orders (using updateOne to avoid validation issues)
         if (!order.batchNumber) {
             try {
-                await order.save();
+                const random = Math.floor(100000 + Math.random() * 900000);
+                await Order.updateOne({ _id: order._id }, { batchNumber: `BATCH-${random}` });
+                order.batchNumber = `BATCH-${random}`; // Sync local object
             } catch (saveError) {
-                console.error("Non-blocking save error:", saveError);
+                console.error("Non-blocking update error:", saveError);
             }
         }
 
@@ -61,11 +98,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
             }
         });
     } catch (error: any) {
-        console.error("TRACEABILITY_API_ERROR:", error);
+        console.error("TRACEABILITY_API_ERROR_STRICT:", error);
         return NextResponse.json({
             message: "Failed to fetch traceability data",
-            error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            error: error?.message || "Unknown server error",
+            details: process.env.NODE_ENV === 'development' ? error : undefined
         }, { status: 500 });
     }
 }

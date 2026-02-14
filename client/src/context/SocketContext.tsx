@@ -19,8 +19,18 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined)
 
 export const useSocket = () => {
     const context = useContext(SocketContext)
+    // During SSR, LazySocketProvider doesn't render SocketProvider, so context will be undefined.
+    // Instead of throwing and causing a 500 error, we return a safe mock or handle it in the component.
     if (!context) {
-        throw new Error("useSocket must be used within a SocketProvider")
+        // Return a mock object that matches the interface but does nothing
+        return {
+            socket: null,
+            isConnected: false,
+            incomingCall: null,
+            answerCall: () => { },
+            clearCall: () => { },
+            joinRoom: () => { }
+        }
     }
     return context
 }
